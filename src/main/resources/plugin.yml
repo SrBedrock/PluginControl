@@ -1,0 +1,14 @@
+name: PluginControl
+version: '${version}'
+main: com.armamc.plugincontrol.PluginControl
+api-version: 1.19
+authors: [ ThiagoROX ]
+description: Plugin para verificar se todos os plugins importantes foram carregados com sucesso
+website: https://armnamc.com
+commands:
+  plugincontrol:
+    description: "Command to manage PluginControl"
+    usage: "/<command> <add|remove|toggle|on|off|list>"
+    aliases: [pc, plcontrol]
+    permission: plugincontrol.use
+    permission-message: "You do not have permission to use this command"
