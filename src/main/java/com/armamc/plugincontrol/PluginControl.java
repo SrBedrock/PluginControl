@@ -3,6 +3,7 @@ package com.armamc.plugincontrol;
 import com.armamc.plugincontrol.commands.Command;
 import com.armamc.plugincontrol.config.Config;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.MessageFormat;
@@ -14,8 +15,12 @@ public final class PluginControl extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        getCommand("plugincontrol").setExecutor(new Command());
-        getCommand("plugincontrol").setTabCompleter(new Command());
+        Command command = new Command();
+        PluginCommand pluginCommand = getCommand("plugincontrol");
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor(command);
+            pluginCommand.setTabCompleter(command);
+        }
         saveDefaultConfig();
         Config.load();
         registerTask();
