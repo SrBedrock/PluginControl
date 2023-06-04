@@ -4,6 +4,9 @@
 
 This plugin allows you to control which plugins have to be enabled for the server continues running.
 
+Inspired by [this conversation](https://github.com/PaperMC/Paper/pull/8108#issuecomment-1419304955) and myself
+having the same problem.
+
 ## Installation
 
 1. Download the plugin from [here](https://github.com/SrBedrock/PluginControl/releases/).
@@ -36,4 +39,4 @@ Main command aliases: `/pc` and `/pcontrol`.
 
 | Permissions          | Description                                 |
 |----------------------|---------------------------------------------|
-| `pluginscontrol.use` | Permission to use all [commands][#commands] |
+| `pluginscontrol.use` | Permission to use all [commands](#commands) |

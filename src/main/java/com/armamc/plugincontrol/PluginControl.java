@@ -31,7 +31,7 @@ public final class PluginControl extends JavaPlugin {
                 getLogger().info("Verificando plugins...");
                 checkPlugins();
             }
-        }, 20);
+        }, 20L);
     }
 
 
