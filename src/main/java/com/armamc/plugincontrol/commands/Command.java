@@ -32,7 +32,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 }
                 case "disable", "off" -> {
                     Config.setEnabled(false);
-                    sender.sendMessage(Component.text("[PluginControl] Desativado funcionalidades do plugin...")
+                    sender.sendMessage(Component.text("[PluginControl] Desativando funcionalidades do plugin...")
                             .color(NamedTextColor.GREEN));
                     return true;
                 }
@@ -43,12 +43,16 @@ public class Command implements CommandExecutor, TabCompleter {
                         sender.sendMessage(Component.text("[PluginControl] Ativando funcionalidades do plugin...")
                                 .color(NamedTextColor.GREEN));
                     } else {
-                        sender.sendMessage(Component.text("[PluginControl] Desativado funcionalidades do plugin...")
+                        sender.sendMessage(Component.text("[PluginControl] Desativando funcionalidades do plugin...")
                                 .color(NamedTextColor.GREEN));
                     }
                     return true;
                 }
                 case "add" -> {
+                    if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
+                        sender.sendMessage(Component.text("[PluginControl] Use /plugincontrol add <plugin-name>").color(NamedTextColor.RED));
+                        return true;
+                    }
                     if (Config.addPlugin(args[1])) {
                         sender.sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} adicionado!", args[1]))
                                 .color(NamedTextColor.GREEN));
@@ -59,6 +63,14 @@ public class Command implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 case "remove" -> {
+                    if (Config.getPluginList().isEmpty()) {
+                        sender.sendMessage(Component.text("[PluginControl] Nenhum plugin adicionado!").color(NamedTextColor.RED));
+                        return true;
+                    }
+                    if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
+                        sender.sendMessage(Component.text("[PluginControl] Use /plugincontrol remove <plugin-name>").color(NamedTextColor.RED));
+                        return true;
+                    }
                     if (Config.removePlugin(args[1])) {
                         sender.sendMessage(Component.text("[PluginControl] Plugin " + args[1] + " removido!").color(NamedTextColor.GREEN));
                     } else {
