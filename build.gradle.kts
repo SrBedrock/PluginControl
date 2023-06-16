@@ -9,13 +9,14 @@ group = "com.armamc"
 version = "1.0.1"
 
 repositories {
-    mavenLocal()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://jitpack.io")
+    mavenCentral()
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
-    compileOnly(dependencyNotation = "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    implementation("net.kyori:adventure-api:4.14.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
 }
 
 java {
