@@ -29,7 +29,7 @@ public class Config {
     /* Método que cria as pastas do plugin */
     private void createDataFolder() {
         if (!plugin.getDataFolder().exists() && (plugin.getDataFolder().mkdir())) {
-                plugin.getLogger().log(Level.INFO, "Criando a pasta do plugin!");
+            plugin.getLogger().log(Level.INFO, "Creating the plugin folder!");
         }
     }
 
@@ -37,7 +37,7 @@ public class Config {
         configFile = new File(plugin.getDataFolder(), CONFIG_FILE_NAME);
         config = YamlConfiguration.loadConfiguration(configFile);
         if (!configFile.exists()) {
-            plugin.getLogger().log(Level.INFO, "Criando o arquivo de configuração!");
+            plugin.getLogger().log(Level.INFO, "Creating the configuration file!");
             plugin.saveResource(CONFIG_FILE_NAME, false);
         }
     }
@@ -57,7 +57,7 @@ public class Config {
             try {
                 config.save(configFile);
             } catch (IOException e) {
-                plugin.getLogger().log(Level.SEVERE, "Erro ao salvar o arquivo de configuração!", e);
+                plugin.getLogger().log(Level.SEVERE, "Error while saving the configuration file!", e);
             }
         });
     }
