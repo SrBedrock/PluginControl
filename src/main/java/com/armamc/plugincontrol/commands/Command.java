@@ -1,6 +1,8 @@
 package com.armamc.plugincontrol.commands;
 
+import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.config.Config;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -20,19 +22,21 @@ import java.util.List;
 
 public class Command implements CommandExecutor, TabCompleter {
 
+    private final BukkitAudiences adventure = PluginControl.getInstance().adventure();
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length >= 1) {
             switch (args[0]) {
                 case "enable", "on" -> {
                     Config.setEnabled(true);
-                    sender.sendMessage(Component.text("[PluginControl] Ativando funcionalidades do plugin...")
+                    adventure.sender(sender).sendMessage(Component.text("[PluginControl] Activating plugin features...")
                             .color(NamedTextColor.GREEN));
                     return true;
                 }
                 case "disable", "off" -> {
                     Config.setEnabled(false);
-                    sender.sendMessage(Component.text("[PluginControl] Desativando funcionalidades do plugin...")
+                    adventure.sender(sender).sendMessage(Component.text("[PluginControl] Disabling plugin features...")
                             .color(NamedTextColor.GREEN));
                     return true;
                 }
@@ -40,50 +44,57 @@ public class Command implements CommandExecutor, TabCompleter {
                     Config.setEnabled(!Config.isEnabled());
                     boolean enabled = Config.isEnabled();
                     if (enabled) {
-                        sender.sendMessage(Component.text("[PluginControl] Ativando funcionalidades do plugin...")
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] Activating plugin features...")
                                 .color(NamedTextColor.GREEN));
                     } else {
-                        sender.sendMessage(Component.text("[PluginControl] Desativando funcionalidades do plugin...")
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] Disabling plugin features...")
                                 .color(NamedTextColor.GREEN));
                     }
                     return true;
                 }
                 case "add" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        sender.sendMessage(Component.text("[PluginControl] Use /plugincontrol add <plugin-name>").color(NamedTextColor.RED));
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] Use /plugincontrol add <plugin-name>")
+                                .color(NamedTextColor.RED));
                         return true;
                     }
                     if (Config.addPlugin(args[1])) {
-                        sender.sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} adicionado!", args[1]))
+                        adventure.sender(sender).sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} added!", args[1]))
                                 .color(NamedTextColor.GREEN));
                     } else {
-                        sender.sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} já está adicionado!", args[1]))
+                        adventure.sender(sender).sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} is already added!", args[1]))
                                 .color(NamedTextColor.RED));
                     }
                     return true;
                 }
                 case "remove" -> {
                     if (Config.getPluginList().isEmpty()) {
-                        sender.sendMessage(Component.text("[PluginControl] Nenhum plugin adicionado!").color(NamedTextColor.RED));
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] No plugins added!").color(NamedTextColor.RED));
                         return true;
                     }
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        sender.sendMessage(Component.text("[PluginControl] Use /plugincontrol remove <plugin-name>").color(NamedTextColor.RED));
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] Use /plugincontrol remove <plugin-name>")
+                                .color(NamedTextColor.RED));
                         return true;
                     }
                     if (Config.removePlugin(args[1])) {
-                        sender.sendMessage(Component.text("[PluginControl] Plugin " + args[1] + " removido!").color(NamedTextColor.GREEN));
+                        adventure.sender(sender).sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} removed!", args[1]))
+                                .color(NamedTextColor.GREEN));
                     } else {
-                        sender.sendMessage(Component.text("[PluginControl] Plugin " + args[1] + " não está na lista!").color(NamedTextColor.RED));
+                        adventure.sender(sender).sendMessage(Component.text(MessageFormat.format("[PluginControl] Plugin {0} is not in the list!", args[1]))
+                                .color(NamedTextColor.RED));
                     }
                     return true;
                 }
                 case "list" -> {
                     if (Config.getPluginList().isEmpty()) {
-                        sender.sendMessage(Component.text("[PluginControl] Nenhum plugin adicionado!").color(NamedTextColor.RED));
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] No plugins were added!")
+                                .color(NamedTextColor.RED));
                     } else {
-                        sender.sendMessage(Component.text("[PluginControl] Plugins adicionados:").color(NamedTextColor.YELLOW).appendNewline()
-                                .append(Component.text(String.join(", ", Config.getPluginList())).color(NamedTextColor.GREEN)));
+                        adventure.sender(sender).sendMessage(Component.text("[PluginControl] Plugins added:")
+                                .color(NamedTextColor.YELLOW).appendNewline()
+                                .append(Component.text(String.join(", ", Config.getPluginList()))
+                                        .color(NamedTextColor.GREEN)));
                     }
                     return true;
                 }
@@ -106,7 +117,8 @@ public class Command implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 2 && (args[0].equals("add"))) {
-            List<String> add = Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
+            List<String> add = Arrays.stream(Bukkit.getPluginManager().getPlugins())
+                    .toList().stream().map(Plugin::getName).toList();
             StringUtil.copyPartialMatches(args[1], add, completions);
             return completions;
         }
