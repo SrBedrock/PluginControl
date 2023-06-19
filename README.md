@@ -1,4 +1,4 @@
-# PluginsControl
+# PluginControl
 
 ## Description
 
@@ -11,8 +11,8 @@ Inspired by [this](https://github.com/PaperMC/Paper/issues/8859#issuecomment-143
 1. Download the plugin from [here](https://github.com/SrBedrock/PluginControl/releases/).
 2. Put the plugin in the `plugins` folder of your server.
 3. Restart the server.
-4. Add plugins to the list with `/pluginscontrol add <plugin>`.
-5. Enable the plugin with `/pluginscontrol enable`.
+4. Add plugins to the list with `/plugincontrol add <plugin>`.
+5. Enable the plugin with `/plugincontrol enable`.
 
 ## Configuration
 
@@ -27,15 +27,15 @@ Main command aliases: `/pc` and `/pcontrol`.
 
 | Command           | Sub Command       | Description                      |
 |-------------------|-------------------|----------------------------------|
-| `/pluginscontrol` | `add <plugin>`    | Add a plugin to the list.        |
-| `/pluginscontrol` | `remove <plugin>` | Remove a plugin from the list.   |
-| `/pluginscontrol` | `enable \| on`    | Enable PluginControl.            |
-| `/pluginscontrol` | `disable \| off`  | Disable PluginControl.           |
-| `/pluginscontrol` | `toggle`          | Enable or disable PluginControl. |
-| `/pluginscontrol` | `list`            | List all plugins in the list.    |
+| `/plugincontrol` | `add <plugin>`    | Add a plugin to the list.        |
+| `/plugincontrol` | `remove <plugin>` | Remove a plugin from the list.   |
+| `/plugincontrol` | `enable \| on`    | Enable PluginControl.            |
+| `/plugincontrol` | `disable \| off`  | Disable PluginControl.           |
+| `/plugincontrol` | `toggle`          | Enable or disable PluginControl. |
+| `/plugincontrol` | `list`            | List all plugins in the list.    |
 
 ## Permissions
 
 | Permissions          | Description                                 |
 |----------------------|---------------------------------------------|
-| `pluginscontrol.use` | Permission to use all [commands](#commands) |
+| `plugincontrol.use` | Permission to use all [commands](#commands) |
