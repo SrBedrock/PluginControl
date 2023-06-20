@@ -1,2 +1,8 @@
 enabled: false
+# Action to take if all listed plugins are not enabled.
+# log-to-console
+# disallow-player-login
+# shutdown-server
+action: log-to-console
+kick-message: You are not allowed to join the server!
 plugins: []

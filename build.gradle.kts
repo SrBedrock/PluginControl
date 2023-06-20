@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.armamc"
-version = "1.0.2"
+version = "1.0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -16,6 +16,7 @@ repositories {
 dependencies {
     implementation("net.kyori:adventure-api:4.14.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    implementation("net.kyori:adventure-text-minimessage:4.14.0")
     compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
 }
 

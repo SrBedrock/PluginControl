@@ -11,19 +11,16 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Config {
-
-    private static final PluginControl plugin = PluginControl.getInstance();
+    private final PluginControl plugin;
     private static final String CONFIG_FILE_NAME = "config.yml";
     private static FileConfiguration config;
     private static File configFile;
 
-    public Config() {
+    public Config(PluginControl plugin) {
+        this.plugin = plugin;
         createDataFolder();
+        plugin.saveDefaultConfig();
         loadConfig();
-    }
-
-    public static void load() {
-        new Config();
     }
 
     /* Método que cria as pastas do plugin */
@@ -42,17 +39,17 @@ public class Config {
         }
     }
 
-    public static void setEnabled(boolean enabled) {
+    public void setEnabled(boolean enabled) {
         config.set("enabled", enabled);
         saveConfig();
     }
 
-    public static void setPluginList(List<String> pluginList) {
+    private void setPluginList(List<String> pluginList) {
         config.set("plugins", pluginList);
         saveConfig();
     }
 
-    private static void saveConfig() {
+    private void saveConfig() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 config.save(configFile);
@@ -62,15 +59,23 @@ public class Config {
         });
     }
 
-    public static boolean isEnabled() {
+    public String getAction() {
+        return config.getString("action");
+    }
+
+    public String getKickMessage() {
+        return config.getString("kick-message");
+    }
+
+    public boolean isEnabled() {
         return config.getBoolean("enabled");
     }
 
-    public static List<String> getPluginList() {
+    public List<String> getPluginList() {
         return config.getStringList("plugins");
     }
 
-    public static boolean addPlugin(String pluginName) {
+    public boolean addPlugin(String pluginName) {
         List<String> pluginList = getPluginList();
         if (!pluginList.contains(pluginName)) {
             pluginList.add(pluginName);
@@ -81,7 +86,7 @@ public class Config {
         }
     }
 
-    public static boolean removePlugin(String pluginName) {
+    public boolean removePlugin(String pluginName) {
         List<String> pluginList = getPluginList();
         if (pluginList.contains(pluginName)) {
             pluginList.remove(pluginName);
