@@ -3,7 +3,7 @@ package com.armamc.plugincontrol;
 import com.armamc.plugincontrol.commands.Command;
 import com.armamc.plugincontrol.config.Config;
 import com.armamc.plugincontrol.config.Lang;
-import com.armamc.plugincontrol.listeners.PlayerLoginListener;
+import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -84,7 +84,7 @@ public final class PluginControl extends JavaPlugin {
             TagResolver.Single tag = Placeholder.parsed("plugins",
                     String.join(", ", missingPlugins));
             if (config.getAction().equals("disallow-player-login")) {
-                new PlayerLoginListener(this);
+                new PlayerListener(this);
                 sendToConsole(lang.message("console.log-to-console"), tag);
                 return;
             }
