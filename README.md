@@ -13,14 +13,15 @@ problem.
 1. Download the PluginControl plugin from [here](https://github.com/SrBedrock/PluginControl/releases/).
 2. Place the downloaded plugin file in the `plugins` folder of your server.
 3. Restart the server to load the PluginControl plugin.
-4. Use the command `/plugincontrol action <action-type>` to set the action to be taken if any of the listed plugins are not
+4. Use the command `/plugincontrol action <action-type>` to set the action to be taken if any of the listed plugins are
+   not.
    enabled. See the [Actions](#actions) section for available actions.
 5. Add plugins to the list using the command `/plugincontrol add <plugin-name>`.
 6. Enable the PluginControl plugin by running the command `/plugincontrol enable`.
 7. Reload the PluginControl plugin configuration and language files with the command `/plugincontrol reload`.
 
-Please note that the `<action-type>` and `<plugin-name>` placeholders should be replaced with the specific action and plugin
-names as needed.
+Please note that the `<action-type>` and `<plugin-name>` placeholders should be replaced with the specific action and
+plugin names as needed.
 
 ## Configuration
 
@@ -38,6 +39,12 @@ names as needed.
 | `log-to-console`        | Sends a warning (`log-to-console` inside lang.yaml) in the console.                   |
 | `disallow-player-login` | Block player from enter the server with a message (`kick-message` inside config.yml). |
 | `shutdown-server`       | Shutdown the server with a warning (`disabling-server` inside lang.yml).              |
+
+### Kick Message
+
+Allows you to customize the message sent to the player when the `disallow-player-login` action is enabled.
+
+Can be customized using `&#<hex>` code or legacy color codes.
 
 ## Messages
 
@@ -66,11 +73,11 @@ console:
   log-to-console: '<prefix> <red>Plugin <yellow><plugins> <red>not found or enabled successfully...'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
-  action-set: '<prefix> <green>Action set to <yellow><action> <green>!'
-  action-type: '<prefix> <green>Action type: <yellow><action> <green>!'
+  action-set: '<prefix> <green>Action set to <yellow><action>'
+  action-type: '<prefix> <green>Action type: <yellow><action>'
   command-not-found: '<red>Usage: <yellow>/<command> <add|remove|action|kick-message|toggle|on|off|list|reload>'
   kick-message: '<prefix> <green>Kick message: <yellow><kick-message>'
-  kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message> <green>!'
+  kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message>'
   no-permission-error: '<prefix> <red>You do not have permission to use this command'
   plugin-add-error: '<red>Usage: <yellow>/<command> add [plugin-name]'
   plugin-added: '<prefix> <green>Plugin <yellow><plugin> <green>added successfully!'

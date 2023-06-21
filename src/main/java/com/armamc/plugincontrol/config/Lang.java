@@ -39,18 +39,16 @@ public class Lang {
 
     public void reload() {
         lang = YamlConfiguration.loadConfiguration(langFile);
-
         final InputStream defLangStream = plugin.getResource(LANG_FILE_NAME);
         if (defLangStream == null) {
             return;
         }
-
         lang.setDefaults(YamlConfiguration.loadConfiguration(
                 new InputStreamReader(defLangStream, StandardCharsets.UTF_8)));
     }
 
     public String message(String path) {
-        return lang.getString(path, path + " in lang.yaml not found!");
+        return lang.getString(path, path + " in lang.yaml not found! Update your lang.yaml file!");
     }
 
 }

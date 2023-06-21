@@ -4,5 +4,5 @@ enabled: false
 # disallow-player-login
 # shutdown-server
 action: log-to-console
-kick-message: You are not allowed to join the server!
+kick-message: "&#FFFFFF[PluginControl] You are not allowed to join the server!"
 plugins: []
