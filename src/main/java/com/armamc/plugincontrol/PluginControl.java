@@ -10,6 +10,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PluginControl extends JavaPlugin {
+    private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
     private BukkitAudiences adventure;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private Config config;
     private Lang lang;
+    private static final String PREFIX = "prefix";
 
     @Override
     public void onEnable() {
@@ -64,7 +67,7 @@ public final class PluginControl extends JavaPlugin {
     private void registerTask() {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (config.isEnabled()) {
-                sendToConsole(lang.message("console.checking-plugins"));
+                send(sender, lang.message("console.checking-plugins"));
                 checkPlugins();
             }
         }, 20L);
@@ -81,23 +84,24 @@ public final class PluginControl extends JavaPlugin {
             }
         }
         if (hasPlugins) {
+
             TagResolver.Single tag = Placeholder.parsed("plugins",
                     String.join(", ", missingPlugins));
             if (config.getAction().equals("disallow-player-login")) {
                 new PlayerListener(this);
-                sendToConsole(lang.message("console.log-to-console"), tag);
+                send(sender, lang.message("console.log-to-console"), tag);
                 return;
             }
             if (config.getAction().equals("log-to-console")) {
-                sendToConsole(lang.message("console.log-to-console"), tag);
+                send(sender, lang.message("console.log-to-console"), tag);
                 return;
             }
             if (config.getAction().equals("shutdown-server")) {
-                sendToConsole(lang.message("console.disabling-server"), tag);
+                send(sender, lang.message("console.disabling-server"), tag);
                 getServer().shutdown();
             }
         } else {
-            sendToConsole(lang.message("console.finished-checking"));
+            send(sender, lang.message("console.finished-checking"));
         }
     }
 
@@ -108,24 +112,20 @@ public final class PluginControl extends JavaPlugin {
         return this.adventure;
     }
 
-    public void sendToConsole(String message) {
-        TagResolver.Single prefix = Placeholder.parsed("prefix", lang.message("prefix"));
-        adventure().console().sendMessage(miniMessage.deserialize(message, prefix));
-    }
-
-    public void sendToConsole(String message, TagResolver tags) {
-        TagResolver.Single prefix = Placeholder.parsed("prefix", lang.message("prefix"));
-        adventure().console().sendMessage(miniMessage.deserialize(message, prefix, tags));
-    }
-
-    public void sendToPlayer(CommandSender sender, String message) {
-        TagResolver.Single prefix = Placeholder.parsed("prefix", lang.message("prefix"));
+    public void send(CommandSender sender, String message) {
+        if (message.isEmpty() || message.isBlank()) {
+            return;
+        }
+        TagResolver.Single prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
         adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix));
     }
 
-    public void sendToPlayer(CommandSender sender, String message, TagResolver tags) {
-        TagResolver.Single prefix = Placeholder.parsed("prefix", lang.message("prefix"));
-        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tags));
+    public void send(CommandSender sender, String message, TagResolver tag) {
+        if (message.isEmpty() || message.isBlank()) {
+            return;
+        }
+        TagResolver.Single prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
+        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
     }
 
 }

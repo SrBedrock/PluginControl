@@ -4,7 +4,6 @@ import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.config.Config;
 import com.armamc.plugincontrol.config.Lang;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,70 +34,70 @@ public class Command implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("plugincontrol.use")) {
-            plugin.sendToPlayer(sender, lang.message("command.no-permission-error"));
+            plugin.send(sender, lang.message("command.no-permission-error"));
             return true;
         }
         if (args.length >= 1) {
             switch (args[0]) {
                 case "enable", "on" -> {
                     config.setEnabled(true);
-                    plugin.sendToPlayer(sender, lang.message("command.plugin-enabled"));
+                    plugin.send(sender, lang.message("command.plugin-enabled"));
                     return true;
                 }
                 case "disable", "off" -> {
                     config.setEnabled(false);
-                    plugin.sendToPlayer(sender, lang.message("command.plugin-disabled"));
+                    plugin.send(sender, lang.message("command.plugin-disabled"));
                     return true;
                 }
                 case "toggle" -> {
                     config.setEnabled(!config.isEnabled());
                     boolean enabled = config.isEnabled();
                     if (enabled) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-enabled"));
+                        plugin.send(sender, lang.message("command.plugin-enabled"));
                     } else {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-disabled"));
+                        plugin.send(sender, lang.message("command.plugin-disabled"));
                     }
                     return true;
                 }
                 case "add" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-add-error"),
+                        plugin.send(sender, lang.message("command.plugin-add-error"),
                                 Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.addPlugin(args[1])) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-added"),
+                        plugin.send(sender, lang.message("command.plugin-added"),
                                 Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-already-added"),
+                        plugin.send(sender, lang.message("command.plugin-already-added"),
                                 Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
                 case "remove" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-list-empty"));
+                        plugin.send(sender, lang.message("command.plugin-list-empty"));
                         return true;
                     }
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-remove-error"),
+                        plugin.send(sender, lang.message("command.plugin-remove-error"),
                                 Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.removePlugin(args[1])) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-removed"),
+                        plugin.send(sender, lang.message("command.plugin-removed"),
                                 Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-not-found"),
+                        plugin.send(sender, lang.message("command.plugin-not-found"),
                                 Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
                 case "list" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-list-empty"));
+                        plugin.send(sender, lang.message("command.plugin-list-empty"));
                     } else {
-                        plugin.sendToPlayer(sender, lang.message("command.plugin-list"),
+                        plugin.send(sender, lang.message("command.plugin-list"),
                                 Placeholder.parsed("plugins",
                                         String.join(", ", config.getPluginList())));
                     }
@@ -106,39 +105,39 @@ public class Command implements CommandExecutor, TabCompleter {
                 }
                 case "action" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.sendToPlayer(sender, lang.message("command.action-type"),
+                        plugin.send(sender, lang.message("command.action-type"),
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
                         return true;
                     }
                     List<String> actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
                     if (actions.contains(args[1])) {
                         config.setAction(args[1]);
-                        plugin.sendToPlayer(sender, lang.message("command.action-set"),
+                        plugin.send(sender, lang.message("command.action-set"),
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
                     } else {
-                        plugin.sendToPlayer(sender, lang.message("command.action-list"),
+                        plugin.send(sender, lang.message("command.action-list"),
                                 Placeholder.parsed("actions", String.join(", ", actions)));
                     }
                     return true;
                 }
                 case "kick-message" -> {
                     if (args.length < 2 || args[1].isBlank()) {
-                        plugin.sendToPlayer(sender, lang.message("command.kick-message"),
+                        plugin.send(sender, lang.message("command.kick-message"),
                                 Placeholder.parsed("kick-message", config.getKickMessage()));
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                        plugin.sendToPlayer(sender, lang.message("command.kick-message-set"),
+                        plugin.send(sender, lang.message("command.kick-message-set"),
                                 Placeholder.parsed("kick-message",config.getKickMessage()));
                     }
                     return true;
                 }
                 case "reload" -> {
                     reload();
-                    plugin.sendToPlayer(sender, lang.message("command.plugin-reload"));
+                    plugin.send(sender, lang.message("command.plugin-reload"));
                     return true;
                 }
                 default -> {
-                    plugin.sendToPlayer(sender, lang.message("command.command-not-found"),
+                    plugin.send(sender, lang.message("command.command-not-found"),
                             Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
