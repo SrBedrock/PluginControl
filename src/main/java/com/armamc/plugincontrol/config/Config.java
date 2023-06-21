@@ -4,6 +4,7 @@ import com.armamc.plugincontrol.PluginControl;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,12 +60,26 @@ public class Config {
         });
     }
 
+    public void reload() {
+        PlayerLoginEvent.getHandlerList().unregister(plugin);
+    }
+
     public String getAction() {
         return config.getString("action");
     }
 
+    public void setAction(String action) {
+        config.set("action", action);
+        saveConfig();
+    }
+
     public String getKickMessage() {
         return config.getString("kick-message");
+    }
+
+    public void setKickMessage(String kickMessage) {
+        config.set("kick-message", kickMessage);
+        saveConfig();
     }
 
     public boolean isEnabled() {

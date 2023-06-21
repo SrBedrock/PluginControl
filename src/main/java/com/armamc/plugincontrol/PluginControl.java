@@ -64,12 +64,11 @@ public final class PluginControl extends JavaPlugin {
     private void registerTask() {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (config.isEnabled()) {
-                sendToConsole(lang.message("checking-plugins"));
+                sendToConsole(lang.message("console.checking-plugins"));
                 checkPlugins();
             }
         }, 20L);
     }
-
 
     public void checkPlugins() {
         List<String> plugins = config.getPluginList();
@@ -84,22 +83,21 @@ public final class PluginControl extends JavaPlugin {
         if (hasPlugins) {
             TagResolver.Single tag = Placeholder.parsed("plugins",
                     String.join(", ", missingPlugins));
-
             if (config.getAction().equals("disallow-player-login")) {
                 new PlayerLoginListener(this);
-                sendToConsole(lang.message("log-to-console"), tag);
+                sendToConsole(lang.message("console.log-to-console"), tag);
                 return;
             }
             if (config.getAction().equals("log-to-console")) {
-                sendToConsole(lang.message("log-to-console"), tag);
+                sendToConsole(lang.message("console.log-to-console"), tag);
                 return;
             }
             if (config.getAction().equals("shutdown-server")) {
-                sendToConsole(lang.message("disabling-server"), tag);
+                sendToConsole(lang.message("console.disabling-server"), tag);
                 getServer().shutdown();
             }
         } else {
-            sendToConsole(lang.message("finished-checking"));
+            sendToConsole(lang.message("console.finished-checking"));
         }
     }
 

@@ -26,7 +26,7 @@ public class PlayerLoginListener implements Listener {
     private void onPlayerLogin(PlayerLoginEvent event) {
         String kickMessage = config.getKickMessage();
         if (kickMessage == null || kickMessage.isEmpty() || kickMessage.isBlank()) {
-            kickMessage = "You are not allowed to join the server!";
+            kickMessage = "[PluginControl] You are not allowed to join the server!";
         }
         if (event.getPlayer().hasPermission("plugincontrol.bypass")) {
             return;

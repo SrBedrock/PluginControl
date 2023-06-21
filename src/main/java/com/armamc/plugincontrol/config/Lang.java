@@ -1,13 +1,10 @@
 package com.armamc.plugincontrol.config;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.google.common.base.Charsets;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -40,17 +37,7 @@ public class Lang {
         }
     }
 
-    public void saveLang() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                lang.save(langFile);
-            } catch (IOException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while saving the language file!", e);
-            }
-        });
-    }
-
-    public void reloadLang() {
+    public void reload() {
         lang = YamlConfiguration.loadConfiguration(langFile);
 
         final InputStream defLangStream = plugin.getResource(LANG_FILE_NAME);
