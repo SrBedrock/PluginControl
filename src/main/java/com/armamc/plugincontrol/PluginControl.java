@@ -12,8 +12,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ public final class PluginControl extends JavaPlugin {
     private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
     private BukkitAudiences adventure;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private PlayerListener playerListener;
     private Config config;
     private Lang lang;
     private static final String PREFIX = "prefix";
@@ -50,6 +54,13 @@ public final class PluginControl extends JavaPlugin {
         return lang;
     }
 
+    public void unregisterListener() {
+        if (playerListener != null) {
+            PlayerLoginEvent.getHandlerList().unregister(this);
+            playerListener = null;
+        }
+    }
+
     private void registerConfig() {
         config = new Config(this);
         lang = new Lang(this);
@@ -65,15 +76,13 @@ public final class PluginControl extends JavaPlugin {
     }
 
     private void registerTask() {
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (config.isEnabled()) {
-                send(sender, lang.message("console.checking-plugins"));
-                checkPlugins();
-            }
-        }, 20L);
+        Bukkit.getScheduler().runTaskLater(this, this::checkPlugins, 20L);
     }
 
     public void checkPlugins() {
+        if (!config.isEnabled()) return;
+
+        send(sender, lang.message("console.checking-plugins"), null);
         List<String> plugins = config.getPluginList();
         List<String> missingPlugins = new ArrayList<>();
         boolean hasPlugins = false;
@@ -84,11 +93,10 @@ public final class PluginControl extends JavaPlugin {
             }
         }
         if (hasPlugins) {
-
-            TagResolver.Single tag = Placeholder.parsed("plugins",
-                    String.join(", ", missingPlugins));
+            TagResolver.Single tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
             if (config.getAction().equals("disallow-player-login")) {
-                new PlayerListener(this);
+                playerListener = new PlayerListener(this);
+                playerListener.init();
                 send(sender, lang.message("console.log-to-console"), tag);
                 return;
             }
@@ -101,7 +109,7 @@ public final class PluginControl extends JavaPlugin {
                 getServer().shutdown();
             }
         } else {
-            send(sender, lang.message("console.finished-checking"));
+            send(sender, lang.message("console.finished-checking"), null);
         }
     }
 
@@ -112,20 +120,16 @@ public final class PluginControl extends JavaPlugin {
         return this.adventure;
     }
 
-    public void send(CommandSender sender, String message) {
+    public void send(@NotNull CommandSender sender, @NotNull String message, @Nullable TagResolver tag) {
         if (message.isEmpty() || message.isBlank()) {
             return;
         }
         TagResolver.Single prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
-        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix));
-    }
-
-    public void send(CommandSender sender, String message, TagResolver tag) {
-        if (message.isEmpty() || message.isBlank()) {
-            return;
+        if (tag == null) {
+            adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix));
+        } else {
+            adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
         }
-        TagResolver.Single prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
-        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
     }
 
 }

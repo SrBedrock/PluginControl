@@ -34,28 +34,28 @@ public class Command implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("plugincontrol.use")) {
-            plugin.send(sender, lang.message("command.no-permission-error"));
+            plugin.send(sender, lang.message("command.no-permission-error"), null);
             return true;
         }
         if (args.length >= 1) {
             switch (args[0]) {
                 case "enable", "on" -> {
                     config.setEnabled(true);
-                    plugin.send(sender, lang.message("command.plugin-enabled"));
+                    plugin.send(sender, lang.message("command.plugin-enabled"), null);
                     return true;
                 }
                 case "disable", "off" -> {
                     config.setEnabled(false);
-                    plugin.send(sender, lang.message("command.plugin-disabled"));
+                    plugin.send(sender, lang.message("command.plugin-disabled"), null);
                     return true;
                 }
                 case "toggle" -> {
                     config.setEnabled(!config.isEnabled());
                     boolean enabled = config.isEnabled();
                     if (enabled) {
-                        plugin.send(sender, lang.message("command.plugin-enabled"));
+                        plugin.send(sender, lang.message("command.plugin-enabled"), null);
                     } else {
-                        plugin.send(sender, lang.message("command.plugin-disabled"));
+                        plugin.send(sender, lang.message("command.plugin-disabled"), null);
                     }
                     return true;
                 }
@@ -76,7 +76,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 }
                 case "remove" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.send(sender, lang.message("command.plugin-list-empty"));
+                        plugin.send(sender, lang.message("command.plugin-list-empty"), null);
                         return true;
                     }
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
@@ -95,7 +95,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 }
                 case "list" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.send(sender, lang.message("command.plugin-list-empty"));
+                        plugin.send(sender, lang.message("command.plugin-list-empty"), null);
                     } else {
                         plugin.send(sender, lang.message("command.plugin-list"),
                                 Placeholder.parsed("plugins",
@@ -127,13 +127,13 @@ public class Command implements CommandExecutor, TabCompleter {
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
                         plugin.send(sender, lang.message("command.kick-message-set"),
-                                Placeholder.parsed("kick-message",config.getKickMessage()));
+                                Placeholder.parsed("kick-message", config.getKickMessage()));
                     }
                     return true;
                 }
                 case "reload" -> {
                     reload();
-                    plugin.send(sender, lang.message("command.plugin-reload"));
+                    plugin.send(sender, lang.message("command.plugin-reload"), null);
                     return true;
                 }
                 default -> {
@@ -151,7 +151,7 @@ public class Command implements CommandExecutor, TabCompleter {
 
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            List<String> subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message");
+            List<String> subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload");
             StringUtil.copyPartialMatches(args[0], subCommands, completions);
             return completions;
         }
@@ -176,10 +176,10 @@ public class Command implements CommandExecutor, TabCompleter {
     }
 
     private void reload() {
-        plugin.reloadConfig();
-        config.reload();
+        config.saveConfig();
+        plugin.unregisterListener();
         lang.reload();
-        plugin.checkPlugins();
+        Bukkit.getScheduler().runTaskLater(plugin, plugin::checkPlugins, 20L);
     }
 
 }

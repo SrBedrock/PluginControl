@@ -1,21 +1,25 @@
 package com.armamc.plugincontrol.config;
 
 import com.armamc.plugincontrol.PluginControl;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Config {
     private final PluginControl plugin;
     private static final String CONFIG_FILE_NAME = "config.yml";
     private static FileConfiguration config;
     private static File configFile;
+
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
 
     public Config(PluginControl plugin) {
         this.plugin = plugin;
@@ -50,7 +54,7 @@ public class Config {
         saveConfig();
     }
 
-    private void saveConfig() {
+    public void saveConfig() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 config.save(configFile);
@@ -60,11 +64,11 @@ public class Config {
         });
     }
 
-    public void reload() {
-        PlayerLoginEvent.getHandlerList().unregister(plugin);
-    }
-
     public String getAction() {
+        if (config.getString("action") == null) {
+            config.set("action", "log-to-console");
+            saveConfig();
+        }
         return config.getString("action");
     }
 
@@ -74,6 +78,10 @@ public class Config {
     }
 
     public String getKickMessage() {
+        if (config.getString("kick-message") == null) {
+            config.set("kick-message", "&#FFFFFF[PluginControl] You are not allowed to join the server!");
+            saveConfig();
+        }
         return config.getString("kick-message");
     }
 
@@ -83,6 +91,10 @@ public class Config {
     }
 
     public boolean isEnabled() {
+        if (config.getString("enabled") == null) {
+            config.set("enabled", "false");
+            saveConfig();
+        }
         return config.getBoolean("enabled");
     }
 
@@ -112,4 +124,13 @@ public class Config {
         }
     }
 
+    public String parseColor(String message) {
+        Matcher matcher = HEX_COLOR_PATTERN.matcher(message);
+        StringBuilder buffer = new StringBuilder();
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
+        }
+        message = matcher.appendTail(buffer).toString();
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
 }

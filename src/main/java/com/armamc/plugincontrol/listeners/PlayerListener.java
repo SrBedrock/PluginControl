@@ -6,27 +6,33 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.permissions.Permission;
 
 public class PlayerListener implements Listener {
-    private final Config config;
+    private final PluginControl plugin;
+    private final String kickMessage;
+    private final Permission bypass;
 
     public PlayerListener(PluginControl plugin) {
-        this.config = plugin.getPluginConfig();
-        if (config.isEnabled()) {
-            plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        }
+        this.plugin = plugin;
+        Config config = plugin.getPluginConfig();
+        this.kickMessage = config.parseColor(config.getKickMessage());
+        this.bypass = new Permission("plugincontrol.bypass");
+    }
+
+    public void init() {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        plugin.getServer().getOnlinePlayers().stream()
+                .filter(player -> player.hasPermission(bypass))
+                .forEach(player -> player.kickPlayer(kickMessage));
     }
 
     // TODO: Add support for mini-message
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     private void onPlayerLogin(PlayerLoginEvent event) {
-        String kickMessage = config.getKickMessage();
-        if (kickMessage == null || kickMessage.isEmpty() || kickMessage.isBlank()) {
-            kickMessage = "[PluginControl] You are not allowed to join the server!";
-        }
-        if (event.getPlayer().hasPermission("plugincontrol.bypass")) {
+        if (event.getPlayer().hasPermission(bypass)) {
             return;
         }
-        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, config.parseColor(kickMessage));
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, kickMessage);
     }
 }
