@@ -4,6 +4,7 @@ import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.config.Config;
 import com.armamc.plugincontrol.config.Lang;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -121,14 +122,14 @@ public class Command implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 case "kick-message" -> {
-                    if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
+                    if (args.length < 2 || args[1].isBlank()) {
                         plugin.sendToPlayer(sender, lang.message("command.kick-message"),
                                 Placeholder.parsed("kick-message", config.getKickMessage()));
-                        return true;
+                    } else {
+                        config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+                        plugin.sendToPlayer(sender, lang.message("command.kick-message-set"),
+                                Placeholder.parsed("kick-message",config.getKickMessage()));
                     }
-                    config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                    plugin.sendToPlayer(sender, lang.message("command.kick-message-set"),
-                            Placeholder.parsed("kick-message", config.getKickMessage()));
                     return true;
                 }
                 case "reload" -> {
