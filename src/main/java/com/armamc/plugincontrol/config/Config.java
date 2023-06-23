@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Config {
@@ -23,25 +22,16 @@ public class Config {
 
     public Config(PluginControl plugin) {
         this.plugin = plugin;
-        createDataFolder();
-        plugin.saveDefaultConfig();
         loadConfig();
     }
 
-    /* Método que cria as pastas do plugin */
-    private void createDataFolder() {
-        if (!plugin.getDataFolder().exists() && (plugin.getDataFolder().mkdir())) {
-            plugin.getLogger().log(Level.INFO, "Creating the plugin folder!");
-        }
-    }
-
-    private void loadConfig() {
+    public void loadConfig() {
         configFile = new File(plugin.getDataFolder(), CONFIG_FILE_NAME);
-        config = YamlConfiguration.loadConfiguration(configFile);
         if (!configFile.exists()) {
             plugin.getLogger().log(Level.INFO, "Creating the configuration file!");
             plugin.saveResource(CONFIG_FILE_NAME, false);
         }
+        config = YamlConfiguration.loadConfiguration(configFile);
     }
 
     public void setEnabled(boolean enabled) {
@@ -103,7 +93,7 @@ public class Config {
     }
 
     public boolean addPlugin(String pluginName) {
-        List<String> pluginList = getPluginList();
+        var pluginList = getPluginList();
         if (!pluginList.contains(pluginName)) {
             pluginList.add(pluginName);
             setPluginList(pluginList);
@@ -114,7 +104,7 @@ public class Config {
     }
 
     public boolean removePlugin(String pluginName) {
-        List<String> pluginList = getPluginList();
+        var pluginList = getPluginList();
         if (pluginList.contains(pluginName)) {
             pluginList.remove(pluginName);
             setPluginList(pluginList);
@@ -125,12 +115,13 @@ public class Config {
     }
 
     public String parseColor(String message) {
-        Matcher matcher = HEX_COLOR_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder();
+        var matcher = HEX_COLOR_PATTERN.matcher(message);
+        var buffer = new StringBuilder();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
         }
         message = matcher.appendTail(buffer).toString();
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+
 }

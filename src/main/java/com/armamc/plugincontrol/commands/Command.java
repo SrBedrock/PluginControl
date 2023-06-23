@@ -149,25 +149,25 @@ public class Command implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        List<String> completions = new ArrayList<>();
+        var completions = new ArrayList<String>();
         if (args.length == 1) {
-            List<String> subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload");
+            var subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload");
             StringUtil.copyPartialMatches(args[0], subCommands, completions);
             return completions;
         }
         if (args.length == 2 && (args[0].equals("add"))) {
-            List<String> add = Arrays.stream(Bukkit.getPluginManager().getPlugins())
+            var add = Arrays.stream(Bukkit.getPluginManager().getPlugins())
                     .toList().stream().map(Plugin::getName).toList();
             StringUtil.copyPartialMatches(args[1], add, completions);
             return completions;
         }
         if (args.length == 2 && (args[0].equals("remove"))) {
-            List<String> remove = new ArrayList<>(config.getPluginList());
+            var remove = new ArrayList<>(config.getPluginList());
             StringUtil.copyPartialMatches(args[1], remove, completions);
             return completions;
         }
         if (args.length == 2 && (args[0].equals("action"))) {
-            List<String> actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
+            var actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
             StringUtil.copyPartialMatches(args[1], actions, completions);
             return completions;
         } else {
@@ -176,9 +176,9 @@ public class Command implements CommandExecutor, TabCompleter {
     }
 
     private void reload() {
-        config.saveConfig();
         plugin.unregisterListener();
-        lang.reload();
+        config.loadConfig();
+        lang.loadLang();
         Bukkit.getScheduler().runTaskLater(plugin, plugin::checkPlugins, 20L);
     }
 

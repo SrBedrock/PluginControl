@@ -11,7 +11,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class PluginControl extends JavaPlugin {
     private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
@@ -62,13 +60,16 @@ public final class PluginControl extends JavaPlugin {
     }
 
     private void registerConfig() {
+        if (!getDataFolder().exists() && getDataFolder().mkdir()) {
+            getLogger().info("Creating the plugin folder!");
+        }
         config = new Config(this);
         lang = new Lang(this);
     }
 
     private void registerCommands() {
-        Command command = new Command(this);
-        PluginCommand pluginCommand = getCommand("plugincontrol");
+        var command = new Command(this);
+        var pluginCommand = getCommand("plugincontrol");
         if (pluginCommand != null) {
             pluginCommand.setExecutor(command);
             pluginCommand.setTabCompleter(command);
@@ -83,8 +84,8 @@ public final class PluginControl extends JavaPlugin {
         if (!config.isEnabled()) return;
 
         send(sender, lang.message("console.checking-plugins"), null);
-        List<String> plugins = config.getPluginList();
-        List<String> missingPlugins = new ArrayList<>();
+        var plugins = config.getPluginList();
+        var missingPlugins = new ArrayList<String>();
         boolean hasPlugins = false;
         for (String plugin : plugins) {
             if (getServer().getPluginManager().getPlugin(plugin) == null) {
@@ -93,7 +94,7 @@ public final class PluginControl extends JavaPlugin {
             }
         }
         if (hasPlugins) {
-            TagResolver.Single tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
+            var tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
             if (config.getAction().equals("disallow-player-login")) {
                 playerListener = new PlayerListener(this);
                 playerListener.init();
@@ -124,7 +125,7 @@ public final class PluginControl extends JavaPlugin {
         if (message.isEmpty() || message.isBlank()) {
             return;
         }
-        TagResolver.Single prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
+        var prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
         if (tag == null) {
             adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix));
         } else {

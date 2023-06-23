@@ -14,14 +14,15 @@ problem.
 2. Place the downloaded plugin file in the `plugins` folder of your server.
 3. Restart the server to load the PluginControl plugin.
 4. Use the command `/plugincontrol action <action-type>` to set the action to be taken if any of the listed plugins are
-   not.
-   enabled. See the [Actions](#actions) section for available actions.
+   not enabled. See the [Actions](#actions) section for available actions.
 5. Add plugins to the list using the command `/plugincontrol add <plugin-name>`.
 6. Enable the PluginControl plugin by running the command `/plugincontrol enable`.
 7. Reload the PluginControl plugin configuration and language files with the command `/plugincontrol reload`.
 
 Please note that the `<action-type>` and `<plugin-name>` placeholders should be replaced with the specific action and
 plugin names as needed.
+
+**Note: This plugin needs Java 17 to work.**
 
 ## Configuration
 
@@ -44,7 +45,7 @@ plugin names as needed.
 
 Allows you to customize the message sent to the player when the `disallow-player-login` action is enabled.
 
-Can be customized using `&#<hex>` code or legacy color codes.
+Can be customized using `&#<hex>` code or legacy color codes (no MiniMessage support).
 
 ## Messages
 
