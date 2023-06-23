@@ -1,7 +1,6 @@
 package com.armamc.plugincontrol.listeners;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.armamc.plugincontrol.config.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,7 +14,7 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(PluginControl plugin) {
         this.plugin = plugin;
-        Config config = plugin.getPluginConfig();
+        var config = plugin.getPluginConfig();
         this.kickMessage = config.parseColor(config.getKickMessage());
         this.bypass = new Permission("plugincontrol.bypass");
     }
@@ -23,7 +22,7 @@ public class PlayerListener implements Listener {
     public void init() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         plugin.getServer().getOnlinePlayers().stream()
-                .filter(player -> player.hasPermission(bypass))
+                .filter(player -> !player.hasPermission(bypass))
                 .forEach(player -> player.kickPlayer(kickMessage));
     }
 
@@ -35,4 +34,5 @@ public class PlayerListener implements Listener {
         }
         event.disallow(PlayerLoginEvent.Result.KICK_OTHER, kickMessage);
     }
+
 }
