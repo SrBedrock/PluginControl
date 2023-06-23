@@ -1,6 +1,7 @@
 package com.armamc.plugincontrol.listeners;
 
 import com.armamc.plugincontrol.PluginControl;
+import com.armamc.plugincontrol.config.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -9,13 +10,12 @@ import org.bukkit.permissions.Permission;
 
 public class PlayerListener implements Listener {
     private final PluginControl plugin;
-    private final String kickMessage;
+    private final Config config;
     private final Permission bypass;
 
     public PlayerListener(PluginControl plugin) {
         this.plugin = plugin;
-        var config = plugin.getPluginConfig();
-        this.kickMessage = config.parseColor(config.getKickMessage());
+        this.config = plugin.getPluginConfig();
         this.bypass = new Permission("plugincontrol.bypass");
     }
 
@@ -23,7 +23,7 @@ public class PlayerListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         plugin.getServer().getOnlinePlayers().stream()
                 .filter(player -> !player.hasPermission(bypass))
-                .forEach(player -> player.kickPlayer(kickMessage));
+                .forEach(player -> player.kickPlayer(config.parseColor(config.getKickMessage())));
     }
 
     // TODO: Add support for mini-message
@@ -32,7 +32,7 @@ public class PlayerListener implements Listener {
         if (event.getPlayer().hasPermission(bypass)) {
             return;
         }
-        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, kickMessage);
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, config.parseColor(config.getKickMessage()));
     }
 
 }
