@@ -56,7 +56,7 @@ public class Config {
 
     public String getAction() {
         if (config.getString("action") == null) {
-            config.set("action", "log-to-console");
+            config.set("action", "shutdown-server");
             saveConfig();
         }
         return config.getString("action");
