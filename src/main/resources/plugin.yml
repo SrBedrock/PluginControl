@@ -8,7 +8,7 @@ website: https://armnamc.com
 commands:
   plugincontrol:
     description: "Command to manage PluginControl"
-    usage: "/<command> <add|remove [plugin-name]> | <toggle|on|off|list>"
+    usage: "/<command> <add|remove|action|kick-message|toggle|on|off|list|reload>"
     aliases: [pc, plcontrol]
     permission: plugincontrol.use
     permission-message: "You do not have permission to use this command"
