@@ -17,12 +17,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class PluginControl extends JavaPlugin {
     private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
-    private BukkitAudiences adventure;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private BukkitAudiences adventure;
     private PlayerListener playerListener;
     private Config config;
     private Lang lang;
@@ -81,36 +82,52 @@ public final class PluginControl extends JavaPlugin {
     }
 
     public void checkPlugins() {
-        if (!config.isEnabled()) return;
+        // If the plugin is disabled, don't check for plugins
+        if (!config.isEnabled()) {
+            return;
+        }
 
+        // Send a checking message to console
         send(sender, lang.message("console.checking-plugins"), null);
-        var plugins = config.getPluginList();
-        var missingPlugins = new ArrayList<String>();
-        boolean hasPlugins = false;
-        for (String plugin : plugins) {
-            if (getServer().getPluginManager().getPlugin(plugin) == null) {
+
+        // Create a list of missing plugins
+        var missingPlugins = new HashSet<String>();
+
+        // Loop through the plugin list
+        for (String plugin : config.getPluginList()) {
+            // Check if the plugin is missing
+            if (!isPluginEnabled(plugin)) {
                 missingPlugins.add(plugin);
-                hasPlugins = true;
             }
         }
-        if (hasPlugins) {
-            var tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
-            if (config.getAction().equals("disallow-player-login")) {
-                playerListener = new PlayerListener(this);
-                playerListener.init();
-                send(sender, lang.message("console.log-to-console"), tag);
-                return;
-            }
-            if (config.getAction().equals("log-to-console")) {
-                send(sender, lang.message("console.log-to-console"), tag);
-                return;
-            }
-            if (config.getAction().equals("shutdown-server")) {
-                send(sender, lang.message("console.disabling-server"), tag);
-                getServer().shutdown();
-            }
+
+        // If there are missing plugins, register the action
+        if (!missingPlugins.isEmpty()) {
+            registerAction(missingPlugins);
         } else {
             send(sender, lang.message("console.finished-checking"), null);
+        }
+    }
+
+    private boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    }
+
+    private void registerAction(Set<String> missingPlugins) {
+        var tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
+        if (config.getAction().equals("disallow-player-login")) {
+            playerListener = new PlayerListener(this);
+            playerListener.init();
+            send(sender, lang.message("console.log-to-console"), tag);
+            return;
+        }
+        if (config.getAction().equals("log-to-console")) {
+            send(sender, lang.message("console.log-to-console"), tag);
+            return;
+        }
+        if (config.getAction().equals("shutdown-server")) {
+            send(sender, lang.message("console.disabling-server"), tag);
+            getServer().shutdown();
         }
     }
 
