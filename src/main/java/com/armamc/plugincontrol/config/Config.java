@@ -17,6 +17,10 @@ public class Config {
     private static final String CONFIG_FILE_NAME = "config.yml";
     private static FileConfiguration config;
     private static File configFile;
+    private static final String PLUGINS = "plugins";
+    private static final String ENABLED = "enabled";
+    private static final String ACTION = "action";
+    private static final String KICK_MESSAGE = "kick-message";
 
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
 
@@ -35,12 +39,12 @@ public class Config {
     }
 
     public void setEnabled(boolean enabled) {
-        config.set("enabled", enabled);
+        config.set(ENABLED, enabled);
         saveConfig();
     }
 
     private void setPluginList(List<String> pluginList) {
-        config.set("plugins", pluginList);
+        config.set(PLUGINS, pluginList);
         saveConfig();
     }
 
@@ -55,41 +59,45 @@ public class Config {
     }
 
     public String getAction() {
-        if (config.getString("action") == null) {
-            config.set("action", "shutdown-server");
+        if (config.getString(ACTION) == null) {
+            config.set(ACTION, "shutdown-server");
             saveConfig();
         }
-        return config.getString("action");
+        return config.getString(ACTION);
     }
 
     public void setAction(String action) {
-        config.set("action", action);
+        config.set(ACTION, action);
         saveConfig();
     }
 
     public String getKickMessage() {
-        if (config.getString("kick-message") == null) {
-            config.set("kick-message", "&#FFFFFF[PluginControl] You are not allowed to join the server!");
+        if (config.getString(KICK_MESSAGE) == null) {
+            config.set(KICK_MESSAGE, "&#FFFFFF[PluginControl] You are not allowed to join the server!");
             saveConfig();
         }
-        return config.getString("kick-message");
+        return config.getString(KICK_MESSAGE);
     }
 
     public void setKickMessage(String kickMessage) {
-        config.set("kick-message", kickMessage);
+        config.set(KICK_MESSAGE, kickMessage);
         saveConfig();
     }
 
     public boolean isEnabled() {
-        if (config.getString("enabled") == null) {
-            config.set("enabled", "false");
+        if (config.getString(ENABLED) == null) {
+            config.set(ENABLED, "false");
             saveConfig();
         }
-        return config.getBoolean("enabled");
+        return config.getBoolean(ENABLED);
     }
 
     public List<String> getPluginList() {
-        return config.getStringList("plugins");
+        return config.getStringList(PLUGINS);
+    }
+
+    public List<?> getList() {
+        return config.getList(PLUGINS);
     }
 
     public boolean addPlugin(String pluginName) {
