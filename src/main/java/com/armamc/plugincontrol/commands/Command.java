@@ -98,8 +98,7 @@ public class Command implements CommandExecutor, TabCompleter {
                         plugin.send(sender, lang.message("command.plugin-list-empty"), null);
                     } else {
                         plugin.send(sender, lang.message("command.plugin-list"),
-                                Placeholder.parsed("plugins",
-                                        String.join(", ", config.getPluginList())));
+                                Placeholder.component("plugins", plugin.getPluginListComponent(config.getPluginList())));
                     }
                     return true;
                 }

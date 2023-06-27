@@ -5,6 +5,10 @@ import com.armamc.plugincontrol.config.Config;
 import com.armamc.plugincontrol.config.Lang;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -17,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -115,7 +120,7 @@ public final class PluginControl extends JavaPlugin {
     }
 
     private void registerAction(Set<String> missingPlugins) {
-        var tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
+        var tag = Placeholder.component("plugins", getPluginListComponent(new ArrayList<>(missingPlugins)));
         if (config.getAction().equals("disallow-player-login")) {
             playerListener = new PlayerListener(this);
             playerListener.init();
@@ -160,6 +165,18 @@ public final class PluginControl extends JavaPlugin {
             if (line.isEmpty()) return;
             adventure().sender(sender).sendMessage(miniMessage.deserialize(line, prefix, tag));
         });
+    }
+
+    public Component getPluginListComponent(@NotNull List<String> pluginList) {
+        var joinConfiguration = JoinConfiguration.builder()
+                .separator(miniMessage.deserialize(lang.message("command.plugin-list-separator")))
+                .lastSeparator(miniMessage.deserialize(lang.message("command.plugin-list-separator-last")))
+                .build();
+        var componentList = new ArrayList<Component>();
+        pluginList.forEach(pluginName -> componentList.add(Component.text(pluginName)
+                .hoverEvent(HoverEvent.showText(miniMessage.deserialize(lang.message("command.plugin-click-remove"))))
+                .clickEvent(ClickEvent.runCommand("/plugincontrol remove " + pluginName))));
+        return Component.join(joinConfiguration, componentList);
     }
 
 }
