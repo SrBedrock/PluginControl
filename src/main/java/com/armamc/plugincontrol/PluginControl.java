@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class PluginControl extends JavaPlugin {
-    private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
+    private final ConsoleCommandSender consoleSender = Bukkit.getConsoleSender();
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private BukkitAudiences adventure;
     private PlayerListener playerListener;
@@ -88,7 +88,7 @@ public final class PluginControl extends JavaPlugin {
         }
 
         // Send a checking message to console
-        send(sender, lang.message("console.checking-plugins"), null);
+        send(consoleSender, lang.message("console.checking-plugins"), null);
 
         // Create a list of missing plugins
         var missingPlugins = new HashSet<String>();
@@ -105,7 +105,7 @@ public final class PluginControl extends JavaPlugin {
         if (!missingPlugins.isEmpty()) {
             registerAction(missingPlugins);
         } else {
-            send(sender, lang.message("console.finished-checking"), null);
+            send(consoleSender, lang.message("console.finished-checking"), null);
         }
     }
 
@@ -118,15 +118,15 @@ public final class PluginControl extends JavaPlugin {
         if (config.getAction().equals("disallow-player-login")) {
             playerListener = new PlayerListener(this);
             playerListener.init();
-            send(sender, lang.message("console.log-to-console"), tag);
+            send(consoleSender, lang.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("log-to-console")) {
-            send(sender, lang.message("console.log-to-console"), tag);
+            send(consoleSender, lang.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("shutdown-server")) {
-            send(sender, lang.message("console.disabling-server"), tag);
+            send(consoleSender, lang.message("console.disabling-server"), tag);
             getServer().shutdown();
         }
     }
