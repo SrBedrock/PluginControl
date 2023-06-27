@@ -109,11 +109,12 @@ public class Command implements CommandExecutor, TabCompleter {
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
                         return true;
                     }
-                    List<String> actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
-                    if (actions.contains(args[1])) {
-                        config.setAction(args[1]);
+                    var actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
+                    if (actions.contains(args[1].toLowerCase())) {
+                        config.setAction(args[1].toLowerCase());
                         plugin.send(sender, lang.message("command.action-set"),
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
+                        plugin.checkPlugins();
                     } else {
                         plugin.send(sender, lang.message("command.action-list"),
                                 Placeholder.parsed("actions", String.join(", ", actions)));
