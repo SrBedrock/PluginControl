@@ -1,6 +1,8 @@
 package com.armamc.plugincontrol.config;
 
 import com.armamc.plugincontrol.PluginControl;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -122,7 +124,7 @@ public class Config {
         }
     }
 
-    public String parseColor(String message) {
+    private String parseColor(String message) {
         var matcher = HEX_COLOR_PATTERN.matcher(message);
         var buffer = new StringBuilder();
         while (matcher.find()) {
@@ -130,6 +132,16 @@ public class Config {
         }
         message = matcher.appendTail(buffer).toString();
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public Component deserialize(String string) {
+        return LegacyComponentSerializer.builder().hexColors().build()
+                .deserialize(parseColor(string));
+    }
+
+    public String serialize(String string) {
+        return LegacyComponentSerializer.builder().hexColors().build()
+                .serialize(Component.text(parseColor(string)));
     }
 
 }

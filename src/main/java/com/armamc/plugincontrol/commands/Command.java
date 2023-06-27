@@ -123,11 +123,11 @@ public class Command implements CommandExecutor, TabCompleter {
                 case "kick-message" -> {
                     if (args.length < 2 || args[1].isBlank()) {
                         plugin.send(sender, lang.message("command.kick-message"),
-                                Placeholder.parsed("kick-message", config.getKickMessage()));
+                                Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
                         plugin.send(sender, lang.message("command.kick-message-set"),
-                                Placeholder.parsed("kick-message", config.getKickMessage()));
+                                Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
                     }
                     return true;
                 }
