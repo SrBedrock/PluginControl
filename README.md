@@ -76,7 +76,7 @@ command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'
   action-type: '<prefix> <green>Action type: <yellow><action>'
-  command-not-found: '<red>Usage: <yellow>/<command> <add|remove|action|kick-message|toggle|on|off|list|reload>'
+  command-not-found: '<red>Use <yellow>/<command> help <red>to see the available commands'
   kick-message: '<prefix> <green>Kick message: <yellow><kick-message>'
   kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message>'
   no-permission-error: '<prefix> <red>You do not have permission to use this command'
