@@ -19,7 +19,6 @@ jobs:
   analyze:
     name: Analyze
     runs-on: 'ubuntu-latest'
-    if: "!contains(github.event.commits[0].message, '[no-build]')"
     timeout-minutes: 360
     permissions:
       actions: read
