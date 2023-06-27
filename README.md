@@ -91,6 +91,20 @@ command:
   plugin-reload: '<prefix> <green>Config and Language reloaded!'
   plugin-remove-error: '<red>Usage: <yellow>/<command> remove <plugin-name>'
   plugin-removed: '<prefix> <green>Plugin <yellow><plugin> <green>removed!'
+help:
+   - '<gradient:aqua:green>==== Plugin Control Help ====</gradient>'
+   - '<aqua>/<command> add <green><plugin-name> <yellow>- Add a plugin to the list'
+   - '<aqua>/<command> remove <green><plugin-name> <yellow>- Remove a plugin from the list'
+   - '<aqua>/<command> action <yellow>- List all actions available'
+   - '<aqua>/<command> kick-message <yellow>- Show the kick message'
+   - '<aqua>/<command> kick-message <message> <yellow>- Set the kick message'
+   - '<aqua>/<command> enable <yellow>- Enable the plugin'
+   - '<aqua>/<command> disable <yellow>- Disable the plugin'
+   - '<aqua>/<command> toggle <yellow>- Enable or disable the plugin'
+   - '<aqua>/<command> list <yellow>- List all plugins added'
+   - '<aqua>/<command> reload <yellow>- Reload the config and language'
+   - '<aqua>/<command> help <yellow>- Show this help'
+   - '<gradient:aqua:green>============================</gradient>'
 ```
 
 ## Commands
@@ -110,6 +124,7 @@ Main Command `/plugincontrol` - Aliases: `/pc` and `/pcontrol`
 | `/plugincontrol` | `toggle`                 | Toggle PluginControl on or off.              |
 | `/plugincontrol` | `list`                   | List all plugins in the list.                |
 | `/plugincontrol` | `reload`                 | Reload the configuration and language files. |
+| `/plugincontrol` | `help \| ?`              | Show the list of commands.                   |
 
 Please note that the `<plugin-name>`, `<action-type>` and `<message>` placeholders should be replaced with the specific
 plugin name and kick message, respectively, as required.

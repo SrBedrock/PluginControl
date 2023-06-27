@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class PluginControl extends JavaPlugin {
@@ -148,6 +149,17 @@ public final class PluginControl extends JavaPlugin {
         } else {
             adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
         }
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
+        if (message.isEmpty()) {
+            return;
+        }
+        var prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
+        message.forEach(line -> {
+            if (line.isEmpty()) return;
+            adventure().sender(sender).sendMessage(miniMessage.deserialize(line, prefix, tag));
+        });
     }
 
 }

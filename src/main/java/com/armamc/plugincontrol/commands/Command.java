@@ -120,7 +120,7 @@ public class Command implements CommandExecutor, TabCompleter {
                     }
                     return true;
                 }
-                case "kick-message" -> {
+                case "kick-message", "kickmessage" -> {
                     if (args.length < 2 || args[1].isBlank()) {
                         plugin.send(sender, lang.message("command.kick-message"),
                                 Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
@@ -129,6 +129,10 @@ public class Command implements CommandExecutor, TabCompleter {
                         plugin.send(sender, lang.message("command.kick-message-set"),
                                 Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
                     }
+                    return true;
+                }
+                case "help", "?" -> {
+                    plugin.send(sender, lang.help(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
                 case "reload" -> {
@@ -151,7 +155,7 @@ public class Command implements CommandExecutor, TabCompleter {
 
         var completions = new ArrayList<String>();
         if (args.length == 1) {
-            var subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload");
+            var subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload", "help");
             StringUtil.copyPartialMatches(args[0], subCommands, completions);
             return completions;
         }

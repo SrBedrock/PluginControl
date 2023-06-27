@@ -98,10 +98,6 @@ public class Config {
         return config.getStringList(PLUGINS);
     }
 
-    public List<?> getList() {
-        return config.getList(PLUGINS);
-    }
-
     public boolean addPlugin(String pluginName) {
         var pluginList = getPluginList();
         if (!pluginList.contains(pluginName)) {
