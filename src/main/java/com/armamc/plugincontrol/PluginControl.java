@@ -168,7 +168,7 @@ public final class PluginControl extends JavaPlugin {
     }
 
     public Component getPluginListComponent(@NotNull List<String> pluginList) {
-        var joinConfiguration = JoinConfiguration.builder()
+        var config = JoinConfiguration.builder()
                 .separator(miniMessage.deserialize(lang.message("command.plugin-list-separator")))
                 .lastSeparator(miniMessage.deserialize(lang.message("command.plugin-list-separator-last")))
                 .build();
@@ -176,7 +176,7 @@ public final class PluginControl extends JavaPlugin {
         pluginList.forEach(pluginName -> componentList.add(Component.text(pluginName)
                 .hoverEvent(HoverEvent.showText(miniMessage.deserialize(lang.message("command.plugin-click-remove"))))
                 .clickEvent(ClickEvent.runCommand("/plugincontrol remove " + pluginName))));
-        return Component.join(joinConfiguration, componentList);
+        return Component.join(config, componentList);
     }
 
 }

@@ -32,7 +32,7 @@ public class Lang {
     }
 
     public List<String> help() {
-        List<?> list = lang.getList("help", List.of("help in lang.yaml not found! Update your lang.yaml file!"));
+        List<?> list = lang.getList("command.help", List.of("command.help in lang.yaml not found! Update your lang.yaml file!"));
         return list.stream().map(Object::toString).toList();
     }
 
