@@ -53,15 +53,15 @@ Change the message formatting using [MiniMessage](https://webui.advntr.dev/)
 
 ### Placeholders
 
-| Placeholder      | Usage                                                                                                     |
-|------------------|-----------------------------------------------------------------------------------------------------------|
-| `<prefix>`       | Plugin prefix - all messages accept this placeholder                                                      |
-| `<action>`       | Plugin action used in `command.action-type`                                                               |
-| `<actions>`      | List of actions used in `command.action-list`                                                             |
-| `<command>`      | Command used in `command.command-not-found`, `command.plugin-add-error` and `command.plugin-remove-error` |
-| `<kick-message>` | Kick message used in `command.kick-message` and `command.kick-message-set`                                |
-| `<plugin>`       | Plugin name used in `command.plugin-added`, `command.plugin-not-found` and `command.plugin-removed`       |
-| `<plugins>`      | List of plugins used in `console.disabling-server` and `command.plugin-list`                              |
+| Placeholder      | Usage                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------|
+| `<prefix>`       | All messages accept this placeholder                                                      |
+| `<action>`       | `command.action-type`                                                                     |
+| `<actions>`      | `command.action-list`                                                                     |
+| `<command>`      | `command.command-not-found`, `command.plugin-add-error` and `command.plugin-remove-error` |
+| `<kick-message>` | `command.kick-message` and `command.kick-message-set`                                     |
+| `<plugin>`       | `command.plugin-added`, `command.plugin-not-found` and `command.plugin-removed`           |
+| `<plugins>`      | `console.disabling-server` and `command.plugin-list`                                      |
 
 ### Default
 
