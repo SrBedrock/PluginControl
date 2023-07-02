@@ -98,8 +98,7 @@ public class Command implements CommandExecutor, TabCompleter {
                         plugin.send(sender, lang.message("command.plugin-list-empty"), null);
                     } else {
                         plugin.send(sender, lang.message("command.plugin-list"),
-                                Placeholder.parsed("plugins",
-                                        String.join(", ", config.getPluginList())));
+                                Placeholder.component("plugins", plugin.getPluginListComponent(config.getPluginList())));
                     }
                     return true;
                 }
@@ -109,26 +108,31 @@ public class Command implements CommandExecutor, TabCompleter {
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
                         return true;
                     }
-                    List<String> actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
-                    if (actions.contains(args[1])) {
-                        config.setAction(args[1]);
+                    var actions = new ArrayList<>(List.of("log-to-console", "disallow-player-login", "shutdown-server"));
+                    if (actions.contains(args[1].toLowerCase())) {
+                        config.setAction(args[1].toLowerCase());
                         plugin.send(sender, lang.message("command.action-set"),
                                 Placeholder.parsed("action", config.getAction().toLowerCase()));
+                        plugin.checkPlugins();
                     } else {
                         plugin.send(sender, lang.message("command.action-list"),
                                 Placeholder.parsed("actions", String.join(", ", actions)));
                     }
                     return true;
                 }
-                case "kick-message" -> {
+                case "kick-message", "kickmessage" -> {
                     if (args.length < 2 || args[1].isBlank()) {
                         plugin.send(sender, lang.message("command.kick-message"),
-                                Placeholder.parsed("kick-message", config.getKickMessage()));
+                                Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
                         plugin.send(sender, lang.message("command.kick-message-set"),
-                                Placeholder.parsed("kick-message", config.getKickMessage()));
+                                Placeholder.component("kick-message", config.deserialize(config.getKickMessage())));
                     }
+                    return true;
+                }
+                case "help", "?" -> {
+                    plugin.send(sender, lang.help(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
                 case "reload" -> {
@@ -151,7 +155,7 @@ public class Command implements CommandExecutor, TabCompleter {
 
         var completions = new ArrayList<String>();
         if (args.length == 1) {
-            var subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload");
+            var subCommands = Arrays.asList("enable", "disable", "toggle", "add", "remove", "list", "action", "kick-message", "reload", "help");
             StringUtil.copyPartialMatches(args[0], subCommands, completions);
             return completions;
         }

@@ -5,6 +5,10 @@ import com.armamc.plugincontrol.config.Config;
 import com.armamc.plugincontrol.config.Lang;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -18,11 +22,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class PluginControl extends JavaPlugin {
-    private final ConsoleCommandSender sender = Bukkit.getConsoleSender();
-    private BukkitAudiences adventure;
+    private final ConsoleCommandSender consoleSender = Bukkit.getConsoleSender();
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private BukkitAudiences adventure;
     private PlayerListener playerListener;
     private Config config;
     private Lang lang;
@@ -81,36 +88,52 @@ public final class PluginControl extends JavaPlugin {
     }
 
     public void checkPlugins() {
-        if (!config.isEnabled()) return;
+        // If the plugin is disabled, don't check for plugins
+        if (!config.isEnabled()) {
+            return;
+        }
 
-        send(sender, lang.message("console.checking-plugins"), null);
-        var plugins = config.getPluginList();
-        var missingPlugins = new ArrayList<String>();
-        boolean hasPlugins = false;
-        for (String plugin : plugins) {
-            if (getServer().getPluginManager().getPlugin(plugin) == null) {
+        // Send a checking message to console
+        send(consoleSender, lang.message("console.checking-plugins"), null);
+
+        // Create a list of missing plugins
+        var missingPlugins = new HashSet<String>();
+
+        // Loop through the plugin list
+        for (String plugin : config.getPluginList()) {
+            // Check if the plugin is missing
+            if (!isPluginEnabled(plugin)) {
                 missingPlugins.add(plugin);
-                hasPlugins = true;
             }
         }
-        if (hasPlugins) {
-            var tag = Placeholder.parsed("plugins", String.join(", ", missingPlugins));
-            if (config.getAction().equals("disallow-player-login")) {
-                playerListener = new PlayerListener(this);
-                playerListener.init();
-                send(sender, lang.message("console.log-to-console"), tag);
-                return;
-            }
-            if (config.getAction().equals("log-to-console")) {
-                send(sender, lang.message("console.log-to-console"), tag);
-                return;
-            }
-            if (config.getAction().equals("shutdown-server")) {
-                send(sender, lang.message("console.disabling-server"), tag);
-                getServer().shutdown();
-            }
+
+        // If there are missing plugins, register the action
+        if (!missingPlugins.isEmpty()) {
+            registerAction(missingPlugins);
         } else {
-            send(sender, lang.message("console.finished-checking"), null);
+            send(consoleSender, lang.message("console.finished-checking"), null);
+        }
+    }
+
+    private boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    }
+
+    private void registerAction(Set<String> missingPlugins) {
+        var tag = Placeholder.component("plugins", getPluginListComponent(new ArrayList<>(missingPlugins)));
+        if (config.getAction().equals("disallow-player-login")) {
+            playerListener = new PlayerListener(this);
+            playerListener.init();
+            send(consoleSender, lang.message("console.log-to-console"), tag);
+            return;
+        }
+        if (config.getAction().equals("log-to-console")) {
+            send(consoleSender, lang.message("console.log-to-console"), tag);
+            return;
+        }
+        if (config.getAction().equals("shutdown-server")) {
+            send(consoleSender, lang.message("console.disabling-server"), tag);
+            getServer().shutdown();
         }
     }
 
@@ -131,6 +154,29 @@ public final class PluginControl extends JavaPlugin {
         } else {
             adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
         }
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
+        if (message.isEmpty()) {
+            return;
+        }
+        var prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
+        message.forEach(line -> {
+            if (line.isEmpty()) return;
+            adventure().sender(sender).sendMessage(miniMessage.deserialize(line, prefix, tag));
+        });
+    }
+
+    public Component getPluginListComponent(@NotNull List<String> pluginList) {
+        var config = JoinConfiguration.builder()
+                .separator(miniMessage.deserialize(lang.message("command.plugin-list-separator")))
+                .lastSeparator(miniMessage.deserialize(lang.message("command.plugin-list-separator-last")))
+                .build();
+        var componentList = new ArrayList<Component>();
+        pluginList.forEach(pluginName -> componentList.add(Component.text(pluginName)
+                .hoverEvent(HoverEvent.showText(miniMessage.deserialize(lang.message("command.plugin-click-remove"))))
+                .clickEvent(ClickEvent.runCommand("/plugincontrol remove " + pluginName))));
+        return Component.join(config, componentList);
     }
 
 }

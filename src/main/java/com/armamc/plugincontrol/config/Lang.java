@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Lang {
@@ -28,6 +29,11 @@ public class Lang {
 
     public String message(String path) {
         return lang.getString(path, path + " in lang.yaml not found! Update your lang.yaml file!");
+    }
+
+    public List<String> help() {
+        List<?> list = lang.getList("command.help", List.of("command.help in lang.yaml not found! Update your lang.yaml file!"));
+        return list.stream().map(Object::toString).toList();
     }
 
 }

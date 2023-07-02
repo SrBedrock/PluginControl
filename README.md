@@ -53,15 +53,15 @@ Change the message formatting using [MiniMessage](https://webui.advntr.dev/)
 
 ### Placeholders
 
-| Placeholder      | Usage                                                                                                     |
-|------------------|-----------------------------------------------------------------------------------------------------------|
-| `<prefix>`       | Plugin prefix - all messages accept this placeholder                                                      |
-| `<action>`       | Plugin action used in `command.action-type`                                                               |
-| `<actions>`      | List of actions used in `command.action-list`                                                             |
-| `<command>`      | Command used in `command.command-not-found`, `command.plugin-add-error` and `command.plugin-remove-error` |
-| `<kick-message>` | Kick message used in `command.kick-message` and `command.kick-message-set`                                |
-| `<plugin>`       | Plugin name used in `command.plugin-added`, `command.plugin-not-found` and `command.plugin-removed`       |
-| `<plugins>`      | List of plugins used in `console.disabling-server` and `command.plugin-list`                              |
+| Placeholder      | Usage                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------|
+| `<prefix>`       | All messages accept this placeholder                                                      |
+| `<action>`       | `command.action-type`                                                                     |
+| `<actions>`      | `command.action-list`                                                                     |
+| `<command>`      | `command.command-not-found`, `command.plugin-add-error` and `command.plugin-remove-error` |
+| `<kick-message>` | `command.kick-message` and `command.kick-message-set`                                     |
+| `<plugin>`       | `command.plugin-added`, `command.plugin-not-found` and `command.plugin-removed`           |
+| `<plugins>`      | `console.disabling-server` and `command.plugin-list`                                      |
 
 ### Default
 
@@ -76,7 +76,7 @@ command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'
   action-type: '<prefix> <green>Action type: <yellow><action>'
-  command-not-found: '<red>Usage: <yellow>/<command> <add|remove|action|kick-message|toggle|on|off|list|reload>'
+  command-not-found: '<red>Use <yellow>/<command> help <red>to see the available commands'
   kick-message: '<prefix> <green>Kick message: <yellow><kick-message>'
   kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message>'
   no-permission-error: '<prefix> <red>You do not have permission to use this command'
@@ -86,11 +86,28 @@ command:
   plugin-disabled: '<prefix> <red>Deactivating plugin features...'
   plugin-enabled: '<prefix> <green>Activating plugin features...'
   plugin-list: '<prefix> <green>Plugins added: <yellow><plugins>'
+  plugin-list-separator: '<gray>, '
+  plugin-list-separator-last: '<gray> and '
   plugin-list-empty: '<prefix> <red>No plugins added!'
   plugin-not-found: '<prefix> <red>Plugin <yellow><plugin> <red>not found in the list!'
   plugin-reload: '<prefix> <green>Config and Language reloaded!'
   plugin-remove-error: '<red>Usage: <yellow>/<command> remove <plugin-name>'
   plugin-removed: '<prefix> <green>Plugin <yellow><plugin> <green>removed!'
+  plugin-click-remove: '<red>Click to remove the plugin'
+  help:
+    - '<gradient:aqua:green>==== Plugin Control Help ====</gradient>'
+    - '<aqua>/<command> add <green><plugin-name> <yellow>- Add a plugin to the list'
+    - '<aqua>/<command> remove <green><plugin-name> <yellow>- Remove a plugin from the list'
+    - '<aqua>/<command> action <yellow>- List all actions available'
+    - '<aqua>/<command> kick-message <yellow>- Show the kick message'
+    - '<aqua>/<command> kick-message <message> <yellow>- Set the kick message'
+    - '<aqua>/<command> enable <yellow>- Enable the plugin'
+    - '<aqua>/<command> disable <yellow>- Disable the plugin'
+    - '<aqua>/<command> toggle <yellow>- Enable or disable the plugin'
+    - '<aqua>/<command> list <yellow>- List all plugins added'
+    - '<aqua>/<command> reload <yellow>- Reload the config and language'
+    - '<aqua>/<command> help <yellow>- Show this help'
+    - '<gradient:aqua:green>============================</gradient>'
 ```
 
 ## Commands
@@ -110,6 +127,7 @@ Main Command `/plugincontrol` - Aliases: `/pc` and `/pcontrol`
 | `/plugincontrol` | `toggle`                 | Toggle PluginControl on or off.              |
 | `/plugincontrol` | `list`                   | List all plugins in the list.                |
 | `/plugincontrol` | `reload`                 | Reload the configuration and language files. |
+| `/plugincontrol` | `help \| ?`              | Show the list of commands.                   |
 
 Please note that the `<plugin-name>`, `<action-type>` and `<message>` placeholders should be replaced with the specific
 plugin name and kick message, respectively, as required.
