@@ -136,7 +136,7 @@ public class ConfigManager {
         public static @NotNull ActionType from(String action) {
             ActionType result = lookup.get(action);
             if (result == null) {
-                throw new IllegalStateException("Unexpected value: " + action);
+                throw new IllegalArgumentException("Unexpected value: " + action);
             }
             return result;
         }
