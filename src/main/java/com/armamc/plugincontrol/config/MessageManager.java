@@ -40,8 +40,8 @@ public class MessageManager {
         lang.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
     }
 
-    public String message(String path) {
-        return lang.getString(path, path + " in lang.yaml not found! Update your lang.yaml file!");
+    public String getPrefix() {
+        return lang.getString("prefix");
     }
 
     public List<String> getHelpList() {
@@ -118,5 +118,33 @@ public class MessageManager {
 
     public String getCommandNotFound() {
         return lang.getString("command.command-not-found");
+    }
+
+    public String getCheckingMessage() {
+        return lang.getString("console.checking-plugins");
+    }
+
+    public String getCheckFinished() {
+        return lang.getString("console.finished-checking");
+    }
+
+    public String getLogToConsole() {
+        return lang.getString("console.log-to-console");
+    }
+
+    public String getDisablingServer() {
+        return lang.getString("console.disabling-server");
+    }
+
+    public String getPluginListSeparator() {
+        return lang.getString("command.plugin-list-separator");
+    }
+
+    public String getPluginListSeparatorLast() {
+        return lang.getString("console.plugin-list-separator-last");
+    }
+
+    public String getPluginClickAdd() {
+        return lang.getString("command.plugin-click-add");
     }
 }

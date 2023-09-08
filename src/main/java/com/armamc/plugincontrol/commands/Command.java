@@ -25,8 +25,8 @@ public class Command implements CommandExecutor, TabCompleter {
 
     public Command(@NotNull PluginControl plugin) {
         this.plugin = plugin;
-        this.config = plugin.getPluginConfig();
-        this.message = plugin.getPluginLang();
+        this.config = plugin.getConfigManager();
+        this.message = plugin.getMessageManager();
     }
 
     @Override

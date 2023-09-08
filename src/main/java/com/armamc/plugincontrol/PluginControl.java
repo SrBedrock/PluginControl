@@ -31,8 +31,8 @@ public final class PluginControl extends JavaPlugin {
     private static final MiniMessage MM = MiniMessage.miniMessage();
     private BukkitAudiences adventure;
     private PlayerListener playerListener;
-    private ConfigManager config;
-    private MessageManager message;
+    private ConfigManager configManager;
+    private MessageManager messageManager;
     private static final String PREFIX = "prefix";
 
     @Override
@@ -52,13 +52,13 @@ public final class PluginControl extends JavaPlugin {
     }
 
     @Contract(pure = true)
-    public ConfigManager getPluginConfig() {
-        return config;
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 
     @Contract(pure = true)
-    public MessageManager getPluginLang() {
-        return message;
+    public MessageManager getMessageManager() {
+        return messageManager;
     }
 
     public void unregisterListener() {
@@ -72,8 +72,8 @@ public final class PluginControl extends JavaPlugin {
         if (!getDataFolder().exists() && getDataFolder().mkdir()) {
             getLogger().info("Creating the plugin folder!");
         }
-        config = new ConfigManager(this);
-        message = new MessageManager(this);
+        configManager = new ConfigManager(this);
+        messageManager = new MessageManager(this);
     }
 
     private void registerCommands() {
@@ -91,16 +91,16 @@ public final class PluginControl extends JavaPlugin {
 
     public void checkPlugins() {
         // If the plugin is disabled, don't check for plugins
-        if (!config.isEnabled()) return;
+        if (!configManager.isEnabled()) return;
 
         // Send a checking message to console
-        send(console, message.message("console.checking-plugins"));
+        send(console, messageManager.getCheckingMessage());
 
         // Create a list of missing plugins
         var missingPlugins = new HashSet<String>();
 
         // Loop through the plugin list
-        for (String plugin : config.getPluginList()) {
+        for (String plugin : configManager.getPluginList()) {
             // Check if the plugin is missing
             if (!isPluginEnabled(plugin)) {
                 missingPlugins.add(plugin);
@@ -111,7 +111,7 @@ public final class PluginControl extends JavaPlugin {
         if (!missingPlugins.isEmpty()) {
             registerAction(missingPlugins);
         } else {
-            send(console, message.message("console.finished-checking"));
+            send(console, messageManager.getCheckFinished());
         }
     }
 
@@ -121,18 +121,18 @@ public final class PluginControl extends JavaPlugin {
 
     private void registerAction(Set<String> missingPlugins) {
         var tag = Placeholder.component("plugins", getPluginListComponent(new ArrayList<>(missingPlugins)));
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.toString())) {
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.toString())) {
             playerListener = new PlayerListener(this);
             playerListener.init();
-            send(console, message.message("console.log-to-console"), tag);
+            send(console, messageManager.getLogToConsole(), tag);
             return;
         }
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.toString())) {
-            send(console, message.message("console.log-to-console"), tag);
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.toString())) {
+            send(console, messageManager.getLogToConsole(), tag);
             return;
         }
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.toString())) {
-            send(console, message.message("console.disabling-server"), tag);
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.toString())) {
+            send(console, messageManager.getDisablingServer(), tag);
             getServer().shutdown();
         }
     }
@@ -147,34 +147,32 @@ public final class PluginControl extends JavaPlugin {
 
     public void send(@NotNull CommandSender sender, @NotNull String message) {
         if (message.isEmpty() || message.isBlank()) return;
-        adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, this.message.message(PREFIX))));
+        adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, messageManager.getPrefix())));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver tag) {
         if (message.isEmpty() || message.isBlank()) return;
-        var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
-        adventure().sender(sender).sendMessage(MM.deserialize(message, prefix, tag));
+        adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, messageManager.getPrefix()), tag));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
         if (message.isEmpty()) return;
-        var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
         for (var line : message) {
             if (line.isEmpty()) continue;
-            adventure().sender(sender).sendMessage(MM.deserialize(line, prefix, tag));
+            adventure().sender(sender).sendMessage(MM.deserialize(line, Placeholder.parsed(PREFIX, messageManager.getPrefix()), tag));
         }
     }
 
     public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
         var joinConfiguration = JoinConfiguration.separators(
-                MM.deserialize(message.message("command.plugin-list-separator")),
-                MM.deserialize(message.message("command.plugin-list-separator-last")));
+                MM.deserialize(messageManager.getPluginListSeparator()),
+                MM.deserialize(messageManager.getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
         var command = "/plugincontrol add %s";
         for (var pluginName : pluginList) {
             componentList.add(Component.text(pluginName)
-                    .hoverEvent(HoverEvent.showText(MM.deserialize(message.message("command.plugin-click-add"))))
+                    .hoverEvent(HoverEvent.showText(MM.deserialize(messageManager.getPluginClickAdd())))
                     .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
         }
 

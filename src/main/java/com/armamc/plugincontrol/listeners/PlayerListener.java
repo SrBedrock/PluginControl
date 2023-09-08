@@ -16,7 +16,7 @@ public class PlayerListener implements Listener {
 
     public PlayerListener(@NotNull PluginControl plugin) {
         this.plugin = plugin;
-        this.config = plugin.getPluginConfig();
+        this.config = plugin.getConfigManager();
         this.bypass = new Permission("plugincontrol.bypass");
     }
 
