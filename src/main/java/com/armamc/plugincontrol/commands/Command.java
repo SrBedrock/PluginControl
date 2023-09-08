@@ -1,8 +1,8 @@
 package com.armamc.plugincontrol.commands;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.armamc.plugincontrol.config.ConfigManager;
-import com.armamc.plugincontrol.config.MessageManager;
+import com.armamc.plugincontrol.managers.ConfigManager;
+import com.armamc.plugincontrol.managers.MessageManager;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;

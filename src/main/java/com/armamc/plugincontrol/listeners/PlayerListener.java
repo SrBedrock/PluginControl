@@ -1,7 +1,7 @@
 package com.armamc.plugincontrol.listeners;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.armamc.plugincontrol.config.ConfigManager;
+import com.armamc.plugincontrol.managers.ConfigManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

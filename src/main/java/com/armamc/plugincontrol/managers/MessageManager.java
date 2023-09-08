@@ -1,4 +1,4 @@
-package com.armamc.plugincontrol.config;
+package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
 import org.bukkit.configuration.file.FileConfiguration;

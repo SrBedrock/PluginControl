@@ -1,4 +1,4 @@
-package com.armamc.plugincontrol.config;
+package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
 import net.kyori.adventure.text.Component;

@@ -1,8 +1,8 @@
 package com.armamc.plugincontrol;
 
 import com.armamc.plugincontrol.commands.Command;
-import com.armamc.plugincontrol.config.ConfigManager;
-import com.armamc.plugincontrol.config.MessageManager;
+import com.armamc.plugincontrol.managers.ConfigManager;
+import com.armamc.plugincontrol.managers.MessageManager;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
