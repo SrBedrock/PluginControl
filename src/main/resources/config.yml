@@ -6,3 +6,4 @@ enabled: false
 action: log-to-console
 kick-message: "&#FFFFFF[PluginControl] You are not allowed to join the server!"
 plugins: []
+groups: []
