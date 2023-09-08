@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group = "com.armamc"
@@ -44,5 +45,14 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    runServer {
+        minecraftVersion("1.20.1")
+        jvmArguments.add("-Dcom.mojang.eula.agree=true")
+        jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
+        jvmArguments.add("-Dfile.encoding=UTF8")
+        systemProperty("terminal.jline", false)
+        systemProperty("terminal.ansi", true)
     }
 }
