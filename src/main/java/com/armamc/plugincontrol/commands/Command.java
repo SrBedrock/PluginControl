@@ -144,15 +144,15 @@ public class Command implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2 && (args[0].equals("add"))) {
             var add = Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
-            return add.stream().filter(s -> s.startsWith(args[0])).toList();
+            return add.stream().filter(s -> s.startsWith(args[1])).toList();
         }
         if (args.length == 2 && (args[0].equals("remove"))) {
             var remove = new ArrayList<>(config.getPluginList());
-            return remove.stream().filter(s -> s.startsWith(args[0])).toList();
+            return remove.stream().filter(s -> s.startsWith(args[1])).toList();
         }
         if (args.length == 2 && (args[0].equals("action"))) {
             var actions = List.of("log-to-console", "disallow-player-login", "shutdown-server");
-            return actions.stream().filter(s -> s.startsWith(args[0])).toList();
+            return actions.stream().filter(s -> s.startsWith(args[1])).toList();
         } else {
             return List.of();
         }
