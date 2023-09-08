@@ -89,9 +89,7 @@ public final class PluginControl extends JavaPlugin {
 
     public void checkPlugins() {
         // If the plugin is disabled, don't check for plugins
-        if (!config.isEnabled()) {
-            return;
-        }
+        if (!config.isEnabled()) return;
 
         // Send a checking message to console
         send(consoleSender, lang.message("console.checking-plugins"), null);
