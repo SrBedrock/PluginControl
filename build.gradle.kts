@@ -42,10 +42,6 @@ tasks {
         options.compilerArgs.add("-parameters")
     }
 
-    shadowJar {
-        minimize()
-    }
-
     build {
         dependsOn(shadowJar)
     }
