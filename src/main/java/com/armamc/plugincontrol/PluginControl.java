@@ -121,17 +121,17 @@ public final class PluginControl extends JavaPlugin {
 
     private void registerAction(Set<String> missingPlugins) {
         var tag = Placeholder.component("plugins", getPluginListComponent(new ArrayList<>(missingPlugins)));
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.toString())) {
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
             playerListener = new PlayerListener(this);
             playerListener.init();
             send(console, messageManager.getLogToConsole(), tag);
             return;
         }
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.toString())) {
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.getAction())) {
             send(console, messageManager.getLogToConsole(), tag);
             return;
         }
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.toString())) {
+        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.getAction())) {
             send(console, messageManager.getDisablingServer(), tag);
             getServer().shutdown();
         }

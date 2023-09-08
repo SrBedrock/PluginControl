@@ -99,14 +99,13 @@ public class Command implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     try {
-                        var actiontype = ConfigManager.ActionType.valueOf(args[1].toUpperCase());
+                        var actiontype = ConfigManager.ActionType.from(args[1].toLowerCase());
                         config.setAction(actiontype);
-                        plugin.send(sender, message.getActionSet(), Placeholder.parsed("action", config.getAction().toLowerCase()));
+                        plugin.send(sender, message.getActionSet(), Placeholder.parsed("action", actiontype.getAction()));
                         plugin.checkPlugins();
                     } catch (IllegalArgumentException e) {
                         var actions = List.of("log-to-console", "disallow-player-login", "shutdown-server");
                         plugin.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
-                        return true;
                     }
                     return true;
                 }
