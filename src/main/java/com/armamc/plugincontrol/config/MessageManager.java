@@ -1,7 +1,6 @@
 package com.armamc.plugincontrol.config;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.google.common.base.Charsets;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -24,7 +23,7 @@ public class MessageManager {
     public void loadLang() {
         var langFile = new File(plugin.getDataFolder(), LANG_FILE_NAME);
         if (!langFile.exists()) {
-            plugin.getLogger().warning("Creating the lang.yml file!");
+            plugin.getLogger().info("Creating the lang.yml file!");
             plugin.saveResource(LANG_FILE_NAME, false);
         }
 
@@ -45,9 +44,79 @@ public class MessageManager {
         return lang.getString(path, path + " in lang.yaml not found! Update your lang.yaml file!");
     }
 
-    public List<String> help() {
-        List<?> list = lang.getList("command.help", List.of("command.help in lang.yaml not found! Update your lang.yaml file!"));
-        return list.stream().map(Object::toString).toList();
+    public List<String> getHelpList() {
+        return lang.getStringList("command.help");
     }
 
+    public String getNoPermissionError() {
+        return lang.getString("command.no-permission-error");
+    }
+
+    public String getPluginEnabled() {
+        return lang.getString("command.plugin-enabled");
+    }
+
+    public String getPluginDisabled() {
+        return lang.getString("command.plugin-disabled");
+    }
+
+    public String getPluginAdded() {
+        return lang.getString("command.plugin-added");
+    }
+
+    public String getPluginAlreadyAdded() {
+        return lang.getString("command.plugin-already-added");
+    }
+
+    public String getPluginAddError() {
+        return lang.getString("command.plugin-add-error");
+    }
+
+    public String getPluginListEmpty() {
+        return lang.getString("command.plugin-list-empty");
+    }
+
+    public String getPluginRemoveError() {
+        return lang.getString("command.plugin-remove-error");
+    }
+
+    public String getPluginRemoved() {
+        return lang.getString("command.plugin-removed");
+    }
+
+    public String getPluginNotFound() {
+        return lang.getString("command.plugin-not-found");
+    }
+
+    public String getPluginList() {
+        return lang.getString("command.plugin-list");
+    }
+
+    public String getActionType() {
+        return lang.getString("command.action-type");
+    }
+
+    public String getActionSet() {
+        return lang.getString("command.action-set");
+    }
+
+    public String getActionTypeList() {
+        return lang.getString("command.action-list");
+    }
+
+    public String getKickMessage() {
+        return lang.getString("command.kick-message");
+    }
+
+    public String getKickMessageSet() {
+        return lang.getString("command.kick-message-set");
+    }
+
+    public String getPluginReloaded() {
+        return lang.getString("command.plugin-reload");
+    }
+
+    public String getCommandNotFound() {
+        return lang.getString("command.command-not-found");
+    }
 }

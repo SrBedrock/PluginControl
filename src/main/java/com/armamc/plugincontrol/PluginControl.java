@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 public final class PluginControl extends JavaPlugin {
-    private final ConsoleCommandSender consoleSender = Bukkit.getConsoleSender();
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private final ConsoleCommandSender console = Bukkit.getConsoleSender();
+    private static final MiniMessage MM = MiniMessage.miniMessage();
     private BukkitAudiences adventure;
     private PlayerListener playerListener;
     private ConfigManager config;
@@ -94,7 +94,7 @@ public final class PluginControl extends JavaPlugin {
         if (!config.isEnabled()) return;
 
         // Send a checking message to console
-        send(consoleSender, message.message("console.checking-plugins"));
+        send(console, message.message("console.checking-plugins"));
 
         // Create a list of missing plugins
         var missingPlugins = new HashSet<String>();
@@ -111,7 +111,7 @@ public final class PluginControl extends JavaPlugin {
         if (!missingPlugins.isEmpty()) {
             registerAction(missingPlugins);
         } else {
-            send(consoleSender, message.message("console.finished-checking"));
+            send(console, message.message("console.finished-checking"));
         }
     }
 
@@ -124,15 +124,15 @@ public final class PluginControl extends JavaPlugin {
         if (config.getAction().equals("disallow-player-login")) {
             playerListener = new PlayerListener(this);
             playerListener.init();
-            send(consoleSender, message.message("console.log-to-console"), tag);
+            send(console, message.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("log-to-console")) {
-            send(consoleSender, message.message("console.log-to-console"), tag);
+            send(console, message.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("shutdown-server")) {
-            send(consoleSender, message.message("console.disabling-server"), tag);
+            send(console, message.message("console.disabling-server"), tag);
             getServer().shutdown();
         }
     }
@@ -147,13 +147,13 @@ public final class PluginControl extends JavaPlugin {
 
     public void send(@NotNull CommandSender sender, @NotNull String message) {
         if (message.isEmpty() || message.isBlank()) return;
-        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, Placeholder.parsed(PREFIX, this.message.message(PREFIX))));
+        adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, this.message.message(PREFIX))));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver tag) {
         if (message.isEmpty() || message.isBlank()) return;
         var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
-        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
+        adventure().sender(sender).sendMessage(MM.deserialize(message, prefix, tag));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
@@ -161,19 +161,19 @@ public final class PluginControl extends JavaPlugin {
         var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
         for (var line : message) {
             if (line.isEmpty()) continue;
-            adventure().sender(sender).sendMessage(miniMessage.deserialize(line, prefix, tag));
+            adventure().sender(sender).sendMessage(MM.deserialize(line, prefix, tag));
         }
     }
 
     public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
         var joinConfiguration = JoinConfiguration.separators(
-                miniMessage.deserialize(message.message("command.plugin-list-separator")),
-                miniMessage.deserialize(message.message("command.plugin-list-separator-last")));
+                MM.deserialize(message.message("command.plugin-list-separator")),
+                MM.deserialize(message.message("command.plugin-list-separator-last")));
 
         var componentList = new ArrayList<Component>();
         for (var pluginName : pluginList) {
             componentList.add(Component.text(pluginName)
-                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize(message.message("command.plugin-click-add"))))
+                    .hoverEvent(HoverEvent.showText(MM.deserialize(message.message("command.plugin-click-add"))))
                     .clickEvent(ClickEvent.runCommand("/plugincontrol add %s".formatted(pluginName))));
         }
 
