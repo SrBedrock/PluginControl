@@ -20,8 +20,8 @@ public class Command implements CommandExecutor, TabCompleter {
     private final PluginControl plugin;
     private final ConfigManager config;
     private final MessageManager message;
-    private static final String PLUGIN = "plugin";
-    private static final String COMMAND = "command";
+    private static final String PLUGIN_TAG = "plugin";
+    private static final String COMMAND_TAG = "command";
 
     public Command(@NotNull PluginControl plugin) {
         this.plugin = plugin;
@@ -59,13 +59,13 @@ public class Command implements CommandExecutor, TabCompleter {
                 }
                 case "add" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND, label));
+                        plugin.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.addPlugin(args[1])) {
-                        plugin.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN, args[1]));
+                        plugin.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN, args[1]));
+                        plugin.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
@@ -75,13 +75,13 @@ public class Command implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND, label));
+                        plugin.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.removePlugin(args[1])) {
-                        plugin.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN, args[1]));
+                        plugin.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN, args[1]));
+                        plugin.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
@@ -98,13 +98,15 @@ public class Command implements CommandExecutor, TabCompleter {
                         plugin.send(sender, message.getActionType(), Placeholder.parsed("action", config.getAction().toLowerCase()));
                         return true;
                     }
-                    var actions = List.of("log-to-console", "disallow-player-login", "shutdown-server");
-                    if (actions.contains(args[1].toLowerCase())) {
-                        config.setAction(args[1].toLowerCase());
+                    try {
+                        var actiontype = ConfigManager.ActionType.valueOf(args[1].toUpperCase());
+                        config.setAction(actiontype);
                         plugin.send(sender, message.getActionSet(), Placeholder.parsed("action", config.getAction().toLowerCase()));
                         plugin.checkPlugins();
-                    } else {
+                    } catch (IllegalArgumentException e) {
+                        var actions = List.of("log-to-console", "disallow-player-login", "shutdown-server");
                         plugin.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
+                        return true;
                     }
                     return true;
                 }
@@ -119,7 +121,7 @@ public class Command implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 case "help", "?" -> {
-                    plugin.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND, label));
+                    plugin.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
                 case "reload" -> {
@@ -128,7 +130,7 @@ public class Command implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 default -> {
-                    plugin.send(sender, message.getCommandNotFound(), Placeholder.parsed(COMMAND, label));
+                    plugin.send(sender, message.getCommandNotFound(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
             }

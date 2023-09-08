@@ -31,6 +31,7 @@ command:
     - '<aqua>/<command> add <green><plugin-name> <yellow>- Add a plugin to the list'
     - '<aqua>/<command> remove <green><plugin-name> <yellow>- Remove a plugin from the list'
     - '<aqua>/<command> action <yellow>- List all actions available'
+    - '<aqua>/<command> action <green><action-type> <yellow>- Set an action type'
     - '<aqua>/<command> kick-message <yellow>- Show the kick message'
     - '<aqua>/<command> kick-message <message> <yellow>- Set the kick message'
     - '<aqua>/<command> enable <yellow>- Enable the plugin'

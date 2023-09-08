@@ -38,15 +38,15 @@ public class ConfigManager {
 
     public String getAction() {
         if (config.getString(ACTION) == null) {
-            config.set(ACTION, "shutdown-server");
+            config.set(ACTION, ActionType.LOG_TO_CONSOLE.toString());
             saveConfig();
         }
 
         return config.getString(ACTION);
     }
 
-    public void setAction(String action) {
-        config.set(ACTION, action);
+    public void setAction(@NotNull ConfigManager.ActionType action) {
+        config.set(ACTION, action.toString());
         saveConfig();
     }
 
@@ -103,6 +103,12 @@ public class ConfigManager {
 
     public String serialize(String string) {
         return LegacyComponentSerializer.legacyAmpersand().serialize(Component.text(string));
+    }
+
+    public enum ActionType {
+        LOG_TO_CONSOLE,
+        DISALLOW_PLAYER_LOGIN,
+        SHUTDOWN_SERVER
     }
 
 }

@@ -121,17 +121,17 @@ public final class PluginControl extends JavaPlugin {
 
     private void registerAction(Set<String> missingPlugins) {
         var tag = Placeholder.component("plugins", getPluginListComponent(new ArrayList<>(missingPlugins)));
-        if (config.getAction().equals("disallow-player-login")) {
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.toString())) {
             playerListener = new PlayerListener(this);
             playerListener.init();
             send(console, message.message("console.log-to-console"), tag);
             return;
         }
-        if (config.getAction().equals("log-to-console")) {
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.toString())) {
             send(console, message.message("console.log-to-console"), tag);
             return;
         }
-        if (config.getAction().equals("shutdown-server")) {
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.toString())) {
             send(console, message.message("console.disabling-server"), tag);
             getServer().shutdown();
         }
@@ -171,10 +171,11 @@ public final class PluginControl extends JavaPlugin {
                 MM.deserialize(message.message("command.plugin-list-separator-last")));
 
         var componentList = new ArrayList<Component>();
+        var command = "/plugincontrol add %s";
         for (var pluginName : pluginList) {
             componentList.add(Component.text(pluginName)
                     .hoverEvent(HoverEvent.showText(MM.deserialize(message.message("command.plugin-click-add"))))
-                    .clickEvent(ClickEvent.runCommand("/plugincontrol add %s".formatted(pluginName))));
+                    .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
         }
 
         return Component.join(joinConfiguration, componentList);
