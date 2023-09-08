@@ -31,16 +31,6 @@ public final class PluginControl extends JavaPlugin {
         }
     }
 
-    @Contract(pure = true)
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
-    @Contract(pure = true)
-    public MessageManager getMessageManager() {
-        return messageManager;
-    }
-
     private void registerConfig() {
         if (!getDataFolder().exists() && getDataFolder().mkdir()) {
             getLogger().info("Creating the plugin folder!");
@@ -61,7 +51,22 @@ public final class PluginControl extends JavaPlugin {
     }
 
     private void registerTask() {
-        Bukkit.getScheduler().runTaskLater(this, () -> pluginsManager.checkPlugins(), 20L);
+        Bukkit.getScheduler().runTaskLater(this, pluginsManager::checkPlugins, 20L);
+    }
+
+    @Contract(pure = true)
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    @Contract(pure = true)
+    public MessageManager getMessageManager() {
+        return messageManager;
+    }
+
+    @Contract(pure = true)
+    public PluginsManager getPluginsManager() {
+        return pluginsManager;
     }
 
     @Contract(pure = true)

@@ -3,6 +3,7 @@ package com.armamc.plugincontrol.commands;
 import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
+import com.armamc.plugincontrol.managers.PluginsManager;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -20,6 +21,7 @@ public class Command implements CommandExecutor, TabCompleter {
     private final PluginControl plugin;
     private final ConfigManager config;
     private final MessageManager message;
+    private final PluginsManager manager;
     private static final String PLUGIN_TAG = "plugin";
     private static final String COMMAND_TAG = "command";
 
@@ -27,109 +29,110 @@ public class Command implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
+        this.manager = plugin.getPluginsManager();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("plugincontrol.use")) {
-            plugin.send(sender, message.getNoPermissionError());
+            message.send(sender, message.getNoPermissionError());
             return true;
         }
         if (args.length >= 1) {
             switch (args[0]) {
                 case "enable", "on" -> {
                     config.setEnabled(true);
-                    plugin.send(sender, message.getPluginEnabled());
+                    message.send(sender, message.getPluginEnabled());
                     return true;
                 }
                 case "disable", "off" -> {
                     config.setEnabled(false);
-                    plugin.send(sender, message.getPluginDisabled());
+                    message.send(sender, message.getPluginDisabled());
                     return true;
                 }
                 case "toggle" -> {
                     config.setEnabled(!config.isEnabled());
                     boolean enabled = config.isEnabled();
                     if (enabled) {
-                        plugin.send(sender, message.getPluginEnabled());
+                        message.send(sender, message.getPluginEnabled());
                     } else {
-                        plugin.send(sender, message.getPluginDisabled());
+                        message.send(sender, message.getPluginDisabled());
                     }
                     return true;
                 }
                 case "add" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
+                        message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.addPlugin(args[1])) {
-                        plugin.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
+                        message.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
+                        message.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
                 case "remove" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.send(sender, message.getPluginListEmpty());
+                        message.send(sender, message.getPluginListEmpty());
                         return true;
                     }
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
+                        message.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
                     if (config.removePlugin(args[1])) {
-                        plugin.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN_TAG, args[1]));
+                        message.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
-                        plugin.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN_TAG, args[1]));
+                        message.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     }
                     return true;
                 }
                 case "list" -> {
                     if (config.getPluginList().isEmpty()) {
-                        plugin.send(sender, message.getPluginListEmpty());
+                        message.send(sender, message.getPluginListEmpty());
                     } else {
-                        plugin.send(sender, message.getPluginList(), Placeholder.component("plugins", plugin.getPluginListComponent(config.getPluginList())));
+                        message.send(sender, message.getPluginList(), Placeholder.component("plugins", message.getPluginListComponent(config.getPluginList())));
                     }
                     return true;
                 }
                 case "action" -> {
                     if (args.length < 2 || args[1].isBlank() || args.length >= 3) {
-                        plugin.send(sender, message.getActionType(), Placeholder.parsed("action", config.getAction().toLowerCase()));
+                        message.send(sender, message.getActionType(), Placeholder.parsed("action", config.getAction().toLowerCase()));
                         return true;
                     }
                     try {
                         var actiontype = ConfigManager.ActionType.from(args[1].toLowerCase());
                         config.setAction(actiontype);
-                        plugin.send(sender, message.getActionSet(), Placeholder.parsed("action", actiontype.getAction()));
-                        plugin.checkPlugins();
+                        message.send(sender, message.getActionSet(), Placeholder.parsed("action", actiontype.getAction()));
+                        manager.checkPlugins();
                     } catch (IllegalArgumentException e) {
                         var actions = List.of("log-to-console", "disallow-player-login", "shutdown-server");
-                        plugin.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
+                        message.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
                     }
                     return true;
                 }
                 case "kick-message", "kickmessage" -> {
                     var kick = "kick-message";
                     if (args.length < 2 || args[1].isBlank()) {
-                        plugin.send(sender, message.getKickMessage(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
+                        message.send(sender, message.getKickMessage(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                        plugin.send(sender, message.getKickMessageSet(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
+                        message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
                     }
                     return true;
                 }
                 case "help", "?" -> {
-                    plugin.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND_TAG, label));
+                    message.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
                 case "reload" -> {
                     reload();
-                    plugin.send(sender, message.getPluginReloaded());
+                    message.send(sender, message.getPluginReloaded());
                     return true;
                 }
                 default -> {
-                    plugin.send(sender, message.getCommandNotFound(), Placeholder.parsed(COMMAND_TAG, label));
+                    message.send(sender, message.getCommandNotFound(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
             }
@@ -160,10 +163,10 @@ public class Command implements CommandExecutor, TabCompleter {
     }
 
     private void reload() {
-        plugin.unregisterListener();
+        manager.unregisterListener();
         plugin.reloadConfig();
         message.reloadLang();
-        Bukkit.getScheduler().runTaskLater(plugin, plugin::checkPlugins, 20L);
+        Bukkit.getScheduler().runTaskLater(plugin, manager::checkPlugins, 20L);
     }
 
 }
