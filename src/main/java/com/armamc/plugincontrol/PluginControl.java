@@ -1,8 +1,8 @@
 package com.armamc.plugincontrol;
 
 import com.armamc.plugincontrol.commands.Command;
-import com.armamc.plugincontrol.config.Config;
-import com.armamc.plugincontrol.config.Lang;
+import com.armamc.plugincontrol.config.ConfigManager;
+import com.armamc.plugincontrol.config.MessageManager;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -18,7 +18,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ public final class PluginControl extends JavaPlugin {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private BukkitAudiences adventure;
     private PlayerListener playerListener;
-    private Config config;
-    private Lang lang;
+    private ConfigManager config;
+    private MessageManager message;
     private static final String PREFIX = "prefix";
 
     @Override
@@ -51,12 +51,14 @@ public final class PluginControl extends JavaPlugin {
         }
     }
 
-    public Config getPluginConfig() {
+    @Contract(pure = true)
+    public ConfigManager getPluginConfig() {
         return config;
     }
 
-    public Lang getPluginLang() {
-        return lang;
+    @Contract(pure = true)
+    public MessageManager getPluginLang() {
+        return message;
     }
 
     public void unregisterListener() {
@@ -70,8 +72,8 @@ public final class PluginControl extends JavaPlugin {
         if (!getDataFolder().exists() && getDataFolder().mkdir()) {
             getLogger().info("Creating the plugin folder!");
         }
-        config = new Config(this);
-        lang = new Lang(this);
+        config = new ConfigManager(this);
+        message = new MessageManager(this);
     }
 
     private void registerCommands() {
@@ -92,7 +94,7 @@ public final class PluginControl extends JavaPlugin {
         if (!config.isEnabled()) return;
 
         // Send a checking message to console
-        send(consoleSender, lang.message("console.checking-plugins"), null);
+        send(consoleSender, message.message("console.checking-plugins"));
 
         // Create a list of missing plugins
         var missingPlugins = new HashSet<String>();
@@ -109,7 +111,7 @@ public final class PluginControl extends JavaPlugin {
         if (!missingPlugins.isEmpty()) {
             registerAction(missingPlugins);
         } else {
-            send(consoleSender, lang.message("console.finished-checking"), null);
+            send(consoleSender, message.message("console.finished-checking"));
         }
     }
 
@@ -122,19 +124,20 @@ public final class PluginControl extends JavaPlugin {
         if (config.getAction().equals("disallow-player-login")) {
             playerListener = new PlayerListener(this);
             playerListener.init();
-            send(consoleSender, lang.message("console.log-to-console"), tag);
+            send(consoleSender, message.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("log-to-console")) {
-            send(consoleSender, lang.message("console.log-to-console"), tag);
+            send(consoleSender, message.message("console.log-to-console"), tag);
             return;
         }
         if (config.getAction().equals("shutdown-server")) {
-            send(consoleSender, lang.message("console.disabling-server"), tag);
+            send(consoleSender, message.message("console.disabling-server"), tag);
             getServer().shutdown();
         }
     }
 
+    @Contract(pure = true)
     public @NonNull BukkitAudiences adventure() {
         if (this.adventure == null) {
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
@@ -142,39 +145,39 @@ public final class PluginControl extends JavaPlugin {
         return this.adventure;
     }
 
-    public void send(@NotNull CommandSender sender, @NotNull String message, @Nullable TagResolver tag) {
-        if (message.isEmpty() || message.isBlank()) {
-            return;
-        }
-        var prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
-        if (tag == null) {
-            adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix));
-        } else {
-            adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
-        }
+    public void send(@NotNull CommandSender sender, @NotNull String message) {
+        if (message.isEmpty() || message.isBlank()) return;
+        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, Placeholder.parsed(PREFIX, this.message.message(PREFIX))));
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver tag) {
+        if (message.isEmpty() || message.isBlank()) return;
+        var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
+        adventure().sender(sender).sendMessage(miniMessage.deserialize(message, prefix, tag));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
-        if (message.isEmpty()) {
-            return;
-        }
-        var prefix = Placeholder.parsed(PREFIX, lang.message(PREFIX));
-        message.forEach(line -> {
-            if (line.isEmpty()) return;
+        if (message.isEmpty()) return;
+        var prefix = Placeholder.parsed(PREFIX, this.message.message(PREFIX));
+        for (var line : message) {
+            if (line.isEmpty()) continue;
             adventure().sender(sender).sendMessage(miniMessage.deserialize(line, prefix, tag));
-        });
+        }
     }
 
-    public Component getPluginListComponent(@NotNull List<String> pluginList) {
-        var config = JoinConfiguration.builder()
-                .separator(miniMessage.deserialize(lang.message("command.plugin-list-separator")))
-                .lastSeparator(miniMessage.deserialize(lang.message("command.plugin-list-separator-last")))
-                .build();
+    public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
+        var joinConfiguration = JoinConfiguration.separators(
+                miniMessage.deserialize(message.message("command.plugin-list-separator")),
+                miniMessage.deserialize(message.message("command.plugin-list-separator-last")));
+
         var componentList = new ArrayList<Component>();
-        pluginList.forEach(pluginName -> componentList.add(Component.text(pluginName)
-                .hoverEvent(HoverEvent.showText(miniMessage.deserialize(lang.message("command.plugin-click-remove"))))
-                .clickEvent(ClickEvent.runCommand("/plugincontrol remove " + pluginName))));
-        return Component.join(config, componentList);
+        for (var pluginName : pluginList) {
+            componentList.add(Component.text(pluginName)
+                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize(message.message("command.plugin-click-add"))))
+                    .clickEvent(ClickEvent.runCommand("/plugincontrol add %s".formatted(pluginName))));
+        }
+
+        return Component.join(joinConfiguration, componentList);
     }
 
 }
