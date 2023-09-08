@@ -1,19 +1,31 @@
 package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageManager {
     private final PluginControl plugin;
     private static final String LANG_FILE_NAME = "lang.yml";
     private static FileConfiguration lang;
+    private static final MiniMessage MM = MiniMessage.miniMessage();
+    private static final String PREFIX = "prefix";
 
     public MessageManager(PluginControl plugin) {
         this.plugin = plugin;
@@ -146,5 +158,39 @@ public class MessageManager {
 
     public String getPluginClickAdd() {
         return lang.getString("command.plugin-click-add");
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull String message) {
+        if (message.isEmpty() || message.isBlank()) return;
+        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix())));
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver tag) {
+        if (message.isEmpty() || message.isBlank()) return;
+        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix()), tag));
+    }
+
+    public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
+        if (message.isEmpty()) return;
+        for (var line : message) {
+            if (line.isEmpty()) continue;
+            plugin.adventure().sender(sender).sendMessage(MM.deserialize(line, Placeholder.parsed(PREFIX, getPrefix()), tag));
+        }
+    }
+
+    public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
+        var joinConfiguration = JoinConfiguration.separators(
+                MM.deserialize(getPluginListSeparator()),
+                MM.deserialize(getPluginListSeparatorLast()));
+
+        var componentList = new ArrayList<Component>();
+        var command = "/plugincontrol add %s";
+        for (var pluginName : pluginList) {
+            componentList.add(Component.text(pluginName)
+                    .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickAdd())))
+                    .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
+        }
+
+        return Component.join(joinConfiguration, componentList);
     }
 }
