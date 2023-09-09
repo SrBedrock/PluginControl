@@ -85,11 +85,11 @@ public class MessageManager {
                 MM.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
-        var command = "/plugincontrol add %s";
+        var command = "/plugincontrol remove %s";
         if (!pluginList.isEmpty()) {
             for (var pluginName : pluginList) {
                 componentList.add(Component.text(pluginName)
-                        .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickAdd())))
+                        .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
         }
@@ -248,8 +248,8 @@ public class MessageManager {
         return lang.getString("command.plugin-list-separator-last");
     }
 
-    public String getPluginClickAdd() {
-        return lang.getString("command.plugin-click-add");
+    public String getPluginClickRemove() {
+        return lang.getString("command.plugin-click-remove");
     }
 
     public List<String> getGroupHelp() {
