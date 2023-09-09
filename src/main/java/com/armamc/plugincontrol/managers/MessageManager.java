@@ -72,7 +72,6 @@ public class MessageManager {
         plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, allTags.toArray(new TagResolver[0])));
     }
 
-
     public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
         if (message.isEmpty()) return;
         for (var line : message) {
@@ -82,54 +81,56 @@ public class MessageManager {
     }
 
     public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
-        var joinConfiguration = JoinConfiguration.separators(
-                MM.deserialize(getPluginListSeparator()),
+        var joinConfiguration = JoinConfiguration.separators(MM.deserialize(getPluginListSeparator()),
                 MM.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
         var command = "/plugincontrol add %s";
-        for (var pluginName : pluginList) {
-            componentList.add(Component.text(pluginName)
-                    .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickAdd())))
-                    .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
-        }
-
-        return Component.join(joinConfiguration, componentList);
-    }
-
-    public @NotNull Component getGroupListComponent(@NotNull Map<String, List<String>> pluginGroups) {
-        var joinConfiguration = JoinConfiguration.separators(
-                MM.deserialize(getPluginListSeparator()),
-                MM.deserialize(getPluginListSeparatorLast()));
-
-        var componentList = new ArrayList<Component>();
-        var command = "/plugincontrol groupinfo %s";  // Exemplo de comando para ver mais informações sobre o grupo
-
-        for (var groupEntry : pluginGroups.entrySet()) {
-            String groupName = groupEntry.getKey();
-            List<String> plugins = groupEntry.getValue();
-
-            // Criar um componente para o nome do grupo
-            componentList.add(Component.text(groupName)
-                    .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para mais informações sobre o grupo")))
-                    .clickEvent(ClickEvent.runCommand(command.formatted(groupName))));
-
-            // Criar um subcomponente para os plugins dentro do grupo (se houver)
-            if (!plugins.isEmpty()) {
-                var pluginComponents = plugins.stream()
-                        .map(pl -> Component.text(pl)
-                                .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para adicionar este plugin")))
-                                .clickEvent(ClickEvent.runCommand("/plugincontrol add " + pl)))
-                        .toList();
-                componentList.add(Component.text(" [")
-                        .append(Component.join(JoinConfiguration.noSeparators(), pluginComponents))
-                        .append(Component.text("]")));
+        if (!pluginList.isEmpty()) {
+            for (var pluginName : pluginList) {
+                componentList.add(Component.text(pluginName)
+                        .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickAdd())))
+                        .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
         }
 
         return Component.join(joinConfiguration, componentList);
     }
 
+    public @NotNull Component getGroupListComponent(@NotNull Map<String, List<String>> pluginGroups) {
+        var componentList = new ArrayList<Component>();
+        var groupCommand = "/plugincontrol group listplugins %s";
+        var pluginCommand = "/plugincontrol group removeplugin %s %s";
+        for (var groupEntry : pluginGroups.entrySet()) {
+            String groupName = groupEntry.getKey();
+            List<String> plugins = groupEntry.getValue();
+            componentList.add(Component.newline().append(Component.text("Group %s".formatted(groupName))
+                    .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para mais informações sobre o grupo")))
+                    .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
+
+            if (!plugins.isEmpty()) {
+                var pluginComponents = plugins.stream()
+                        .map(pluginName -> Component.text(pluginName)
+                                .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para remover este plugin do grupo")))
+                                .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName))))
+                        .toList();
+
+                var pluginSeparator = JoinConfiguration.separators(MM.deserialize(getPluginListSeparator()),
+                        MM.deserialize(getPluginListSeparatorLast()));
+                componentList.add(Component.text(" [")
+                        .append(Component.join(pluginSeparator, pluginComponents))
+                        .append(Component.text("]")));
+            } else {
+                componentList.add(Component.text(" [")
+                        .append(Component.text(getGroupListEmpty()))
+                        .append(Component.text("]")));
+            }
+        }
+
+        var groupSeparator = JoinConfiguration.separators(Component.empty(),
+                MM.deserialize(getPluginListSeparatorLast()));
+        return Component.join(groupSeparator, componentList);
+    }
 
     public Component deserialize(String string) {
         return LegacyComponentSerializer.legacyAmpersand().deserialize(string);
@@ -244,7 +245,6 @@ public class MessageManager {
     }
 
     public String getPluginListSeparatorLast() {
-        return lang.getString("console.plugin-list-separator-last");
         return lang.getString("command.plugin-list-separator-last");
     }
 
