@@ -177,6 +177,10 @@ public class Command implements CommandExecutor, TabCompleter {
 
     private boolean group(CommandSender sender, String label, String @NotNull [] args) {
         plugin.getLogger().info("group" + Arrays.toString(args));
+        if (args.length < 2 || args[1].isBlank()) {
+            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
+            return true;
+        }
         switch (args[1]) {
             case "create" -> {
                 if (args.length != 3) {

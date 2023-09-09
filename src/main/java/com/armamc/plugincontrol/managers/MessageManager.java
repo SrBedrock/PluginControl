@@ -247,6 +247,10 @@ public class MessageManager {
         return lang.getString("command.plugin-click-add");
     }
 
+    public List<String> getGroupHelp() {
+        return lang.getStringList("command.group-help");
+    }
+
     public String getGroupAddError() {
         return lang.getString("command.group-add-error");
     }
