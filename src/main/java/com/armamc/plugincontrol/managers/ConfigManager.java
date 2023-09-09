@@ -176,7 +176,7 @@ public class ConfigManager {
 
         var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
-            pluginGroups.put(groupName, plugins == null ? new ArrayList<>() : new ArrayList<>(plugins));
+            pluginGroups.put(groupName, plugins == null ? new HashSet<>() : new HashSet<>(plugins));
             savePluginGroup();
             return true;
         }
