@@ -14,6 +14,7 @@ command:
   no-permission-error: '<prefix> <red>You do not have permission to use this command'
   plugin-add-error: '<red>Usage: <yellow>/<command> add [plugin-name]'
   plugin-added: '<prefix> <green>Plugin <yellow><plugin> <green>added successfully!'
+  all-plugins-added: '<prefix> <green>All plugins added successfully!'
   plugin-already-added: '<prefix> <red>Plugin already added!'
   plugin-disabled: '<prefix> <red>Deactivating plugin features...'
   plugin-enabled: '<prefix> <green>Activating plugin features...'

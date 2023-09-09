@@ -163,6 +163,10 @@ public class MessageManager {
         return lang.getString("command.plugin-added");
     }
 
+    public String getAllPluginsAdded() {
+        return lang.getString("command.all-plugins-added");
+    }
+
     public String getPluginAlreadyAdded() {
         return lang.getString("command.plugin-already-added");
     }
@@ -241,6 +245,7 @@ public class MessageManager {
 
     public String getPluginListSeparatorLast() {
         return lang.getString("console.plugin-list-separator-last");
+        return lang.getString("command.plugin-list-separator-last");
     }
 
     public String getPluginClickAdd() {
