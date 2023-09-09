@@ -259,16 +259,16 @@ public class MessageManager {
         return lang.getStringList("command.group-help");
     }
 
-    public String getGroupAddError() {
-        return lang.getString("command.group-add-error");
+    public String getGroupCreateError() {
+        return lang.getString("command.group-create-error");
     }
 
-    public String getGroupAdded() {
-        return lang.getString("command.group-added");
+    public String getGroupCreated() {
+        return lang.getString("command.group-created");
     }
 
-    public String getGroupAlreadyAdded() {
-        return lang.getString("command.group-already-added");
+    public String getGroupAlreadyExist() {
+        return lang.getString("command.group-already-exist");
     }
 
     public String getGroupRemoveError() {
