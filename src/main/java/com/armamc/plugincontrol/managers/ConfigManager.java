@@ -169,10 +169,7 @@ public class ConfigManager {
         return pluginGroups;
     }
 
-    public boolean addOrUpdateGroup(String groupName, Set<String> plugins) {
-        if (groupName == null || groupName.isEmpty()) {
-            return false;
-        }
+    public boolean addOrUpdateGroup(@NotNull String groupName, Set<String> plugins) {
 
         var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
@@ -204,8 +201,12 @@ public class ConfigManager {
         return true;
     }
 
-    public boolean isGroupEmptyOrNonexistent(String groupName) {
-        return pluginGroups.get(groupName) == null || pluginGroups.get(groupName).isEmpty();
+    public boolean isGroupEmpty(String groupName) {
+        return pluginGroups.get(groupName) != null && pluginGroups.get(groupName).isEmpty();
+    }
+
+    public boolean isGroupNonexistent(String groupName) {
+        return pluginGroups.get(groupName) == null;
     }
 
     public boolean removePluginFromGroup(String groupName, String pluginName) {

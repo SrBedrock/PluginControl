@@ -60,10 +60,11 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         var subCommand = subCommands.get(args[0].toLowerCase());
         if (subCommand != null) {
             subCommand.execute(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
-            return true;
+        } else {
+            message.send(sender, message.getHelpList(), Placeholder.parsed("command", label));
         }
 
-        return false;
+        return true;
     }
 
     @Override
