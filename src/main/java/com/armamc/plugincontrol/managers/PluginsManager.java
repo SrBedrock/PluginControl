@@ -8,7 +8,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,16 +38,16 @@ public class PluginsManager {
 
         var pluginGroup = configManager.getPluginGroups();
         for (var plugins : pluginGroup.entrySet()) {
-            boolean groupHasEnabledPlugin = false; // This will track if at least one plugin in the group is enabled.
+            boolean groupHasEnabledPlugin = false;
             for (var pl : plugins.getValue()) {
                 if (isPluginEnabled(pl)) {
                     groupHasEnabledPlugin = true;
-                    break; // Exit the loop as soon as one enabled plugin is found in the group.
+                    break;
                 }
             }
 
-            // If none of the plugins in the group are enabled, we add a formatted string to missingPlugins.
             if (!groupHasEnabledPlugin) {
+                // TODO: use lang.yml
                 missingPlugins.add("No plugins from the group <" + plugins.getKey() + "> found");
             }
         }

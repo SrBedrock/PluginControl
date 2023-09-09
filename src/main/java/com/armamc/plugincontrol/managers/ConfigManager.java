@@ -191,12 +191,12 @@ public class ConfigManager {
 
     public boolean addPluginToGroup(String groupName, String plugin) {
         if (groupName == null || groupName.isEmpty() || plugin == null || plugin.isEmpty()) {
-            return false; // Entradas inválidas.
+            return false;
         }
 
         var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
-            return false; // Grupo não existe.
+            return false;
         }
 
         existingPlugins.add(plugin);

@@ -105,6 +105,8 @@ public class MessageManager {
         for (var groupEntry : pluginGroups.entrySet()) {
             String groupName = groupEntry.getKey();
             Set<String> plugins = groupEntry.getValue();
+
+            // TODO: use lang.yml
             componentList.add(Component.newline().append(Component.text("Group %s".formatted(groupName))
                     .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para mais informações sobre o grupo")))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
