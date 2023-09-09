@@ -27,7 +27,7 @@ public class GroupSubCommand implements SubCommand {
         this.plugin = plugin;
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
-        this.subcommands = List.of("create", "delete", "list", "add", "remove");
+        this.subcommands = List.of("create", "delete", "list", "add", "remove", "help");
     }
 
     @Override
@@ -131,6 +131,10 @@ public class GroupSubCommand implements SubCommand {
                             Placeholder.parsed(PLUGIN_TAG, targetPlugin));
                 }
             }
+        }
+
+        if (target.equalsIgnoreCase("help")) {
+            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
         }
     }
 
