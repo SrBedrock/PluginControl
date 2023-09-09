@@ -1,6 +1,6 @@
 package com.armamc.plugincontrol;
 
-import com.armamc.plugincontrol.commands.Command;
+import com.armamc.plugincontrol.commands.MainCommand;
 import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
 import com.armamc.plugincontrol.managers.PluginsManager;
@@ -43,7 +43,7 @@ public final class PluginControl extends JavaPlugin {
     }
 
     private void registerCommands() {
-        var command = new Command(this);
+        var command = new MainCommand(this);
         var pluginCommand = getCommand("plugincontrol");
         if (pluginCommand != null) {
             pluginCommand.setExecutor(command);

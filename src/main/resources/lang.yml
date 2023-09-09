@@ -26,6 +26,7 @@ command:
   plugin-reload: '<prefix> <green>Config and Language reloaded!'
   plugin-remove-error: '<red>Usage: <yellow>/<command> remove <plugin>'
   plugin-removed: '<prefix> <green>Plugin <yellow><plugin> <green>removed!'
+  all-plugins-removed: '<prefix> <green>All plugins removed!'
   plugin-click-remove: '<red>Click to remove the plugin'
   group-add-error: '<red>Usage: <yellow>/<command> group create <group>'
   group-added: '<prefix> <green>Group <yellow><group> <green>added successfully!'

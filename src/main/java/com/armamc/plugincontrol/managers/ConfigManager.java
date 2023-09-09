@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ConfigManager {
     private final PluginControl plugin;
@@ -21,8 +23,8 @@ public class ConfigManager {
     private static final String ACTION = "action";
     private static final String KICK_MESSAGE = "kick-message";
 
-    private List<String> pluginList;
-    private Map<String, List<String>> pluginGroups;
+    private Set<String> pluginList;
+    private Map<String, Set<String>> pluginGroups;
 
     public ConfigManager(@NotNull PluginControl plugin) {
         this.plugin = plugin;
@@ -45,6 +47,7 @@ public class ConfigManager {
             config.set(ENABLED, "false");
             saveConfig();
         }
+
         return config.getBoolean(ENABLED);
     }
 
@@ -74,6 +77,7 @@ public class ConfigManager {
             config.set(KICK_MESSAGE, "&#FFF000[PluginControl] You are not allowed to join the server!");
             saveConfig();
         }
+
         return config.getString(KICK_MESSAGE);
     }
 
@@ -84,17 +88,18 @@ public class ConfigManager {
 
     // plugins
     private void loadPlugins() {
-        pluginList = new ArrayList<>();
+        pluginList = new HashSet<>();
 
         if (config.contains("plugins")) {
-            List<String> plugins = config.getStringList("plugins");
+
+            var plugins = config.getStringList("plugins");
             if (!plugins.isEmpty()) {
                 pluginList.addAll(plugins);
             }
         }
     }
 
-    public List<String> getPluginList() {
+    public Set<String> getPluginList() {
         return this.pluginList;
     }
 
@@ -113,6 +118,11 @@ public class ConfigManager {
         }
     }
 
+    public void addAllPlugins(List<String> pluginName) {
+        pluginList.addAll(pluginName);
+        savePluginList();
+    }
+
     public boolean removePlugin(String pluginName) {
         if (pluginList.contains(pluginName)) {
             pluginList.remove(pluginName);
@@ -123,16 +133,20 @@ public class ConfigManager {
         }
     }
 
+    public void removeAllPlugins() {
+        pluginList.clear();
+        savePluginList();
+    }
+
     // groups
     private void loadGroups() {
         pluginGroups = new HashMap<>();
-
         if (config.contains("groups")) {
             ConfigurationSection groupsSection = config.getConfigurationSection("groups");
             if (groupsSection != null) {
                 Set<String> groupNames = groupsSection.getKeys(false);
                 for (String groupName : groupNames) {
-                    List<String> plugins = config.getStringList("groups." + groupName);
+                    Set<String> plugins = new HashSet<>(config.getStringList("groups." + groupName));
                     pluginGroups.put(groupName, plugins);
                 }
             }
@@ -144,32 +158,29 @@ public class ConfigManager {
     }
 
     private void savePluginGroup() {
-        for (Map.Entry<String, List<String>> entry : pluginGroups.entrySet()) {
+        for (Map.Entry<String, Set<String>> entry : pluginGroups.entrySet()) {
             config.set("groups." + entry.getKey(), entry.getValue());
         }
 
         saveConfig();
     }
 
-    public Map<String, List<String>> getPluginGroups() {
+    public Map<String, Set<String>> getPluginGroups() {
         return pluginGroups;
     }
 
-    public boolean addOrUpdateGroup(String groupName, List<String> plugins) {
+    public boolean addOrUpdateGroup(String groupName, Set<String> plugins) {
         if (groupName == null || groupName.isEmpty()) {
-            return false; // Nome de grupo inválido.
+            return false;
         }
 
-        List<String> existingPlugins = pluginGroups.get(groupName);
-
-        // Se o grupo não existir, crie-o.
+        var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
             pluginGroups.put(groupName, plugins == null ? new ArrayList<>() : new ArrayList<>(plugins));
             savePluginGroup();
             return true;
         }
 
-        // Se o grupo já existir, atualize-o com os novos plugins.
         if (plugins != null) {
             existingPlugins.addAll(plugins);
         }
@@ -183,7 +194,7 @@ public class ConfigManager {
             return false; // Entradas inválidas.
         }
 
-        List<String> existingPlugins = pluginGroups.get(groupName);
+        var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
             return false; // Grupo não existe.
         }
@@ -199,14 +210,15 @@ public class ConfigManager {
 
     public boolean removePluginFromGroup(String groupName, String pluginName) {
         if (pluginGroups.containsKey(groupName)) {
-            List<String> pluginsInGroup = pluginGroups.get(groupName);
-            boolean removed = pluginsInGroup.removeIf(p -> p.equalsIgnoreCase(pluginName));
+            var pluginsInGroup = pluginGroups.get(groupName);
+            var removed = pluginsInGroup.removeIf(p -> p.equalsIgnoreCase(pluginName));
 
             if (removed) {
                 savePluginGroup();
                 return true;
             }
         }
+
         return false;
     }
 
@@ -219,7 +231,7 @@ public class ConfigManager {
         }
     }
 
-    public List<String> getPluginsOfGroup(String groupName) {
+    public Set<String> getPluginsOfGroup(String groupName) {
         return pluginGroups.get(groupName);
     }
 
@@ -247,6 +259,7 @@ public class ConfigManager {
             if (result == null) {
                 throw new IllegalArgumentException("Unexpected value: " + action);
             }
+
             return result;
         }
 

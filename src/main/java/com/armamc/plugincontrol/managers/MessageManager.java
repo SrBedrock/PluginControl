@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MessageManager {
     private final PluginControl plugin;
@@ -80,7 +81,7 @@ public class MessageManager {
         }
     }
 
-    public @NotNull Component getPluginListComponent(@NotNull List<String> pluginList) {
+    public @NotNull Component getPluginListComponent(@NotNull Set<String> pluginList) {
         var joinConfiguration = JoinConfiguration.separators(MM.deserialize(getPluginListSeparator()),
                 MM.deserialize(getPluginListSeparatorLast()));
 
@@ -97,13 +98,13 @@ public class MessageManager {
         return Component.join(joinConfiguration, componentList);
     }
 
-    public @NotNull Component getGroupListComponent(@NotNull Map<String, List<String>> pluginGroups) {
+    public @NotNull Component getGroupListComponent(@NotNull Map<String, Set<String>> pluginGroups) {
         var componentList = new ArrayList<Component>();
         var groupCommand = "/plugincontrol group listplugins %s";
         var pluginCommand = "/plugincontrol group removeplugin %s %s";
         for (var groupEntry : pluginGroups.entrySet()) {
             String groupName = groupEntry.getKey();
-            List<String> plugins = groupEntry.getValue();
+            Set<String> plugins = groupEntry.getValue();
             componentList.add(Component.newline().append(Component.text("Group %s".formatted(groupName))
                     .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para mais informações sobre o grupo")))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
@@ -318,5 +319,9 @@ public class MessageManager {
 
     public String getGroupPluginList() {
         return lang.getString("command.group-plugin-list");
+    }
+
+    public String getAllPluginsRemoved() {
+        return lang.getString("command.all-plugins-removed");
     }
 }
