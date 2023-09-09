@@ -18,7 +18,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.3.0")
     implementation("net.kyori:adventure-text-minimessage:4.14.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.14.0")
-    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
 }
 
 java {
