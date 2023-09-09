@@ -66,6 +66,13 @@ public class Command implements CommandExecutor, TabCompleter {
                         message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
                         return true;
                     }
+                    if (args[1].equals("all")) {
+                        for (var pl : plugin.getServer().getPluginManager().getPlugins()) {
+                            config.addPlugin(pl.getName());
+                        }
+                        message.send(sender, message.getAllPluginsAdded(), Placeholder.component(PLUGIN_TAG, message.getPluginListComponent(config.getPluginList())));
+                        return true;
+                    }
                     if (config.addPlugin(args[1])) {
                         message.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN_TAG, args[1]));
                     } else {
@@ -176,7 +183,6 @@ public class Command implements CommandExecutor, TabCompleter {
     }
 
     private boolean group(CommandSender sender, String label, String @NotNull [] args) {
-        plugin.getLogger().info("group" + Arrays.toString(args));
         if (args.length < 2 || args[1].isBlank()) {
             message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
             return true;
@@ -207,7 +213,7 @@ public class Command implements CommandExecutor, TabCompleter {
                 return true;
             }
             case "list" -> {
-                if (config.getPluginGroups().isEmpty()) {
+                if (config.getPluginGroups() == null || config.getPluginGroups().isEmpty()) {
                     message.send(sender, message.getGroupListEmpty());
                 } else {
                     message.send(sender, message.getGroupList(), Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
