@@ -40,4 +40,4 @@ command:
     - '<aqua>/<command> list <yellow>- List all plugins added'
     - '<aqua>/<command> reload <yellow>- Reload the config and language'
     - '<aqua>/<command> help <yellow>- Show this help'
-    - '<gradient:aqua:green>============================</gradient>'
+    - '<gradient:aqua:green>=========================</gradient>'

@@ -8,6 +8,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -192,5 +193,13 @@ public class MessageManager {
         }
 
         return Component.join(joinConfiguration, componentList);
+    }
+
+    public Component deserialize(String string) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(string);
+    }
+
+    public String serialize(String string) {
+        return LegacyComponentSerializer.legacyAmpersand().serialize(Component.text(string));
     }
 }

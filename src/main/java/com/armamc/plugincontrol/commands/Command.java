@@ -115,10 +115,10 @@ public class Command implements CommandExecutor, TabCompleter {
                 case "kick-message", "kickmessage" -> {
                     var kick = "kick-message";
                     if (args.length < 2 || args[1].isBlank()) {
-                        message.send(sender, message.getKickMessage(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
+                        message.send(sender, message.getKickMessage(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
                     } else {
                         config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-                        message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, config.deserialize(config.getKickMessage())));
+                        message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
                     }
                     return true;
                 }
