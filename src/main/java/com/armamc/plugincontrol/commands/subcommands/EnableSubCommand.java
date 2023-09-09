@@ -6,6 +6,7 @@ import com.armamc.plugincontrol.managers.MessageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,12 +15,10 @@ public class EnableSubCommand implements SubCommand {
     private final MessageManager message;
 
     @Contract(pure = true)
-    public EnableSubCommand(PluginControl plugin) {
+    public EnableSubCommand(@NotNull PluginControl plugin) {
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
     }
-
-
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String[] args) {

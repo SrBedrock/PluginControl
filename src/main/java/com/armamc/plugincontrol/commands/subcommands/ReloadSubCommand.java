@@ -15,6 +15,7 @@ public class ReloadSubCommand implements SubCommand {
     private final PluginControl plugin;
     private final PluginsManager manager;
     private final MessageManager message;
+
     @Contract(pure = true)
     public ReloadSubCommand(@NotNull PluginControl plugin) {
         this.plugin = plugin;
