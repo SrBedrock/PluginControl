@@ -4,16 +4,16 @@ import com.armamc.plugincontrol.PluginControl;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ConfigManager {
     private final PluginControl plugin;
@@ -39,6 +39,10 @@ public class ConfigManager {
 
     public void saveConfig() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, plugin::saveConfig);
+    }
+
+    public List<String> getServerPlugins() {
+        return Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
     }
 
     // enabled
@@ -167,6 +171,10 @@ public class ConfigManager {
 
     public Map<String, Set<String>> getPluginGroups() {
         return pluginGroups;
+    }
+
+    public List<String> getPluginGroupList() {
+        return pluginGroups.keySet().stream().toList();
     }
 
     public boolean addOrUpdateGroup(@NotNull String groupName, Set<String> plugins) {

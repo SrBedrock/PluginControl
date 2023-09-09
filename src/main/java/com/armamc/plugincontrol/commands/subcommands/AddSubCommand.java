@@ -4,14 +4,11 @@ import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AddSubCommand implements SubCommand {
@@ -35,8 +32,9 @@ public class AddSubCommand implements SubCommand {
 
         var target = args[0];
         if (target.equals("all")) {
-            config.addAllPlugins(getPlugins());
-            message.send(sender, message.getAllPluginsAdded(), Placeholder.component(PLUGIN_TAG, message.getPluginListComponent(config.getPluginList())));
+            config.addAllPlugins(config.getServerPlugins());
+            message.send(sender, message.getAllPluginsAdded(), Placeholder.component(PLUGIN_TAG,
+                    message.getPluginListComponent(config.getPluginList())));
             return;
         }
 
@@ -48,12 +46,10 @@ public class AddSubCommand implements SubCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return getPlugins().stream().filter(s -> s.startsWith(args[0])).toList();
+    public List<String> tabComplete(CommandSender sender, Command command, String label, String @NotNull [] args) {
+        if (args.length != 1) return List.of();
+        return config.getServerPlugins().stream().filter(s -> s.startsWith(args[0])).toList();
     }
 
-    private List<String> getPlugins() {
-        return Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
-    }
 
 }
