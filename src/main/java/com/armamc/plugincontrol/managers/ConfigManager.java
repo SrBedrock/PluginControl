@@ -31,8 +31,6 @@ public class ConfigManager {
     }
 
     private void loadConfig() {
-        plugin.saveConfig();
-        plugin.saveDefaultConfig();
         loadPlugins();
         loadGroups();
     }

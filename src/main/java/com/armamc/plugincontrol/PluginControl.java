@@ -35,6 +35,7 @@ public final class PluginControl extends JavaPlugin {
         if (!getDataFolder().exists() && getDataFolder().mkdir()) {
             getLogger().info("Creating the plugin folder!");
         }
+        saveDefaultConfig();
         configManager = new ConfigManager(this);
         messageManager = new MessageManager(this);
         adventure = BukkitAudiences.create(this);
