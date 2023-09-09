@@ -24,6 +24,7 @@ public class Command implements CommandExecutor, TabCompleter {
     private final PluginsManager manager;
     private static final String PLUGIN_TAG = "plugin";
     private static final String COMMAND_TAG = "command";
+    private static final String GROUP_TAG = "group";
 
     public Command(@NotNull PluginControl plugin) {
         this.plugin = plugin;
@@ -131,13 +132,18 @@ public class Command implements CommandExecutor, TabCompleter {
                     message.send(sender, message.getPluginReloaded());
                     return true;
                 }
+                case "group" -> {
+                    return group(sender, label, args);
+                }
                 default -> {
                     message.send(sender, message.getCommandNotFound(), Placeholder.parsed(COMMAND_TAG, label));
                     return true;
                 }
             }
         }
-        return false;
+
+        message.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND_TAG, label));
+        return true;
     }
 
     @Override
@@ -167,6 +173,82 @@ public class Command implements CommandExecutor, TabCompleter {
         plugin.reloadConfig();
         message.reloadLang();
         Bukkit.getScheduler().runTaskLater(plugin, manager::checkPlugins, 20L);
+    }
+
+    private boolean group(CommandSender sender, String label, String @NotNull [] args) {
+        plugin.getLogger().info("group" + Arrays.toString(args));
+        switch (args[1]) {
+            case "create" -> {
+                if (args.length != 3) {
+                    message.send(sender, message.getGroupAddError(), Placeholder.parsed(COMMAND_TAG, label));
+                    return true;
+                }
+                if (config.addOrUpdateGroup(args[2], null)) {
+                    message.send(sender, message.getGroupAdded(), Placeholder.parsed(GROUP_TAG, args[2]));
+                } else {
+                    message.send(sender, message.getGroupAlreadyAdded(), Placeholder.parsed(GROUP_TAG, args[2]));
+                }
+                return true;
+            }
+            case "delete" -> {
+                if (args.length != 3) {
+                    message.send(sender, message.getGroupRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
+                    return true;
+                }
+                if (config.removeGroup(args[2])) {
+                    message.send(sender, message.getGroupRemoved(), Placeholder.parsed(GROUP_TAG, args[2]));
+                } else {
+                    message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP_TAG, args[2]));
+                }
+                return true;
+            }
+            case "list" -> {
+                if (config.getPluginGroups().isEmpty()) {
+                    message.send(sender, message.getGroupListEmpty());
+                } else {
+                    message.send(sender, message.getGroupList(), Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
+                }
+                return true;
+            }
+            case "addplugin" -> {
+                if (args.length != 4) {
+                    message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
+                    return true;
+                }
+                if (config.addPluginToGroup(args[2], args[3])) {
+                    message.send(sender, message.getPluginAddedToGroup(), Placeholder.parsed(GROUP_TAG, args[2]), Placeholder.parsed(PLUGIN_TAG, args[3]));
+                } else {
+                    message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(GROUP_TAG, args[2]), Placeholder.parsed(PLUGIN_TAG, args[3]));
+                }
+                return true;
+            }
+            case "removeplugin" -> {
+                if (args.length != 4) {
+                    message.send(sender, message.getPluginRemoveFromGroupError(), Placeholder.parsed(COMMAND_TAG, label));
+                    return true;
+                }
+                if (config.removePluginFromGroup(args[2], args[3])) {
+                    message.send(sender, message.getPluginRemovedFromGroup(), Placeholder.parsed(GROUP_TAG, args[2]), Placeholder.parsed(PLUGIN_TAG, args[3]));
+                } else {
+                    message.send(sender, message.getPluginNotInGroupError(), Placeholder.parsed(GROUP_TAG, args[2]), Placeholder.parsed(PLUGIN_TAG, args[3]));
+                }
+                return true;
+            }
+            case "listplugins" -> {
+                if (args.length != 3) {
+                    message.send(sender, message.getGroupPluginListError(), Placeholder.parsed(COMMAND_TAG, label));
+                    return true;
+                }
+                List<String> plugins = config.getPluginsOfGroup(args[2]);
+                if (plugins == null || plugins.isEmpty()) {
+                    message.send(sender, message.getGroupHasNoPlugins(), Placeholder.parsed(GROUP_TAG, args[2]));
+                } else {
+                    message.send(sender, message.getGroupPluginList(), Placeholder.parsed(GROUP_TAG, args[2]), Placeholder.component("plugins", message.getPluginListComponent(plugins)));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
 }
