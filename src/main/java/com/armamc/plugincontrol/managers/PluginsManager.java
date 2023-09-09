@@ -25,16 +25,31 @@ public class PluginsManager {
         this.messageManager = plugin.getMessageManager();
     }
 
-
     public void checkPlugins() {
         if (!configManager.isEnabled()) return;
 
         messageManager.send(console, messageManager.getCheckingMessage());
 
         var missingPlugins = new HashSet<String>();
-        for (String pluginName : configManager.getPluginList()) {
+        for (var pluginName : configManager.getPluginList()) {
             if (!isPluginEnabled(pluginName)) {
                 missingPlugins.add(pluginName);
+            }
+        }
+
+        var pluginGroup = configManager.getPluginGroups();
+        for (var plugins : pluginGroup.entrySet()) {
+            boolean groupHasEnabledPlugin = false; // This will track if at least one plugin in the group is enabled.
+            for (var pl : plugins.getValue()) {
+                if (isPluginEnabled(pl)) {
+                    groupHasEnabledPlugin = true;
+                    break; // Exit the loop as soon as one enabled plugin is found in the group.
+                }
+            }
+
+            // If none of the plugins in the group are enabled, we add a formatted string to missingPlugins.
+            if (!groupHasEnabledPlugin) {
+                missingPlugins.add("No plugins from the group <" + plugins.getKey() + "> found");
             }
         }
 
@@ -46,7 +61,8 @@ public class PluginsManager {
     }
 
     private boolean isPluginEnabled(String pluginName) {
-        return plugin.getServer().getPluginManager().getPlugin(pluginName) != null;
+        var pl = plugin.getServer().getPluginManager().getPlugin(pluginName);
+        return pl != null && pl.isEnabled();
     }
 
     private void registerAction(Set<String> missingPlugins) {
