@@ -46,7 +46,7 @@ public class ActionSubCommand implements SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return actions.stream().filter(s -> s.startsWith(args[1])).toList();
+        return actions.stream().filter(s -> s.startsWith(args[0])).toList();
     }
 
 }

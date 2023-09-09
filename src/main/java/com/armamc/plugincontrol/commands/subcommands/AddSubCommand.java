@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AddSubCommand implements SubCommand {
-    private final PluginControl plugin;
     private final ConfigManager config;
     private final MessageManager message;
     private static final String PLUGIN_TAG = "plugin";
@@ -23,21 +22,20 @@ public class AddSubCommand implements SubCommand {
 
     @Contract(pure = true)
     public AddSubCommand(@NotNull PluginControl plugin) {
-        this.plugin = plugin;
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
     }
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
-        if (args.length < 1 || args[0].isBlank()) {
+        if (args.length == 0 || args[0].isBlank()) {
             message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
             return;
         }
 
         var target = args[0];
         if (target.equals("all")) {
-            config.addAllPlugins(Arrays.stream(plugin.getServer().getPluginManager().getPlugins()).map(Plugin::getName).toList());
+            config.addAllPlugins(getPlugins());
             message.send(sender, message.getAllPluginsAdded(), Placeholder.component(PLUGIN_TAG, message.getPluginListComponent(config.getPluginList())));
             return;
         }
@@ -51,8 +49,11 @@ public class AddSubCommand implements SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
-        var add = Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
-        return add.stream().filter(s -> s.startsWith(args[1])).toList();
+        return getPlugins().stream().filter(s -> s.startsWith(args[0])).toList();
+    }
+
+    private List<String> getPlugins() {
+        return Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
     }
 
 }
