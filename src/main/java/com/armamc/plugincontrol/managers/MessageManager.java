@@ -164,7 +164,7 @@ public class MessageManager {
     }
 
     public String getAllPluginsAdded() {
-        return lang.getString("command.all-plugins-added");
+        return lang.getString("command.plugins-added-all");
     }
 
     public String getPluginAlreadyAdded() {
@@ -320,6 +320,6 @@ public class MessageManager {
     }
 
     public String getAllPluginsRemoved() {
-        return lang.getString("command.all-plugins-removed");
+        return lang.getString("command.plugins-removed-all");
     }
 }

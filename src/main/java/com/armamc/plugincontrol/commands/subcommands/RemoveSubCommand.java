@@ -7,6 +7,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class RemoveSubCommand implements SubCommand {
     private static final String COMMAND_TAG = "command";
 
     @Contract(pure = true)
-    public RemoveSubCommand(PluginControl plugin) {
+    public RemoveSubCommand(@NotNull PluginControl plugin) {
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
     }
@@ -50,7 +51,7 @@ public class RemoveSubCommand implements SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return config.getPluginList().stream().filter(s -> s.startsWith(args[1])).toList();
+        return config.getPluginList().stream().filter(s -> s.startsWith(args[0])).toList();
     }
 
 }
