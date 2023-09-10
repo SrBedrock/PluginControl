@@ -178,20 +178,14 @@ public class ConfigManager {
         return pluginGroups.keySet().stream().toList();
     }
 
-    public boolean addOrUpdateGroup(@NotNull String groupName, Set<String> plugins) {
-        var existingPlugins = pluginGroups.get(groupName);
-        if (existingPlugins == null) {
-            pluginGroups.put(groupName, plugins == null ? new HashSet<>() : new HashSet<>(plugins));
+    public boolean addGroup(@NotNull String groupName) {
+        if (pluginGroups.get(groupName) == null) {
+            pluginGroups.put(groupName, new HashSet<>());
             savePluginGroup();
             return true;
+        } else {
+            return false;
         }
-
-        if (plugins != null) {
-            existingPlugins.addAll(plugins);
-        }
-
-        savePluginGroup();
-        return true;
     }
 
     public boolean addPluginToGroup(String groupName, String plugin) {
@@ -223,7 +217,8 @@ public class ConfigManager {
             var removed = pluginsInGroup.removeIf(p -> p.equalsIgnoreCase(pluginName));
 
             if (removed) {
-                savePluginGroup();
+                config.set(GROUPS_PATH + "." + groupName, new ArrayList<>(pluginsInGroup));
+                saveConfig();
                 return true;
             }
         }
@@ -231,9 +226,10 @@ public class ConfigManager {
         return false;
     }
 
-    public boolean removeGroup(String arg) {
-        if (pluginGroups.containsKey(arg)) {
-            pluginGroups.remove(arg);
+    public boolean removeGroup(String groupName) {
+        if (pluginGroups.containsKey(groupName)) {
+            pluginGroups.remove(groupName);
+            config.set(GROUPS_PATH + "." + groupName, null);
             savePluginGroup();
             return true;
         } else {

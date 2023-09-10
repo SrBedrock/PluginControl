@@ -46,7 +46,7 @@ public class GroupSubCommand implements SubCommand {
             }
 
             var targetGroup = args[1];
-            if (config.addOrUpdateGroup(targetGroup, null)) {
+            if (config.addGroup(targetGroup)) {
                 message.send(sender, message.getGroupCreated(), Placeholder.parsed(GROUP_TAG, targetGroup));
             } else {
                 message.send(sender, message.getGroupAlreadyExist(), Placeholder.parsed(GROUP_TAG, targetGroup));
