@@ -60,8 +60,8 @@ public class MessageManager {
         plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix())));
     }
 
-    public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver tag) {
-        if (message.isEmpty() || message.isBlank()) return;
+    public void send(@NotNull CommandSender sender, String message, @NotNull TagResolver tag) {
+        if (message == null || message.isEmpty() || message.isBlank()) return;
         plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix()), tag));
     }
 
