@@ -46,6 +46,9 @@ command:
   group-plugin-list-error: '<prefix> <red>Usage: <yellow>/<command> group list <group>'
   group-has-no-plugins: '<prefix> <red>Group <yellow><group> <red>has no plugins!'
   group-plugin-list: '<prefix> <green>Plugins in group <yellow><group> <green>: <yellow><plugins>'
+  group-list-name: '<yellow>Group <group>'
+  group-click-remove-plugin: '<red>Click to remove the plugin from the group'
+  group-click-info: '<yellow>Click to see the group info'
   group-help:
     - '<gradient:aqua:green>==== Plugin Control Group Help ====</gradient>'
     - '<aqua>/<command> group create <green><group> <yellow>- Create a group'

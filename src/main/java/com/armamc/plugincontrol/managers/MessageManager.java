@@ -100,21 +100,20 @@ public class MessageManager {
 
     public @NotNull Component getGroupListComponent(@NotNull Map<String, Set<String>> pluginGroups) {
         var componentList = new ArrayList<Component>();
-        var groupCommand = "/plugincontrol group listplugins %s";
-        var pluginCommand = "/plugincontrol group removeplugin %s %s";
+        var groupCommand = "/plugincontrol group list %s";
+        var pluginCommand = "/plugincontrol group remove %s %s";
         for (var groupEntry : pluginGroups.entrySet()) {
             var groupName = groupEntry.getKey();
-            var plugins = groupEntry.getValue();
 
-            // TODO: use lang.yml
-            componentList.add(Component.newline().append(Component.text("Group %s".formatted(groupName))
-                    .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para mais informações sobre o grupo")))
+            componentList.add(Component.newline().append(Component.text(getGroupListName().replace("<group>", groupName))
+                    .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
+            var plugins = groupEntry.getValue();
             if (!plugins.isEmpty()) {
                 var pluginComponents = plugins.stream()
                         .map(pluginName -> Component.text(pluginName)
-                                .hoverEvent(HoverEvent.showText(MM.deserialize("Clique para remover este plugin do grupo")))
+                                .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickRemovePlugin())))
                                 .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName))))
                         .toList();
 
@@ -325,5 +324,17 @@ public class MessageManager {
 
     public String getAllPluginsRemoved() {
         return lang.getString("command.plugins-removed-all");
+    }
+
+    public String getGroupListName() {
+        return lang.getString("command.group-list-name");
+    }
+
+    public String getGroupClickRemovePlugin() {
+        return lang.getString("command.group-click-remove-plugin");
+    }
+
+    public String getGroupClickInfo() {
+        return lang.getString("command.group-click-info");
     }
 }
