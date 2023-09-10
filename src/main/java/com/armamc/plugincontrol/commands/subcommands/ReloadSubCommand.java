@@ -13,14 +13,14 @@ import java.util.List;
 
 public class ReloadSubCommand implements SubCommand {
     private final PluginControl plugin;
-    private final PluginsManager manager;
     private final MessageManager message;
+    private final PluginsManager manager;
 
     @Contract(pure = true)
     public ReloadSubCommand(@NotNull PluginControl plugin) {
         this.plugin = plugin;
-        this.manager = plugin.getPluginsManager();
         this.message = plugin.getMessageManager();
+        this.manager = plugin.getPluginsManager();
     }
 
     @Override

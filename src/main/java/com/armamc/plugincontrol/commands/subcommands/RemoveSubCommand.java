@@ -8,7 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RemoveSubCommand implements SubCommand {
@@ -30,9 +29,7 @@ public class RemoveSubCommand implements SubCommand {
             return;
         }
 
-
-
-        if (args.length < 1 || args[0].isBlank()) {
+        if (args.length == 0 || args[0].isBlank()) {
             message.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
             return;
         }
@@ -53,8 +50,7 @@ public class RemoveSubCommand implements SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
-        var remove = new ArrayList<>(config.getPluginList());
-        return remove.stream().filter(s -> s.startsWith(args[1])).toList();
+        return config.getPluginList().stream().filter(s -> s.startsWith(args[1])).toList();
     }
 
 }
