@@ -3,6 +3,13 @@ name: "Build"
 on:
   push:
     branches: [ 'main', 'dev' ]
+    paths:
+      - 'gradle/**'
+      - 'src/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradlew'
+      - 'gradlew.bat'
   pull_request:
     branches: [ 'main', 'dev' ]
     paths:
@@ -26,6 +33,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          check-latest: true
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
