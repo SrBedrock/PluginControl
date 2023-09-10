@@ -103,8 +103,8 @@ public class MessageManager {
         var groupCommand = "/plugincontrol group listplugins %s";
         var pluginCommand = "/plugincontrol group removeplugin %s %s";
         for (var groupEntry : pluginGroups.entrySet()) {
-            String groupName = groupEntry.getKey();
-            Set<String> plugins = groupEntry.getValue();
+            var groupName = groupEntry.getKey();
+            var plugins = groupEntry.getValue();
 
             // TODO: use lang.yml
             componentList.add(Component.newline().append(Component.text("Group %s".formatted(groupName))
@@ -124,15 +124,11 @@ public class MessageManager {
                         .append(Component.join(pluginSeparator, pluginComponents))
                         .append(Component.text("]")));
             } else {
-                componentList.add(Component.text(" [")
-                        .append(Component.text(getGroupListEmpty()))
-                        .append(Component.text("]")));
+                componentList.add(Component.text(" [ ]"));
             }
         }
 
-        var groupSeparator = JoinConfiguration.separators(Component.empty(),
-                MM.deserialize(getPluginListSeparatorLast()));
-        return Component.join(groupSeparator, componentList);
+        return Component.join(JoinConfiguration.separator(Component.empty()), componentList);
     }
 
     public Component deserialize(String string) {
