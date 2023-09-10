@@ -29,7 +29,7 @@ public class KickMessageSubCommand implements SubCommand {
         if (args.length == 0 || args[0].isBlank()) {
             message.send(sender, message.getKickMessage(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
         } else {
-            config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+            config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
             message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
         }
     }
