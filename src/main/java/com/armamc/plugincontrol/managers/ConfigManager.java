@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +19,8 @@ import java.util.Set;
 public class ConfigManager {
     private final PluginControl plugin;
     private final FileConfiguration config;
-    private static final String PLUGINS = "plugins";
+    private static final String PLUGINS_PATH = "plugins";
+    private static final String GROUPS_PATH = "groups";
     private static final String ENABLED = "enabled";
     private static final String ACTION = "action";
     private static final String KICK_MESSAGE = "kick-message";
@@ -108,7 +110,7 @@ public class ConfigManager {
     }
 
     private void savePluginList() {
-        config.set(PLUGINS, pluginList);
+        config.set(PLUGINS_PATH, new ArrayList<>(pluginList));
         saveConfig();
     }
 
@@ -162,10 +164,9 @@ public class ConfigManager {
     }
 
     private void savePluginGroup() {
-        for (Map.Entry<String, Set<String>> entry : pluginGroups.entrySet()) {
-            config.set("groups." + entry.getKey(), entry.getValue());
+        for (var entry : pluginGroups.entrySet()) {
+            config.set(GROUPS_PATH + "." + entry.getKey(), new ArrayList<>(entry.getValue()));
         }
-
         saveConfig();
     }
 
@@ -178,7 +179,6 @@ public class ConfigManager {
     }
 
     public boolean addOrUpdateGroup(@NotNull String groupName, Set<String> plugins) {
-
         var existingPlugins = pluginGroups.get(groupName);
         if (existingPlugins == null) {
             pluginGroups.put(groupName, plugins == null ? new HashSet<>() : new HashSet<>(plugins));
@@ -234,6 +234,7 @@ public class ConfigManager {
     public boolean removeGroup(String arg) {
         if (pluginGroups.containsKey(arg)) {
             pluginGroups.remove(arg);
+            savePluginGroup();
             return true;
         } else {
             return false;
