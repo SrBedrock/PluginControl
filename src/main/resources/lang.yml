@@ -1,9 +1,9 @@
 prefix: '<dark_gray>[<red>PluginControl<dark_gray>]'
 console:
   checking-plugins: '<prefix> <red>Checking plugins...'
-  disabling-server: '<prefix> <red>Disabling server because <yellow><plugins> <red>was not found or enabled successfully!'
-  finished-checking: '<prefix> <green>Plugins successfully verified!'
-  log-to-console: '<prefix> <red>Plugin <yellow><plugins> <red>not found or enabled successfully...'
+  disabling-server: '<prefix> <red>Disabling server because <yellow><plugins> <red>was not found or enabled!'
+  finished-checking: '<prefix> <green>Plugins verified!'
+  log-to-console: '<prefix> <red>Plugin <yellow><plugins> <red>not found or enabled...'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'
@@ -13,8 +13,8 @@ command:
   kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message>'
   no-permission-error: '<prefix> <red>You do not have permission to use this command'
   plugin-add-error: '<red>Usage: <yellow>/<command> add [plugin-name]'
-  plugin-added: '<prefix> <green>Plugin <yellow><plugin> <green>added successfully!'
-  plugins-added-all: '<prefix> <green>All plugins added successfully!'
+  plugin-added: '<prefix> <green>Plugin <yellow><plugin> <green>added!'
+  plugins-added-all: '<prefix> <green>All plugins added!'
   plugin-already-added: '<prefix> <red>Plugin already added!'
   plugin-disabled: '<prefix> <red>Deactivating plugin features...'
   plugin-enabled: '<prefix> <green>Activating plugin features...'
@@ -39,8 +39,8 @@ command:
   group-list-error: '<red>Usage: <yellow>/<command> group listplugins <group>'
   plugin-added-to-group: '<prefix> <green>Plugin <yellow><plugin> <green>added to group <yellow><group>'
   plugin-add-to-group-error: '<prefix> <red>Usage: <yellow>/<command> group add <group> <plugin>'
-  plugin-remove-from-group-error: '<prefix> <red>Usage: <yellow>/<command> group remove <group> <plugin>'
   plugin-removed-from-group: '<prefix> <green>Plugin <yellow><plugin> <green>removed from group <yellow><group>'
+  plugin-remove-from-group-error: '<prefix> <red>Usage: <yellow>/<command> group remove <group> <plugin>'
   plugin-not-in-group: '<prefix> <red>Plugin <yellow><plugin> <red>not in group <yellow><group>'
   group-plugin-list-error: '<prefix> <red>Usage: <yellow>/<command> group list <group>'
   group-has-no-plugins: '<prefix> <red>Group <yellow><group> <red>has no plugins!'
@@ -70,4 +70,3 @@ command:
     - '<aqua>/<command> reload <yellow>- Reload the config and language'
     - '<aqua>/<command> help <yellow>- Show this help'
     - '<gradient:aqua:green>=========================</gradient>'
-
