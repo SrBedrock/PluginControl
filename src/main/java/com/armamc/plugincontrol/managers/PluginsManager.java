@@ -48,6 +48,9 @@ public class PluginsManager {
 
             if (!groupHasEnabledPlugin) {
                 // TODO: use lang.yml
+
+                // [23:35:07 INFO]: [PluginControl] Checking plugins...
+                // [23:35:07 INFO]: [PluginControl] Plugin No plugins from the group <Hologram> found and No plugins from the group <Economy> found not found or enabled successfully...
                 missingPlugins.add("No plugins from the group <" + plugins.getKey() + "> found");
             }
         }

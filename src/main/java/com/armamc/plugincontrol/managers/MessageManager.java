@@ -140,7 +140,7 @@ public class MessageManager {
     }
 
     public String getPrefix() {
-        return lang.getString("prefix");
+        return lang.getString(PREFIX);
     }
 
     public List<String> getHelpList() {

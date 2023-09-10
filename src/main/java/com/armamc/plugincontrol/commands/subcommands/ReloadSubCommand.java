@@ -29,6 +29,7 @@ public class ReloadSubCommand implements SubCommand {
         plugin.reloadConfig();
         message.reloadLang();
         Bukkit.getScheduler().runTaskLater(plugin, manager::checkPlugins, 20L);
+        message.send(sender, message.getPluginReloaded());
     }
 
     @Override
