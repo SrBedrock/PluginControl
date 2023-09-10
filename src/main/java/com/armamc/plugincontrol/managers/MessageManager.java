@@ -235,6 +235,10 @@ public class MessageManager {
         return lang.getString("console.log-to-console");
     }
 
+    public String getLogToConsoleGroup() {
+        return lang.getString("console.log-to-console-group");
+    }
+
     public String getDisablingServer() {
         return lang.getString("console.disabling-server");
     }

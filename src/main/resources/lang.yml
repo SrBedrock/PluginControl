@@ -4,6 +4,7 @@ console:
   disabling-server: '<prefix> <red>Disabling server because <yellow><plugins> <red>was not found or enabled!'
   finished-checking: '<prefix> <green>Plugins verified!'
   log-to-console: '<prefix> <red>Plugin <yellow><plugins> <red>not found or enabled...'
+  log-to-console-group: '<yellow>from the group <red><group>'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'

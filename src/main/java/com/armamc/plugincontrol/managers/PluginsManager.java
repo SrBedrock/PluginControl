@@ -13,52 +13,48 @@ import java.util.Set;
 
 public class PluginsManager {
     private final PluginControl plugin;
-    private final ConfigManager configManager;
-    private final MessageManager messageManager;
+    private final ConfigManager config;
+    private final MessageManager message;
     private PlayerListener playerListener;
     private final ConsoleCommandSender console = Bukkit.getConsoleSender();
 
     public PluginsManager(@NotNull PluginControl plugin) {
         this.plugin = plugin;
-        this.configManager = plugin.getConfigManager();
-        this.messageManager = plugin.getMessageManager();
+        this.config = plugin.getConfigManager();
+        this.message = plugin.getMessageManager();
     }
 
     public void checkPlugins() {
-        if (!configManager.isEnabled()) return;
+        if (!config.isEnabled()) return;
 
-        messageManager.send(console, messageManager.getCheckingMessage());
+        message.send(console, message.getCheckingMessage());
 
         var missingPlugins = new HashSet<String>();
-        for (var pluginName : configManager.getPluginList()) {
+        for (var pluginName : config.getPluginList()) {
             if (!isPluginEnabled(pluginName)) {
                 missingPlugins.add(pluginName);
             }
         }
 
-        var pluginGroup = configManager.getPluginGroups();
-        for (var plugins : pluginGroup.entrySet()) {
+        var pluginGroup = config.getPluginGroups();
+        for (var groups : pluginGroup.entrySet()) {
             boolean groupHasEnabledPlugin = false;
-            for (var pl : plugins.getValue()) {
-                if (isPluginEnabled(pl)) {
+            for (var pluginName : groups.getValue()) {
+                if (isPluginEnabled(pluginName)) {
                     groupHasEnabledPlugin = true;
                     break;
                 }
             }
 
             if (!groupHasEnabledPlugin) {
-                // TODO: use lang.yml
-
-                // [23:35:07 INFO]: [PluginControl] Checking plugins...
-                // [23:35:07 INFO]: [PluginControl] Plugin No plugins from the group <Hologram> found and No plugins from the group <Economy> found not found or enabled successfully...
-                missingPlugins.add("No plugins from the group <" + plugins.getKey() + "> found");
+                missingPlugins.add(message.getLogToConsoleGroup().replace("<group>", groups.getKey()));
             }
         }
 
         if (!missingPlugins.isEmpty()) {
             registerAction(missingPlugins);
         } else {
-            messageManager.send(console, messageManager.getCheckFinished());
+            message.send(console, message.getCheckFinished());
         }
     }
 
@@ -68,19 +64,19 @@ public class PluginsManager {
     }
 
     private void registerAction(Set<String> missingPlugins) {
-        var tag = Placeholder.component("plugins", messageManager.getPluginListComponent(new HashSet<>(missingPlugins)));
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
+        var tag = Placeholder.component("plugins", message.getPluginListComponent(new HashSet<>(missingPlugins)));
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
             playerListener = new PlayerListener(plugin);
             playerListener.init();
-            messageManager.send(console, messageManager.getLogToConsole(), tag);
+            message.send(console, message.getLogToConsole(), tag);
             return;
         }
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.getAction())) {
-            messageManager.send(console, messageManager.getLogToConsole(), tag);
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.getAction())) {
+            message.send(console, message.getLogToConsole(), tag);
             return;
         }
-        if (configManager.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.getAction())) {
-            messageManager.send(console, messageManager.getDisablingServer(), tag);
+        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.getAction())) {
+            message.send(console, message.getDisablingServer(), tag);
             plugin.getServer().shutdown();
         }
     }
