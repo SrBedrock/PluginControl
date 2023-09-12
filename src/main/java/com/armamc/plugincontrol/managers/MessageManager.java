@@ -146,10 +146,6 @@ public class MessageManager {
         return lang.getStringList("command.help");
     }
 
-    public String getNoPermissionError() {
-        return lang.getString("command.no-permission-error");
-    }
-
     public String getPluginEnabled() {
         return lang.getString("command.plugin-enabled");
     }
@@ -216,10 +212,6 @@ public class MessageManager {
 
     public String getPluginReloaded() {
         return lang.getString("command.plugin-reload");
-    }
-
-    public String getCommandNotFound() {
-        return lang.getString("command.command-not-found");
     }
 
     public String getCheckingMessage() {
@@ -308,10 +300,6 @@ public class MessageManager {
 
     public String getPluginNotInGroupError() {
         return lang.getString("command.plugin-not-in-group");
-    }
-
-    public String getGroupPluginListError() {
-        return lang.getString("command.group-list-error");
     }
 
     public String getGroupHasNoPlugins() {

@@ -47,11 +47,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("plugincontrol.use")) {
-            message.send(sender, message.getNoPermissionError());
-            return true;
-        }
-
         if (args.length == 0) {
             message.send(sender, message.getHelpList(), Placeholder.parsed("command", label));
             return true;

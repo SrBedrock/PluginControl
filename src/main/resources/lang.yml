@@ -12,7 +12,6 @@ command:
   command-not-found: '<red>Usage: <yellow>/<command> help <red>to see the available commands'
   kick-message: '<prefix> <green>Kick message: <yellow><kick-message>'
   kick-message-set: '<prefix> <green>Kick message set to <yellow><kick-message>'
-  no-permission-error: '<prefix> <red>You do not have permission to use this command'
   plugin-add-error: '<red>Usage: <yellow>/<command> add [plugin-name]'
   plugin-added: '<prefix> <green>Plugin <yellow><plugin> <green>added!'
   plugins-added-all: '<prefix> <green>All plugins added!'
