@@ -57,18 +57,18 @@ public class MessageManager {
 
     public void send(@NotNull CommandSender sender, @NotNull String message) {
         if (message.isEmpty() || message.isBlank()) return;
-        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix())));
+        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, getPrefix()));
     }
 
     public void send(@NotNull CommandSender sender, String message, @NotNull TagResolver tag) {
         if (message == null || message.isEmpty() || message.isBlank()) return;
-        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, Placeholder.parsed(PREFIX, getPrefix()), tag));
+        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, getPrefix(), tag));
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver... tags) {
         if (message.isEmpty() || message.isBlank()) return;
         List<TagResolver> allTags = new ArrayList<>();
-        allTags.add(Placeholder.parsed(PREFIX, getPrefix()));
+        allTags.add(getPrefix());
         allTags.addAll(List.of(tags));
         plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, allTags.toArray(new TagResolver[0])));
     }
@@ -77,7 +77,7 @@ public class MessageManager {
         if (message.isEmpty()) return;
         for (var line : message) {
             if (line.isEmpty()) continue;
-            plugin.adventure().sender(sender).sendMessage(MM.deserialize(line, Placeholder.parsed(PREFIX, getPrefix()), tag));
+            plugin.adventure().sender(sender).sendMessage(MM.deserialize(line, getPrefix(), tag));
         }
     }
 
@@ -138,8 +138,8 @@ public class MessageManager {
         return LegacyComponentSerializer.legacyAmpersand().serialize(Component.text(string));
     }
 
-    public String getPrefix() {
-        return lang.getString(PREFIX);
+    public TagResolver.Single getPrefix() {
+        return Placeholder.parsed(PREFIX, lang.getString(PREFIX, "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
     public List<String> getHelpList() {
