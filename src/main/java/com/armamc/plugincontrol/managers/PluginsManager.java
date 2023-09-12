@@ -39,6 +39,7 @@ public class PluginsManager {
         var pluginGroup = config.getPluginGroups();
         for (var groups : pluginGroup.entrySet()) {
             boolean groupHasEnabledPlugin = false;
+            if (groups.getValue().isEmpty()) continue;
             for (var pluginName : groups.getValue()) {
                 if (isPluginEnabled(pluginName)) {
                     groupHasEnabledPlugin = true;
