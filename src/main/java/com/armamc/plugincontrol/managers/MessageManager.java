@@ -295,7 +295,7 @@ public class MessageManager {
     }
 
     public String getPluginAddToGroupError() {
-        return lang.getString("command.plugin-added-to-group-error");
+        return lang.getString("command.plugin-add-to-group-error");
     }
 
     public String getPluginRemoveFromGroupError() {
