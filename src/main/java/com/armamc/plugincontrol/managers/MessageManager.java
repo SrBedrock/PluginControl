@@ -105,7 +105,7 @@ public class MessageManager {
         for (var groupEntry : pluginGroups.entrySet()) {
             var groupName = groupEntry.getKey();
 
-            componentList.add(Component.newline().append(Component.text(getGroupListName().replace("<group>", groupName))
+            componentList.add(Component.newline().append(MM.deserialize(getGroupListName(), Placeholder.parsed("group", groupName))
                     .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
