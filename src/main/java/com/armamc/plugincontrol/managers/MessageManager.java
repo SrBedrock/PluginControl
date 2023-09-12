@@ -86,10 +86,10 @@ public class MessageManager {
                 MM.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
-        var command = "/plugincontrol remove %s";
         if (!pluginList.isEmpty()) {
+            var command = "/plugincontrol remove %s";
             for (var pluginName : pluginList) {
-                componentList.add(Component.text(pluginName)
+                componentList.add(MM.deserialize(pluginName)
                         .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
