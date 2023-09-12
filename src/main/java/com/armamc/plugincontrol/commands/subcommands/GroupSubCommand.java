@@ -32,7 +32,6 @@ public class GroupSubCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
-        plugin.getLogger().info("GroupSubCommand.execute() called with: sender = [" + sender + "], command = [" + command + "], label = [" + label + "], args = [" + Arrays.stream(args).toList() + "]");
         if (args.length == 0 || args[0].isBlank()) {
             message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
             return;
@@ -40,7 +39,7 @@ public class GroupSubCommand implements SubCommand {
 
         var target = args[0];
         if (target.equalsIgnoreCase("create")) {
-            if (args.length != 2) {
+            if (args.length == 1) {
                 message.send(sender, message.getGroupCreateError(), Placeholder.parsed(COMMAND_TAG, label));
                 return;
             }
@@ -51,10 +50,11 @@ public class GroupSubCommand implements SubCommand {
             } else {
                 message.send(sender, message.getGroupAlreadyExist(), Placeholder.parsed(GROUP_TAG, targetGroup));
             }
+            return;
         }
 
         if (target.equalsIgnoreCase("delete")) {
-            if (args.length != 2) {
+            if (args.length == 1) {
                 message.send(sender, message.getGroupRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
                 return;
             }
@@ -65,11 +65,11 @@ public class GroupSubCommand implements SubCommand {
             } else {
                 message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP_TAG, targetGroup));
             }
+            return;
         }
 
         if (target.equalsIgnoreCase("list")) {
-
-            if (args.length == 2) {
+            if (args.length == 1) {
                 if (config.getPluginGroups() == null || config.getPluginGroups().isEmpty()) {
                     message.send(sender, message.getGroupListEmpty());
                 } else {
@@ -79,20 +79,18 @@ public class GroupSubCommand implements SubCommand {
                 return;
             }
 
-            if (args.length >= 3) {
-                var targetGroup = args[2];
-                if (isValidGroup(sender, targetGroup)) {
-                    var plugins = config.getPluginsOfGroup(targetGroup);
-                    message.send(sender, message.getGroupPluginList(), Placeholder.parsed(GROUP_TAG, targetGroup),
-                            Placeholder.component("plugins", message.getPluginListComponent(plugins)));
-                }
+            var targetGroup = args[1];
+            if (isValidGroup(sender, targetGroup)) {
+                var plugins = config.getPluginsOfGroup(targetGroup);
+                message.send(sender, message.getGroupPluginList(), Placeholder.parsed(GROUP_TAG, targetGroup),
+                        Placeholder.component("plugins", message.getPluginListComponent(plugins)));
             }
+            return;
         }
 
         if (target.equalsIgnoreCase("add")) {
-
-            if (args.length != 3) {
-                message.send(sender, message.getGroupCreateError(), Placeholder.parsed(COMMAND_TAG, label));
+            if (args.length <= 2) {
+                message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(COMMAND_TAG, label));
                 return;
             }
 
@@ -114,13 +112,12 @@ public class GroupSubCommand implements SubCommand {
         }
 
         if (target.equalsIgnoreCase("remove")) {
-            if (args.length != 3) {
+            if (args.length == 1) {
                 message.send(sender, message.getPluginRemoveFromGroupError(), Placeholder.parsed(COMMAND_TAG, label));
                 return;
             }
 
             var targetGroup = args[1];
-
             if (isValidGroup(sender, targetGroup)) {
                 var targetPlugin = args[2];
                 if (config.removePluginFromGroup(targetGroup, targetPlugin)) {
@@ -131,6 +128,7 @@ public class GroupSubCommand implements SubCommand {
                             Placeholder.parsed(PLUGIN_TAG, targetPlugin));
                 }
             }
+            return;
         }
 
         if (target.equalsIgnoreCase("help")) {
@@ -171,8 +169,8 @@ public class GroupSubCommand implements SubCommand {
                 return config.getServerPlugins().stream().filter(s -> s.startsWith(args[2])).toList();
             }
 
-            if (args.length == 3 && target.equalsIgnoreCase("remove") && !config.isGroupNonexistent(args[2])) {
-                return config.getServerPlugins().stream().filter(s -> s.startsWith(args[2])).toList();
+            if (args.length == 3 && target.equalsIgnoreCase("remove") && !config.isGroupNonexistent(args[1])) {
+                return config.getPluginsOfGroup(args[1]).stream().filter(s -> s.startsWith(args[2])).toList();
             }
         }
 
