@@ -159,7 +159,7 @@ public class MessageManager {
     }
 
     public String getAllPluginsAdded() {
-        return lang.getString("command.plugins-added-all");
+        return lang.getString("command.plugin-added-all");
     }
 
     public String getPluginAlreadyAdded() {
@@ -311,7 +311,7 @@ public class MessageManager {
     }
 
     public String getAllPluginsRemoved() {
-        return lang.getString("command.plugins-removed-all");
+        return lang.getString("command.plugin-removed-all");
     }
 
     public String getGroupListName() {

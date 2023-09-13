@@ -96,9 +96,9 @@ public class ConfigManager {
     private void loadPlugins() {
         pluginList = new HashSet<>();
 
-        if (config.contains("plugins")) {
+        if (config.contains(PLUGINS_PATH)) {
 
-            var plugins = config.getStringList("plugins");
+            var plugins = config.getStringList(PLUGINS_PATH);
             if (!plugins.isEmpty()) {
                 pluginList.addAll(plugins);
             }
@@ -147,17 +147,17 @@ public class ConfigManager {
     // groups
     private void loadGroups() {
         pluginGroups = new HashMap<>();
-        if (config.contains("groups")) {
-            ConfigurationSection groupsSection = config.getConfigurationSection("groups");
+        if (config.contains(GROUPS_PATH)) {
+            ConfigurationSection groupsSection = config.getConfigurationSection(GROUPS_PATH);
             if (groupsSection != null) {
                 Set<String> groupNames = groupsSection.getKeys(false);
                 for (String groupName : groupNames) {
-                    Set<String> plugins = new HashSet<>(config.getStringList("groups." + groupName));
+                    Set<String> plugins = new HashSet<>(config.getStringList(GROUPS_PATH + "." + groupName));
                     pluginGroups.put(groupName, plugins);
                 }
             }
         } else {
-            config.createSection("groups");
+            config.createSection(GROUPS_PATH);
         }
 
         savePluginGroup();
