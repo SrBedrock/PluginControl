@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -90,7 +91,8 @@ public class MessageManager {
         if (!pluginList.isEmpty()) {
             var command = "/plugincontrol remove %s";
             for (var pluginName : pluginList) {
-                componentList.add(MM.deserialize(pluginName)
+                var color = plugin.isPluginEnabled(pluginName) ? NamedTextColor.GREEN : NamedTextColor.RED;
+                componentList.add(MM.deserialize(pluginName).color(color)
                         .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
@@ -100,9 +102,10 @@ public class MessageManager {
     }
 
     public @NotNull Component getGroupListComponent(@NotNull Map<String, Set<String>> pluginGroups) {
+        if (pluginGroups.isEmpty()) return MM.deserialize(getGroupListEmpty());
+
         var componentList = new ArrayList<Component>();
         var groupCommand = "/plugincontrol group list %s";
-        var pluginCommand = "/plugincontrol group remove %s %s";
         for (var groupEntry : pluginGroups.entrySet()) {
             var groupName = groupEntry.getKey();
 
@@ -111,20 +114,28 @@ public class MessageManager {
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
             var plugins = new TreeSet<>(groupEntry.getValue());
+            var pluginComponents = new ArrayList<Component>();
             if (!plugins.isEmpty()) {
-                var pluginComponents = plugins.stream()
-                        .map(pluginName -> Component.text(pluginName)
-                                .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickRemovePlugin())))
-                                .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName))))
-                        .toList();
+                var joinConfiguration = JoinConfiguration.builder()
+                        .separator(MM.deserialize(getPluginListSeparator()))
+                        .lastSeparator(MM.deserialize(getPluginListSeparatorLast()))
+                        .build();
 
-                var pluginSeparator = JoinConfiguration.separators(MM.deserialize(getPluginListSeparator()),
-                        MM.deserialize(getPluginListSeparatorLast()));
-                componentList.add(Component.text(" [")
-                        .append(Component.join(pluginSeparator, pluginComponents))
-                        .append(Component.text("]")));
+                var pluginCommand = "/plugincontrol group remove %s %s";
+                for (var pluginName : plugins) {
+                    var color = plugin.isPluginEnabled(pluginName) ? NamedTextColor.GREEN : NamedTextColor.RED;
+                    pluginComponents.add(Component.text()
+                            .append(MM.deserialize(pluginName)).color(color)
+                            .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickRemovePlugin())))
+                            .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName)))
+                            .asComponent());
+                }
+
+                componentList.add(Component.text(" [").color(NamedTextColor.GRAY)
+                        .append(Component.join(joinConfiguration, pluginComponents))
+                        .append(Component.text("]").color(NamedTextColor.GRAY)));
             } else {
-                componentList.add(Component.text(" [ ]"));
+                componentList.add(Component.text(" [ ]").color(NamedTextColor.GRAY));
             }
         }
 

@@ -78,4 +78,9 @@ public final class PluginControl extends JavaPlugin {
         return this.adventure;
     }
 
+    public boolean isPluginEnabled(String pluginName) {
+        var pl = getServer().getPluginManager().getPlugin(pluginName);
+        return pl != null && pl.isEnabled();
+    }
+
 }

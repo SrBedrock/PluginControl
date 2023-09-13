@@ -9,12 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class GroupSubCommand implements SubCommand {
-    private final PluginControl plugin;
     private final ConfigManager config;
     private final MessageManager message;
     private static final String GROUP_TAG = "group";
@@ -24,7 +22,6 @@ public class GroupSubCommand implements SubCommand {
 
     @Contract(pure = true)
     public GroupSubCommand(@NotNull PluginControl plugin) {
-        this.plugin = plugin;
         this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
         this.subcommands = List.of("create", "delete", "list", "add", "remove", "help");
@@ -73,8 +70,8 @@ public class GroupSubCommand implements SubCommand {
                 if (config.getPluginGroups() == null || config.getPluginGroups().isEmpty()) {
                     message.send(sender, message.getGroupListEmpty());
                 } else {
-                    message.send(sender, message.getGroupList(), Placeholder.component("groups",
-                            message.getGroupListComponent(config.getPluginGroups())));
+                    message.send(sender, message.getGroupList(),
+                            Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
                 }
                 return;
             }

@@ -31,7 +31,7 @@ public class PluginsManager {
 
         var missingPlugins = new HashSet<String>();
         for (var pluginName : config.getPluginList()) {
-            if (!isPluginEnabled(pluginName)) {
+            if (!plugin.isPluginEnabled(pluginName)) {
                 missingPlugins.add(pluginName);
             }
         }
@@ -41,7 +41,7 @@ public class PluginsManager {
             boolean groupHasEnabledPlugin = false;
             if (groups.getValue().isEmpty()) continue;
             for (var pluginName : groups.getValue()) {
-                if (isPluginEnabled(pluginName)) {
+                if (plugin.isPluginEnabled(pluginName)) {
                     groupHasEnabledPlugin = true;
                     break;
                 }
@@ -57,11 +57,6 @@ public class PluginsManager {
         } else {
             message.send(console, message.getCheckFinished());
         }
-    }
-
-    private boolean isPluginEnabled(String pluginName) {
-        var pl = plugin.getServer().getPluginManager().getPlugin(pluginName);
-        return pl != null && pl.isEnabled();
     }
 
     private void registerAction(Set<String> missingPlugins) {
