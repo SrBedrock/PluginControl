@@ -27,10 +27,9 @@ import java.util.TreeSet;
 
 public class MessageManager {
     private final PluginControl plugin;
-    private static final String LANG_FILE_NAME = "lang.yml";
     private static FileConfiguration lang;
     private static final MiniMessage MM = MiniMessage.miniMessage();
-    private static final String PREFIX = "prefix";
+    private static final String LANG_FILE_NAME = "lang.yml";
 
     public MessageManager(PluginControl plugin) {
         this.plugin = plugin;
@@ -106,7 +105,11 @@ public class MessageManager {
 
         var componentList = new ArrayList<Component>();
         var groupCommand = "/plugincontrol group list %s";
-        for (var groupEntry : pluginGroups.entrySet()) {
+        var sortedGroups = pluginGroups.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .toList();
+
+        for (var groupEntry : sortedGroups) {
             var groupName = groupEntry.getKey();
 
             componentList.add(Component.newline().append(MM.deserialize(getGroupListName(), Placeholder.parsed("group", groupName))
@@ -151,7 +154,7 @@ public class MessageManager {
     }
 
     public TagResolver.Single getPrefix() {
-        return Placeholder.parsed(PREFIX, lang.getString(PREFIX, "<dark_gray>[<red>PluginControl<dark_gray>]"));
+        return Placeholder.parsed("prefix", lang.getString("prefix", "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
     public List<String> getHelpList() {
