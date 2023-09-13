@@ -23,15 +23,16 @@ public class ListSubCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String[] args) {
-        if (config.getPluginList().isEmpty()) {
+        if (config.getPluginList() == null || config.getPluginList().isEmpty()) {
             message.send(sender, message.getPluginListEmpty());
         } else {
             message.send(sender, message.getPluginList(), Placeholder.component("plugins", message.getPluginListComponent(config.getPluginList())));
         }
-        if (config.getPluginGroupList().isEmpty()) {
+
+        if (config.getPluginGroups() == null || config.getPluginGroups().isEmpty()) {
             message.send(sender, message.getGroupListEmpty());
         } else {
-            message.send(sender, message.getGroupPluginList(), Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
+            message.send(sender, message.getGroupList(), Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
         }
     }
 
