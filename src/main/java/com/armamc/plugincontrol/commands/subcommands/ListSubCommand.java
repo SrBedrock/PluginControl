@@ -28,6 +28,11 @@ public class ListSubCommand implements SubCommand {
         } else {
             message.send(sender, message.getPluginList(), Placeholder.component("plugins", message.getPluginListComponent(config.getPluginList())));
         }
+        if (config.getPluginGroupList().isEmpty()) {
+            message.send(sender, message.getGroupListEmpty());
+        } else {
+            message.send(sender, message.getGroupPluginList(), Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
+        }
     }
 
     @Override
