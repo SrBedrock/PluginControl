@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class MessageManager {
     private final PluginControl plugin;
@@ -109,7 +110,7 @@ public class MessageManager {
                     .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
-            var plugins = groupEntry.getValue();
+            var plugins = new TreeSet<>(groupEntry.getValue());
             if (!plugins.isEmpty()) {
                 var pluginComponents = plugins.stream()
                         .map(pluginName -> Component.text(pluginName)

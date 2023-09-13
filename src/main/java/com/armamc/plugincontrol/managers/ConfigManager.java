@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ConfigManager {
     private final PluginControl plugin;
@@ -106,7 +107,7 @@ public class ConfigManager {
     }
 
     public Set<String> getPluginList() {
-        return this.pluginList;
+        return new TreeSet<>(this.pluginList);
     }
 
     private void savePluginList() {
