@@ -5,4 +5,4 @@ enabled: false
 # shutdown-server
 action: log-to-console
 plugins: []
-groups: []
+groups: {}

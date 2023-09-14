@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class ConfigManager {
     private final PluginControl plugin;
@@ -92,7 +93,9 @@ public class ConfigManager {
     }
 
     public Set<String> getPluginList() {
-        return new TreeSet<>(this.pluginList);
+        return this.pluginList.stream()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     private void savePluginList() {
@@ -161,7 +164,7 @@ public class ConfigManager {
     }
 
     public List<String> getPluginGroupList() {
-        return pluginGroups.keySet().stream().toList();
+        return this.pluginGroups.keySet().stream().toList();
     }
 
     public boolean addGroup(@NotNull String groupName) {

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class MessageManager {
     private final PluginControl plugin;
@@ -117,7 +118,7 @@ public class MessageManager {
         var componentList = new ArrayList<Component>();
         var groupCommand = "/plugincontrol group list %s";
         var sortedGroups = pluginGroups.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER))
                 .toList();
 
         for (var groupEntry : sortedGroups) {
@@ -127,7 +128,9 @@ public class MessageManager {
                     .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
-            var plugins = new TreeSet<>(groupEntry.getValue());
+            var plugins = groupEntry.getValue().stream()
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.toCollection(TreeSet::new));
             var pluginComponents = new ArrayList<Component>();
             if (!plugins.isEmpty()) {
                 var joinConfiguration = JoinConfiguration.builder()
