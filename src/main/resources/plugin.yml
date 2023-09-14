@@ -1,14 +1,28 @@
 name: PluginControl
 version: '${version}'
 main: com.armamc.plugincontrol.PluginControl
-api-version: 1.13
+api-version: '1.13'
 authors: [ ThiagoROX ]
 description: Plugin to check if all important plugins have been successfully loaded.
-website: https://armnamc.com
+website: https://github.com/SrBedrock/PluginControl
+libraries:
+  - "net.kyori:adventure-api:4.14.0"
+  - "net.kyori:adventure-platform-bukkit:4.3.0"
+  - "net.kyori:adventure-text-minimessage:4.14.0"
+  - "net.kyori:adventure-text-serializer-legacy:4.14.0"
+
 commands:
   plugincontrol:
     description: "Command to manage PluginControl"
-    usage: "/<command> <add|remove|action|kick-message|toggle|on|off|list|reload>"
+    usage: "/<command> <add|remove|group|action|kick-message|toggle|enable|disable|list|reload|help>"
     aliases: [pc, plcontrol]
     permission: plugincontrol.use
     permission-message: "You do not have permission to use this command"
+
+permissions:
+  plugincontrol.use:
+    description: "Allow to use PluginControl commands"
+    default: op
+  plugincontrol.bypass:
+    description: "Bypass block when a plugin is not loaded or enabled"
+    default: false

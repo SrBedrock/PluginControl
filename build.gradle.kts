@@ -3,10 +3,11 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group = "com.armamc"
-version = "1.0.4"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -14,11 +15,12 @@ repositories {
 }
 
 dependencies {
-    implementation("net.kyori:adventure-api:4.14.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
-    implementation("net.kyori:adventure-text-minimessage:4.14.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.14.0")
-    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly(dependencyNotation = "net.kyori:adventure-api:4.14.0")
+    compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.3.0")
+    compileOnly(dependencyNotation = "net.kyori:adventure-text-minimessage:4.14.0")
+    compileOnly(dependencyNotation = "net.kyori:adventure-text-serializer-legacy:4.14.0")
+
 }
 
 java {
@@ -41,11 +43,16 @@ tasks {
         options.compilerArgs.add("-parameters")
     }
 
-    shadowJar {
-        minimize()
-    }
-
     build {
         dependsOn(shadowJar)
+    }
+
+    runServer {
+        minecraftVersion("1.20.1")
+        jvmArguments.add("-Dcom.mojang.eula.agree=true")
+        jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
+        jvmArguments.add("-Dfile.encoding=UTF8")
+        systemProperty("terminal.jline", false)
+        systemProperty("terminal.ansi", true)
     }
 }
