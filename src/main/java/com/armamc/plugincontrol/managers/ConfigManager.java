@@ -25,8 +25,6 @@ public class ConfigManager {
     private static final String GROUPS_PATH = "groups";
     private static final String ENABLED = "enabled";
     private static final String ACTION = "action";
-    private static final String KICK_MESSAGE = "kick-message";
-
     private Set<String> pluginList;
     private Map<String, Set<String>> pluginGroups;
 

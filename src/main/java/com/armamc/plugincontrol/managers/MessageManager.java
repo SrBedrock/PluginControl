@@ -46,6 +46,7 @@ public class MessageManager {
         }
 
         lang = YamlConfiguration.loadConfiguration(langFile);
+        reloadLang();
     }
 
     public void reloadLang() {
@@ -55,7 +56,14 @@ public class MessageManager {
         final InputStream defConfigStream = plugin.getResource(LANG_FILE_NAME);
         if (defConfigStream == null) return;
 
-        lang.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
+        var defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8));
+        for (String key : defConfig.getKeys(true)) {
+            if (!lang.contains(key)) {
+                lang.set(key, defConfig.get(key));
+            }
+        }
+
+        saveLang();
     }
 
     public void saveLang() {
