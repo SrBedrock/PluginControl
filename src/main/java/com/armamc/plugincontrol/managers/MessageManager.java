@@ -102,8 +102,8 @@ public class MessageManager {
         if (!pluginList.isEmpty()) {
             var command = "/plugincontrol remove %s";
             for (var pluginName : pluginList) {
-                var color = plugin.isPluginEnabled(pluginName) ? NamedTextColor.GREEN : NamedTextColor.RED;
-                componentList.add(MM.deserialize(pluginName).color(color)
+                var color = plugin.isPluginEnabled(pluginName) ? getPluginEnabledColor() : getPluginDisabledColor();
+                componentList.add(MM.deserialize(color + pluginName)
                         .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
@@ -140,9 +140,9 @@ public class MessageManager {
 
                 var pluginCommand = "/plugincontrol group remove %s %s";
                 for (var pluginName : plugins) {
-                    var color = plugin.isPluginEnabled(pluginName) ? NamedTextColor.GREEN : NamedTextColor.RED;
+                    var color = plugin.isPluginEnabled(pluginName) ? getPluginEnabledColor() : getPluginDisabledColor();
                     pluginComponents.add(Component.text()
-                            .append(MM.deserialize(pluginName)).color(color)
+                            .append(MM.deserialize(color + pluginName))
                             .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickRemovePlugin())))
                             .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName)))
                             .asComponent());
@@ -283,6 +283,14 @@ public class MessageManager {
 
     public String getPluginListSeparatorLast() {
         return lang.getString("command.plugin-list-separator-last");
+    }
+
+    public String getPluginEnabledColor() {
+        return lang.getString("command.plugin-list-enabled-color");
+    }
+
+    public String getPluginDisabledColor() {
+        return lang.getString("command.plugin-list-disabled-color");
     }
 
     public String getPluginClickRemove() {

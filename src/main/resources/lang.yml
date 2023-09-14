@@ -22,6 +22,8 @@ command:
   plugin-list: '<prefix> <yellow>Required Plugins: <plugins>'
   plugin-list-separator: '<gray>, '
   plugin-list-separator-last: '<gray> and '
+  plugin-list-enabled-color: '<green>'
+  plugin-list-disabled-color: '<red>'
   plugin-list-empty: '<prefix> <red>No plugins added!'
   plugin-not-found: '<prefix> <red>Plugin <yellow><plugin> <red>not found in the list!'
   plugin-reload: '<prefix> <green>Config and Language reloaded!'
