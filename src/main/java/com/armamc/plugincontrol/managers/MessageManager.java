@@ -157,11 +157,11 @@ public class MessageManager {
     }
 
     public Component deserialize(String string) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(string);
+        return MM.deserialize(string);
     }
 
     public String serialize(String string) {
-        return LegacyComponentSerializer.legacyAmpersand().serialize(Component.text(string));
+        return LegacyComponentSerializer.builder().hexColors().build().serialize(MM.deserialize(string));
     }
 
     public TagResolver.Single getPrefix() {
