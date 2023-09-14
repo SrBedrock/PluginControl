@@ -1,7 +1,6 @@
 package com.armamc.plugincontrol.commands.subcommands;
 
 import com.armamc.plugincontrol.PluginControl;
-import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.Command;
@@ -14,12 +13,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class KickMessageSubCommand implements SubCommand {
-    private final ConfigManager config;
     private final MessageManager message;
 
     @Contract(pure = true)
     public KickMessageSubCommand(@NotNull PluginControl plugin) {
-        this.config = plugin.getConfigManager();
         this.message = plugin.getMessageManager();
     }
 
@@ -27,10 +24,10 @@ public class KickMessageSubCommand implements SubCommand {
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
         var kick = "kick-message";
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getKickMessage(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
+            message.send(sender, message.getKickMessageInfo(), Placeholder.component(kick, message.deserialize(message.getKickMessage())));
         } else {
-            config.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
-            message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, message.deserialize(config.getKickMessage())));
+            message.setKickMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
+            message.send(sender, message.getKickMessageSet(), Placeholder.component(kick, message.deserialize(message.getKickMessage())));
         }
     }
 

@@ -10,6 +10,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,6 +55,16 @@ public class MessageManager {
         if (defConfigStream == null) return;
 
         lang.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
+    }
+
+    public void saveLang() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                lang.save(new File(plugin.getDataFolder(), LANG_FILE_NAME));
+            } catch (Exception e) {
+                plugin.getLogger().warning("Could not save lang.yml file!");
+            }
+        });
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message) {
@@ -157,6 +168,20 @@ public class MessageManager {
         return Placeholder.parsed("prefix", lang.getString("prefix", "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
+    public String getKickMessage() {
+        var kick = "kick-message";
+        if (lang.getString(kick) == null) {
+            setKickMessage("<red>[PluginControl] You are not allowed to join the server!");
+        }
+
+        return lang.getString(kick);
+    }
+
+    public void setKickMessage(String kickMessage) {
+        lang.set("kick-message", kickMessage);
+        saveLang();
+    }
+
     public List<String> getHelpList() {
         return lang.getStringList("command.help");
     }
@@ -217,7 +242,7 @@ public class MessageManager {
         return lang.getString("command.action-list");
     }
 
-    public String getKickMessage() {
+    public String getKickMessageInfo() {
         return lang.getString("command.kick-message");
     }
 

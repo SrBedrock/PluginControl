@@ -78,21 +78,6 @@ public class ConfigManager {
         saveConfig();
     }
 
-    // kick-message
-    public String getKickMessage() {
-        if (config.getString(KICK_MESSAGE) == null) {
-            config.set(KICK_MESSAGE, "&#FFF000[PluginControl] You are not allowed to join the server!");
-            saveConfig();
-        }
-
-        return config.getString(KICK_MESSAGE);
-    }
-
-    public void setKickMessage(String kickMessage) {
-        config.set(KICK_MESSAGE, kickMessage);
-        saveConfig();
-    }
-
     // plugins
     private void loadPlugins() {
         pluginList = new HashSet<>();

@@ -1,4 +1,5 @@
 prefix: '<dark_gray>[<red>PluginControl<dark_gray>]'
+kick-message: '<red>[PluginControl] You are not allowed to join the server!'
 console:
   checking-plugins: '<prefix> <red>Checking plugins...'
   disabling-server: '<prefix> <red>Disabling server because <yellow><plugins> <red>was not found or enabled!'
