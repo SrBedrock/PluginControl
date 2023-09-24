@@ -62,8 +62,10 @@ public class PluginsManager {
     private void registerAction(Set<String> missingPlugins) {
         var tag = Placeholder.component("plugins", message.getPluginListComponent(new HashSet<>(missingPlugins)));
         if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
-            playerListener = new PlayerListener(plugin);
-            playerListener.init();
+            if (playerListener == null) {
+                playerListener = new PlayerListener(plugin);
+                playerListener.init();
+            }
             message.send(console, message.getLogToConsole(), tag);
             return;
         }
