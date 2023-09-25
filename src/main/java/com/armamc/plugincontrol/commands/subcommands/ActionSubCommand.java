@@ -17,7 +17,6 @@ public class ActionSubCommand implements SubCommand {
     private final MessageManager message;
     private final PluginsManager manager;
     private final List<String> actions;
-    private static final String ACTION_TAG = "action";
 
     @Contract(pure = true)
     public ActionSubCommand(@NotNull PluginControl plugin) {
@@ -30,17 +29,17 @@ public class ActionSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getActionType(), Placeholder.parsed(ACTION_TAG, config.getAction().toLowerCase()));
+            message.send(sender, message.getActionType(), Placeholder.parsed("action", config.getAction().toLowerCase()));
             return;
         }
 
         try {
             var actiontype = ConfigManager.ActionType.from(args[0].toLowerCase());
             config.setAction(actiontype);
-            message.send(sender, message.getActionSet(), Placeholder.parsed(ACTION_TAG, actiontype.getAction()));
+            message.send(sender, message.getActionSet(), Placeholder.parsed("action", actiontype.getAction()));
             manager.checkPlugins();
         } catch (IllegalArgumentException e) {
-            message.send(sender, message.getActionTypeList(), Placeholder.parsed(ACTION_TAG, String.join(", ", actions)));
+            message.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
         }
     }
 
