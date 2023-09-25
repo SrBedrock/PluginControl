@@ -34,7 +34,6 @@ public class PluginsManager {
         for (var pluginName : config.getPluginList()) {
             if (!plugin.isPluginEnabled(pluginName)) {
                 missingPlugins.add(pluginName);
-                plugin.getLogger().info("Plugin not found: " + pluginName);
             }
         }
 
@@ -51,13 +50,11 @@ public class PluginsManager {
             }
 
             if (!groupHasEnabledPlugin) {
-                plugin.getLogger().info("Group not found: " + groups.getKey());
                 missingGroups.add(groups.getKey());
             }
         }
 
         if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
-            plugin.getLogger().info("Plugins or groups not found, performing action");
             registerAction(missingPlugins, missingGroups);
         } else {
             message.send(console, message.getCheckFinished());
@@ -65,13 +62,11 @@ public class PluginsManager {
     }
 
     private void registerAction(@NotNull Set<String> missingPlugins, @NotNull Set<String> missingGroups) {
-        plugin.getLogger().info("Plugins not found: " + missingPlugins);
         TagResolver.Single pluginTag = null;
         if (!missingPlugins.isEmpty()) {
             pluginTag = Placeholder.component("plugins", message.getPluginListComponent(missingPlugins));
         }
 
-        plugin.getLogger().info("Groups not found: " + missingGroups);
         TagResolver.Single groupTag = null;
         if (!missingGroups.isEmpty()) {
             groupTag = Placeholder.component("groups", message.getGroupListComponent(missingGroups));
@@ -86,7 +81,6 @@ public class PluginsManager {
     }
 
     private void handleDisallowPlayerLogin(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
-        plugin.getLogger().info("Disallowing player login");
         if (playerListener == null) {
             playerListener = new PlayerListener(plugin);
             playerListener.init();
@@ -96,20 +90,16 @@ public class PluginsManager {
     }
 
     private void shutdownServer(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
-        plugin.getLogger().info("Shutting down server");
         logToConsole(pluginTag, groupTag);
         message.send(console, message.getDisablingServer());
         plugin.getServer().shutdown();
     }
 
     private void logToConsole(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
-        plugin.getLogger().info("Logging to console");
         if (pluginTag != null) {
-            plugin.getLogger().info("pluginTag is not null");
             message.send(console, message.getLogToConsolePlugin(), pluginTag);
         }
         if (groupTag != null) {
-            plugin.getLogger().info("pluginTag is not null");
             message.send(console, message.getLogToConsoleGroup(), groupTag);
         }
 
@@ -117,9 +107,7 @@ public class PluginsManager {
     }
 
     public void unregisterListener() {
-        plugin.getLogger().info("Unregistering player listener");
         if (playerListener != null) {
-            plugin.getLogger().info("Player listener unregistered");
             PlayerLoginEvent.getHandlerList().unregister(plugin);
             playerListener = null;
         }
