@@ -103,7 +103,8 @@ public class MessageManager {
     }
 
     public @NotNull Component getPluginListComponent(@NotNull Set<String> pluginList) {
-        var joinConfiguration = JoinConfiguration.separators(MM.deserialize(getPluginListSeparator()),
+        var joinConfiguration = JoinConfiguration.separators(
+                MM.deserialize(getPluginListSeparator()),
                 MM.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
@@ -114,6 +115,24 @@ public class MessageManager {
                 componentList.add(MM.deserialize(color + pluginName)
                         .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
+            }
+        }
+
+        return Component.join(joinConfiguration, componentList);
+    }
+
+    public @NotNull Component getGroupListComponent(@NotNull Set<String> groupList) {
+        var joinConfiguration = JoinConfiguration.separators(
+                MM.deserialize(getPluginListSeparator()),
+                MM.deserialize(getPluginListSeparatorLast()));
+
+        var componentList = new ArrayList<Component>();
+        if (!groupList.isEmpty()) {
+            var command = "/plugincontrol group delete %s";
+            for (var groupName : groupList) {
+                componentList.add(MM.deserialize(groupName)
+                        .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickDelete())))
+                        .clickEvent(ClickEvent.runCommand(command.formatted(groupName))));
             }
         }
 
@@ -132,7 +151,8 @@ public class MessageManager {
         for (var groupEntry : sortedGroups) {
             var groupName = groupEntry.getKey();
 
-            componentList.add(Component.newline().append(MM.deserialize(getGroupListName(), Placeholder.parsed("group", groupName))
+            componentList.add(Component.newline().append(MM.deserialize(getGroupListName(),
+                            Placeholder.parsed("group", groupName))
                     .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
                     .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
 
@@ -140,6 +160,7 @@ public class MessageManager {
                     .sorted(String.CASE_INSENSITIVE_ORDER)
                     .collect(Collectors.toCollection(TreeSet::new));
             var pluginComponents = new ArrayList<Component>();
+
             if (!plugins.isEmpty()) {
                 var joinConfiguration = JoinConfiguration.builder()
                         .separator(MM.deserialize(getPluginListSeparator()))
@@ -273,8 +294,8 @@ public class MessageManager {
         return lang.getString("console.finished-checking");
     }
 
-    public String getLogToConsole() {
-        return lang.getString("console.log-to-console");
+    public String getLogToConsolePlugin() {
+        return lang.getString("console.log-to-console-plugin");
     }
 
     public String getLogToConsoleGroup() {
@@ -375,6 +396,10 @@ public class MessageManager {
 
     public String getGroupListName() {
         return lang.getString("command.group-list-name");
+    }
+
+    private String getGroupClickDelete() {
+        return lang.getString("command.group-click-delete");
     }
 
     public String getGroupClickRemovePlugin() {

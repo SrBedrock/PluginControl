@@ -3,6 +3,7 @@ package com.armamc.plugincontrol.managers;
 import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -36,6 +37,7 @@ public class PluginsManager {
             }
         }
 
+        var missingGroups = new HashSet<String>();
         var pluginGroup = config.getPluginGroups();
         for (var groups : pluginGroup.entrySet()) {
             boolean groupHasEnabledPlugin = false;
@@ -48,33 +50,60 @@ public class PluginsManager {
             }
 
             if (!groupHasEnabledPlugin) {
-                missingPlugins.add(message.getLogToConsoleGroup().replace("<group>", groups.getKey()));
+                missingGroups.add(groups.getKey());
             }
         }
 
-        if (!missingPlugins.isEmpty()) {
-            registerAction(missingPlugins);
+        if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
+            registerAction(missingPlugins, missingGroups);
         } else {
             message.send(console, message.getCheckFinished());
         }
     }
 
-    private void registerAction(Set<String> missingPlugins) {
-        var tag = Placeholder.component("plugins", message.getPluginListComponent(new HashSet<>(missingPlugins)));
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
+    private void registerAction(@NotNull Set<String> missingPlugins, @NotNull Set<String> missingGroups) {
+        TagResolver.Single pluginTag = null;
+        if (!missingPlugins.isEmpty()) {
+            pluginTag = Placeholder.component("plugins", message.getPluginListComponent(missingPlugins));
+        }
+
+        TagResolver.Single groupTag = null;
+        if (!missingGroups.isEmpty()) {
+            groupTag = Placeholder.component("groups", message.getGroupListComponent(missingGroups));
+        }
+
+        switch (ConfigManager.ActionType.from(config.getAction().toLowerCase())) {
+            case DISALLOW_PLAYER_LOGIN -> handleDisallowPlayerLogin(pluginTag, groupTag);
+            case LOG_TO_CONSOLE -> logToConsole(pluginTag, groupTag);
+            case SHUTDOWN_SERVER -> shutdownServer(pluginTag, groupTag);
+            default -> throw new IllegalArgumentException("Unknown action: %s".formatted(config.getAction()));
+        }
+    }
+
+    private void handleDisallowPlayerLogin(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
+        if (playerListener == null) {
             playerListener = new PlayerListener(plugin);
             playerListener.init();
-            message.send(console, message.getLogToConsole(), tag);
-            return;
         }
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.getAction())) {
-            message.send(console, message.getLogToConsole(), tag);
-            return;
+
+        logToConsole(pluginTag, groupTag);
+    }
+
+    private void shutdownServer(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
+        logToConsole(pluginTag, groupTag);
+        message.send(console, message.getDisablingServer());
+        plugin.getServer().shutdown();
+    }
+
+    private void logToConsole(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
+        if (pluginTag != null) {
+            message.send(console, message.getLogToConsolePlugin(), pluginTag);
         }
-        if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.getAction())) {
-            message.send(console, message.getDisablingServer(), tag);
-            plugin.getServer().shutdown();
+        if (groupTag != null) {
+            message.send(console, message.getLogToConsoleGroup(), groupTag);
         }
+
+        message.send(console, message.getCheckFinished());
     }
 
     public void unregisterListener() {
