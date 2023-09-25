@@ -4,8 +4,8 @@ console:
   checking-plugins: '<prefix> <red>Checking plugins...'
   disabling-server: '<prefix> <red>Disabling server because plugins or groups were not found or enabled!'
   finished-checking: '<prefix> <green>Plugins verified!'
-  log-to-console-plugin: '<prefix> <red>No plugins ere found: <plugins>'
-  log-to-console-group: '<prefix> <red>No plugins were found from the specified groups: <groups>'
+  log-to-console-plugin: '<prefix> <red>No plugins were found: <plugins>'
+  log-to-console-group: '<prefix> <red>No groups were found: <groups>'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'
@@ -53,7 +53,7 @@ command:
   group-click-remove-plugin: '<red>Click to remove the plugin from the group'
   group-click-info: '<yellow>Click to see the group info'
   group-help:
-    - '<gradient:aqua:green>==== Plugin Control Group Help ====</gradient>'
+    - '<gradient:aqua:green>=== Plugin Control Group Help ===</gradient>'
     - '<aqua>/<command> group create <green><group> <yellow>- Create a group'
     - '<aqua>/<command> group delete <green><group> <yellow>- Remove a group'
     - '<aqua>/<command> group list <yellow>- List all required groups'
