@@ -34,9 +34,12 @@ public class ActionSubCommand implements SubCommand {
         }
 
         try {
-            var actiontype = ConfigManager.ActionType.from(args[0].toLowerCase());
-            config.setAction(actiontype);
-            message.send(sender, message.getActionSet(), Placeholder.parsed("action", actiontype.getAction()));
+            var actionType = ConfigManager.ActionType.from(args[0].toLowerCase());
+            config.setAction(actionType);
+            message.send(sender, message.getActionSet(), Placeholder.parsed("action", actionType.getAction()));
+            if (actionType != ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN) {
+                manager.unregisterListener();
+            }
             manager.checkPlugins();
         } catch (IllegalArgumentException e) {
             message.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
@@ -45,6 +48,7 @@ public class ActionSubCommand implements SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length != 1) return List.of();
         return actions.stream().filter(s -> s.startsWith(args[0])).toList();
     }
 
