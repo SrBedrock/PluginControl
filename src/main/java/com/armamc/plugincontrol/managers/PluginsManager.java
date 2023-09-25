@@ -3,6 +3,7 @@ package com.armamc.plugincontrol.managers;
 import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -36,6 +37,7 @@ public class PluginsManager {
             }
         }
 
+        var missingGroups = new HashSet<String>();
         var pluginGroup = config.getPluginGroups();
         for (var groups : pluginGroup.entrySet()) {
             boolean groupHasEnabledPlugin = false;
@@ -48,33 +50,59 @@ public class PluginsManager {
             }
 
             if (!groupHasEnabledPlugin) {
-                missingPlugins.add(message.getLogToConsoleGroup().replace("<group>", groups.getKey()));
+                missingGroups.add(groups.getKey());
             }
         }
 
-        if (!missingPlugins.isEmpty()) {
-            registerAction(missingPlugins);
+        if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
+            registerAction(missingPlugins, missingGroups);
         } else {
             message.send(console, message.getCheckFinished());
         }
     }
 
-    private void registerAction(Set<String> missingPlugins) {
-        var tag = Placeholder.component("plugins", message.getPluginListComponent(new HashSet<>(missingPlugins)));
+    private void registerAction(@NotNull Set<String> missingPlugins, @NotNull Set<String> missingGroups) {
+        TagResolver.Single pluginTag = null;
+        TagResolver.Single groupsTag = null;
+        if (!missingPlugins.isEmpty()) {
+            pluginTag = Placeholder.component("plugins", message.getPluginListComponent(new HashSet<>(missingPlugins)));
+        }
+        if (!missingGroups.isEmpty()) {
+            groupsTag = Placeholder.component("groups", message.getGroupListComponent(new HashSet<>(missingGroups)));
+        }
+
         if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN.getAction())) {
             if (playerListener == null) {
                 playerListener = new PlayerListener(plugin);
                 playerListener.init();
             }
-            message.send(console, message.getLogToConsole(), tag);
+            if (pluginTag != null) {
+                message.send(console, message.getLogToConsole(), pluginTag);
+            }
+            if (groupsTag != null) {
+                message.send(console, message.getLogToConsoleGroup(), groupsTag);
+            }
             return;
         }
+
         if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.LOG_TO_CONSOLE.getAction())) {
-            message.send(console, message.getLogToConsole(), tag);
+            if (pluginTag != null) {
+                message.send(console, message.getLogToConsole(), pluginTag);
+            }
+            if (groupsTag != null) {
+                message.send(console, message.getLogToConsoleGroup(), groupsTag);
+            }
             return;
         }
         if (config.getAction().equalsIgnoreCase(ConfigManager.ActionType.SHUTDOWN_SERVER.getAction())) {
-            message.send(console, message.getDisablingServer(), tag);
+            if (pluginTag != null) {
+                message.send(console, message.getLogToConsole(), pluginTag);
+            }
+            if (groupsTag != null) {
+                message.send(console, message.getLogToConsoleGroup(), groupsTag);
+            }
+
+            message.send(console, message.getDisablingServer());
             plugin.getServer().shutdown();
         }
     }

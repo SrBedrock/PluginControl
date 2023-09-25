@@ -2,10 +2,10 @@ prefix: '<dark_gray>[<red>PluginControl<dark_gray>]'
 kick-message: '<red>[PluginControl] You are not allowed to join the server!'
 console:
   checking-plugins: '<prefix> <red>Checking plugins...'
-  disabling-server: '<prefix> <red>Disabling server because <yellow><plugins> <red>was not found or enabled!'
+  disabling-server: '<prefix> <red>Disabling server because plugins or groups were not found or enabled!'
   finished-checking: '<prefix> <green>Plugins verified!'
-  log-to-console: '<prefix> <red>Plugin <yellow><plugins> <red>not found or enabled...'
-  log-to-console-group: '<yellow>from the group <red><group>'
+  log-to-console-plugin: '<prefix> <red>No plugins ere found: <plugins>'
+  log-to-console-group: '<prefix> <red>No plugins were found from the specified groups: <groups>'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'
@@ -49,6 +49,7 @@ command:
   group-has-no-plugins: '<prefix> <red>Group <yellow><group> <red>has no plugins!'
   group-plugin-list: '<prefix> <yellow>Plugins in group <green><group><yellow>: <yellow><plugins>'
   group-list-name: '<yellow>Group <group>:'
+  group-click-delete: '<red>Click to delete the group'
   group-click-remove-plugin: '<red>Click to remove the plugin from the group'
   group-click-info: '<yellow>Click to see the group info'
   group-help:
