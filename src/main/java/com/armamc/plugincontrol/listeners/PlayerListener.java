@@ -31,6 +31,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     private void onPlayerLogin(@NotNull PlayerLoginEvent event) {
+        if (!plugin.getConfigManager().isEnabled()) return;
         if (event.getPlayer().hasPermission(bypass)) return;
         event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message.serialize(message.getKickMessage()));
     }
