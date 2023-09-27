@@ -3,7 +3,7 @@ version: '${version}'
 main: com.armamc.plugincontrol.PluginControl
 api-version: '1.13'
 authors: [ ThiagoROX ]
-description: Plugin to check if all important plugins have been successfully loaded.
+description: This minecraft plugin allows you to define which plugin has to be successfully enabled after server startup.
 website: https://github.com/SrBedrock/PluginControl
 libraries:
   - "net.kyori:adventure-api:4.14.0"
@@ -14,10 +14,9 @@ libraries:
 commands:
   plugincontrol:
     description: "Command to manage PluginControl"
-    usage: "/<command> <add|remove|group|action|kick-message|toggle|enable|disable|list|reload|help>"
-    aliases: [pc, plcontrol]
+    usage: "/<command> <add|remove|check|group|action|kick-message|toggle|enable|disable|list|reload|help>"
+    aliases: [ pc, plcontrol ]
     permission: plugincontrol.use
-    permission-message: "You do not have permission to use this command"
 
 permissions:
   plugincontrol.use:
