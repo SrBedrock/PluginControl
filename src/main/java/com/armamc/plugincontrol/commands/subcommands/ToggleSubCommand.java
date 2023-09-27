@@ -27,6 +27,7 @@ public class ToggleSubCommand implements SubCommand {
     public void execute(CommandSender sender, Command command, String label, String[] args) {
         config.setEnabled(!config.isEnabled());
         if (config.isEnabled()) {
+            manager.checkPlugins();
             message.send(sender, message.getPluginEnabled());
         } else {
             manager.unregisterListener();
