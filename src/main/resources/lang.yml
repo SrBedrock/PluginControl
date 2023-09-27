@@ -6,6 +6,7 @@ console:
   finished-checking: '<prefix> <green>Plugins verified!'
   log-to-console-plugin: '<prefix> <red>Required plugins were not found: <plugins>'
   log-to-console-group: '<prefix> <red>Required groups were not found: <groups>'
+  plugin-disabled: '<prefix> <red>Plugin Control is disabled!'
 command:
   action-list: '<prefix> <green>Actions available: <yellow><actions>'
   action-set: '<prefix> <green>Action set to <yellow><action>'

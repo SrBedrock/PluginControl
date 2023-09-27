@@ -102,6 +102,19 @@ public class MessageManager {
         }
     }
 
+    public void send(@NotNull String message, @NotNull TagResolver... tags) {
+        if (message.isEmpty() || message.isBlank()) return;
+        List<TagResolver> allTags = new ArrayList<>();
+        allTags.add(getPrefix());
+        allTags.addAll(List.of(tags));
+        var component = MM.deserialize(message, allTags.toArray(new TagResolver[0]));
+        plugin.adventure().sender(Bukkit.getConsoleSender()).sendMessage(component);
+        for (var player : Bukkit.getOnlinePlayers()) {
+            if (!player.hasPermission("plugincontrol.notify")) continue;
+            plugin.adventure().sender(player).sendMessage(component);
+        }
+    }
+
     public @NotNull Component getPluginListComponent(@NotNull Set<String> pluginList) {
         var joinConfiguration = JoinConfiguration.separators(
                 MM.deserialize(getPluginListSeparator()),
@@ -288,6 +301,10 @@ public class MessageManager {
 
     public String getCheckingMessage() {
         return lang.getString("console.checking-plugins");
+    }
+
+    public String getCheckingDisabled() {
+        return lang.getString("console.plugin-disabled");
     }
 
     public String getCheckFinished() {

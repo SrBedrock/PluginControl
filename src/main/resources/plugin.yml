@@ -21,7 +21,10 @@ commands:
 
 permissions:
   plugincontrol.use:
-    description: "Allow to use PluginControl commands"
+    description: "Allow using PluginControl commands"
+    default: op
+  plugincontrol.notify:
+    description: "Allow seeing the notification when a plugin is not loaded or enabled"
     default: op
   plugincontrol.bypass:
     description: "Bypass block when a plugin is not loaded or enabled"
