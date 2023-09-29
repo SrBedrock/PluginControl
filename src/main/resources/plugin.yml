@@ -22,6 +22,8 @@ permissions:
   plugincontrol.use:
     description: "Allow using PluginControl commands"
     default: op
+    children:
+      - plugincontrol.notify
   plugincontrol.notify:
     description: "Allow seeing the notification when a plugin is not loaded or enabled"
     default: op
