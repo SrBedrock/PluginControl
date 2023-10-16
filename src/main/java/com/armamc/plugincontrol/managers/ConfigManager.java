@@ -2,7 +2,6 @@ package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
@@ -53,7 +52,6 @@ public class ConfigManager {
             config.set(ENABLED, "false");
             saveConfig();
         }
-
         return config.getBoolean(ENABLED);
     }
 
@@ -68,7 +66,6 @@ public class ConfigManager {
             config.set(ACTION, ActionType.LOG_TO_CONSOLE.getAction());
             saveConfig();
         }
-
         return config.getString(ACTION);
     }
 
@@ -80,9 +77,7 @@ public class ConfigManager {
     // plugins
     private void loadPlugins() {
         pluginList = new HashSet<>();
-
         if (config.contains(PLUGINS_PATH)) {
-
             var plugins = config.getStringList(PLUGINS_PATH);
             if (!plugins.isEmpty()) {
                 pluginList.addAll(plugins);
@@ -135,18 +130,17 @@ public class ConfigManager {
     private void loadGroups() {
         pluginGroups = new HashMap<>();
         if (config.contains(GROUPS_PATH)) {
-            ConfigurationSection groupsSection = config.getConfigurationSection(GROUPS_PATH);
+            var groupsSection = config.getConfigurationSection(GROUPS_PATH);
             if (groupsSection != null) {
-                Set<String> groupNames = groupsSection.getKeys(false);
-                for (String groupName : groupNames) {
-                    Set<String> plugins = new HashSet<>(config.getStringList(GROUPS_PATH + "." + groupName));
+                var groupNames = groupsSection.getKeys(false);
+                for (var groupName : groupNames) {
+                    var plugins = new HashSet<>(config.getStringList(GROUPS_PATH + "." + groupName));
                     pluginGroups.put(groupName, plugins);
                 }
             }
         } else {
             config.createSection(GROUPS_PATH);
         }
-
         savePluginGroup();
     }
 
@@ -176,14 +170,12 @@ public class ConfigManager {
     }
 
     public boolean addPluginToGroup(String groupName, String plugin) {
-        if (groupName == null || groupName.isEmpty() || plugin == null || plugin.isEmpty()) {
+        if (groupName == null || groupName.isEmpty() || plugin == null || plugin.isEmpty())
             return false;
-        }
 
         var existingPlugins = pluginGroups.get(groupName);
-        if (existingPlugins == null) {
+        if (existingPlugins == null)
             return false;
-        }
 
         existingPlugins.add(plugin);
         savePluginGroup();
@@ -202,14 +194,12 @@ public class ConfigManager {
         if (pluginGroups.containsKey(groupName)) {
             var pluginsInGroup = pluginGroups.get(groupName);
             var removed = pluginsInGroup.removeIf(p -> p.equalsIgnoreCase(pluginName));
-
             if (removed) {
                 config.set(GROUPS_PATH + "." + groupName, new ArrayList<>(pluginsInGroup));
                 saveConfig();
                 return true;
             }
         }
-
         return false;
     }
 
@@ -237,7 +227,7 @@ public class ConfigManager {
         private static final Map<String, ActionType> lookup = new HashMap<>();
 
         static {
-            for (ActionType actionType : ActionType.values()) {
+            for (var actionType : ActionType.values()) {
                 lookup.put(actionType.getAction(), actionType);
             }
         }
@@ -248,7 +238,7 @@ public class ConfigManager {
         }
 
         public static @NotNull ActionType from(String action) {
-            ActionType result = lookup.get(action);
+            var result = lookup.get(action);
             if (result == null) {
                 throw new IllegalArgumentException("Unexpected value: " + action);
             }

@@ -24,8 +24,9 @@ public class PlayerListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         var onlinePlayers = plugin.getServer().getOnlinePlayers();
         for (var player : onlinePlayers) {
-            if (player.hasPermission(bypass)) continue;
-            player.kickPlayer(message.serialize(message.getKickMessage()));
+            if (!player.hasPermission(bypass)) {
+                player.kickPlayer(message.serialize(message.getKickMessage()));
+            }
         }
     }
 
