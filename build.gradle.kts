@@ -20,7 +20,6 @@ dependencies {
     compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.3.1")
     compileOnly(dependencyNotation = "net.kyori:adventure-text-minimessage:4.14.0")
     compileOnly(dependencyNotation = "net.kyori:adventure-text-serializer-legacy:4.14.0")
-
 }
 
 java {
@@ -48,7 +47,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.20.1")
+        minecraftVersion("1.20.2")
         jvmArguments.add("-Dcom.mojang.eula.agree=true")
         jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
         jvmArguments.add("-Dfile.encoding=UTF8")
