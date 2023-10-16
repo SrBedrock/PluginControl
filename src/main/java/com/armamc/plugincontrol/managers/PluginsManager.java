@@ -17,7 +17,6 @@ public class PluginsManager {
     private final ConfigManager config;
     private final MessageManager message;
     private PlayerListener playerListener;
-    private final ConsoleCommandSender console = Bukkit.getConsoleSender();
 
     public PluginsManager(@NotNull PluginControl plugin) {
         this.plugin = plugin;
@@ -26,9 +25,12 @@ public class PluginsManager {
     }
 
     public void checkPlugins() {
-        if (!config.isEnabled()) return;
+        if (!config.isEnabled()) {
+            message.send(message.getCheckingDisabled());
+            return;
+        }
 
-        message.send(console, message.getCheckingMessage());
+        message.send(message.getCheckingMessage());
 
         var missingPlugins = new HashSet<String>();
         for (var pluginName : config.getPluginList()) {
@@ -57,7 +59,7 @@ public class PluginsManager {
         if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
             registerAction(missingPlugins, missingGroups);
         } else {
-            message.send(console, message.getCheckFinished());
+            message.send(message.getCheckFinished());
         }
     }
 
@@ -91,19 +93,19 @@ public class PluginsManager {
 
     private void shutdownServer(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
         logToConsole(pluginTag, groupTag);
-        message.send(console, message.getDisablingServer());
+        message.send(message.getDisablingServer());
         plugin.getServer().shutdown();
     }
 
     private void logToConsole(TagResolver.Single pluginTag, TagResolver.Single groupTag) {
         if (pluginTag != null) {
-            message.send(console, message.getLogToConsolePlugin(), pluginTag);
+            message.send(message.getLogToConsolePlugin(), pluginTag);
         }
         if (groupTag != null) {
-            message.send(console, message.getLogToConsoleGroup(), groupTag);
+            message.send(message.getLogToConsoleGroup(), groupTag);
         }
 
-        message.send(console, message.getCheckFinished());
+        message.send(message.getCheckFinished());
     }
 
     public void unregisterListener() {
