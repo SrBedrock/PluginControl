@@ -11,10 +11,12 @@ version = "1.2.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
+    implementation("com.github.TechnicJelle:UpdateCheckerJava:2.2")
     compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
     compileOnly(dependencyNotation = "net.kyori:adventure-api:4.14.0")
     compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.3.1")

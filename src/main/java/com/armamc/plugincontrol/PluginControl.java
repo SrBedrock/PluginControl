@@ -4,6 +4,7 @@ import com.armamc.plugincontrol.commands.MainCommand;
 import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
 import com.armamc.plugincontrol.managers.PluginsManager;
+import com.technicjelle.UpdateChecker;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,7 @@ public final class PluginControl extends JavaPlugin {
         registerConfig();
         registerCommands();
         registerTask();
+        registerUpdateNotifier();
     }
 
     @Override
@@ -53,6 +55,14 @@ public final class PluginControl extends JavaPlugin {
 
     private void registerTask() {
         Bukkit.getScheduler().runTaskLater(this, pluginsManager::checkPlugins, 20L);
+    }
+
+    private void registerUpdateNotifier() {
+        if (configManager.isUpdateNotifierEnabled()) {
+            UpdateChecker updateChecker = new UpdateChecker("SrBedrock", "PluginControl", "1.1.1");
+            updateChecker.checkAsync();
+            updateChecker.logUpdateMessage(getLogger());
+        }
     }
 
     @Contract(pure = true)
