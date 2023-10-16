@@ -9,11 +9,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -25,12 +27,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
+import static net.kyori.adventure.text.format.TextDecoration.State.NOT_SET;
 
 public class MessageManager {
     private final PluginControl plugin;
     private static FileConfiguration lang;
-    private static final MiniMessage MM = MiniMessage.miniMessage();
+    private static MiniMessage mm;
     private static final String LANG_FILE_NAME = "lang.yml";
 
     public MessageManager(PluginControl plugin) {
@@ -56,7 +62,10 @@ public class MessageManager {
         final InputStream defConfigStream = plugin.getResource(LANG_FILE_NAME);
         if (defConfigStream == null) return;
 
-        var defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8));
+        var defConfig = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)
+        );
+
         for (String key : defConfig.getKeys(true)) {
             if (!lang.contains(key)) {
                 lang.set(key, defConfig.get(key));
@@ -64,6 +73,14 @@ public class MessageManager {
         }
 
         saveLang();
+
+        mm = MiniMessage.builder()
+                .tags(TagResolver.builder()
+                        .resolver(StandardTags.defaults())
+                        .resolver(getPrefix())
+                        .build())
+                .postProcessor(c -> c.decorationIfAbsent(ITALIC, NOT_SET))
+                .build();
     }
 
     public void saveLang() {
@@ -77,56 +94,50 @@ public class MessageManager {
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message) {
-        if (message.isEmpty() || message.isBlank()) return;
-        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, getPrefix()));
-    }
-
-    public void send(@NotNull CommandSender sender, String message, @NotNull TagResolver tag) {
-        if (message == null || message.isEmpty() || message.isBlank()) return;
-        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, getPrefix(), tag));
+        if (!message.isBlank()) {
+            plugin.adventure().sender(sender).sendMessage(mm.deserialize(message));
+        }
     }
 
     public void send(@NotNull CommandSender sender, @NotNull String message, @NotNull TagResolver... tags) {
-        if (message.isEmpty() || message.isBlank()) return;
-        List<TagResolver> allTags = new ArrayList<>();
-        allTags.add(getPrefix());
-        allTags.addAll(List.of(tags));
-        plugin.adventure().sender(sender).sendMessage(MM.deserialize(message, allTags.toArray(new TagResolver[0])));
+        if (!message.isBlank()) {
+            plugin.adventure().sender(sender).sendMessage(mm.deserialize(message, tags));
+        }
     }
 
     public void send(@NotNull CommandSender sender, @NotNull List<String> message, @NotNull TagResolver tag) {
-        if (message.isEmpty()) return;
-        for (var line : message) {
-            if (line.isEmpty()) continue;
-            plugin.adventure().sender(sender).sendMessage(MM.deserialize(line, getPrefix(), tag));
+        if (!message.isEmpty()) {
+            message.stream()
+                    .filter(Predicate.not(String::isBlank))
+                    .map(line -> mm.deserialize(line, tag))
+                    .forEach(line -> plugin.adventure().sender(sender).sendMessage(line));
         }
     }
 
     public void send(@NotNull String message, @NotNull TagResolver... tags) {
-        if (message.isEmpty() || message.isBlank()) return;
-        List<TagResolver> allTags = new ArrayList<>();
-        allTags.add(getPrefix());
-        allTags.addAll(List.of(tags));
-        var component = MM.deserialize(message, allTags.toArray(new TagResolver[0]));
-        plugin.adventure().sender(Bukkit.getConsoleSender()).sendMessage(component);
-        for (var player : Bukkit.getOnlinePlayers()) {
-            if (!player.hasPermission("plugincontrol.notify")) continue;
-            plugin.adventure().sender(player).sendMessage(component);
+        if (!message.isBlank()) {
+            var component = mm.deserialize(message, tags);
+            plugin.adventure().sender(Bukkit.getConsoleSender()).sendMessage(component);
+            for (var player : Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission("plugincontrol.notify")) {
+                    plugin.adventure().sender(player).sendMessage(component);
+                }
+            }
         }
     }
 
     public @NotNull Component getPluginListComponent(@NotNull Set<String> pluginList) {
         var joinConfiguration = JoinConfiguration.separators(
-                MM.deserialize(getPluginListSeparator()),
-                MM.deserialize(getPluginListSeparatorLast()));
+                mm.deserialize(getPluginListSeparator()),
+                mm.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
         if (!pluginList.isEmpty()) {
             var command = "/plugincontrol remove %s";
             for (var pluginName : pluginList) {
                 var color = plugin.isPluginEnabled(pluginName) ? getPluginEnabledColor() : getPluginDisabledColor();
-                componentList.add(MM.deserialize(color + pluginName)
-                        .hoverEvent(HoverEvent.showText(MM.deserialize(getPluginClickRemove())))
+                componentList.add(mm.deserialize(color + pluginName)
+                        .hoverEvent(HoverEvent.showText(mm.deserialize(getPluginClickRemove())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
             }
         }
@@ -136,15 +147,15 @@ public class MessageManager {
 
     public @NotNull Component getGroupListComponent(@NotNull Set<String> groupList) {
         var joinConfiguration = JoinConfiguration.separators(
-                MM.deserialize(getPluginListSeparator()),
-                MM.deserialize(getPluginListSeparatorLast()));
+                mm.deserialize(getPluginListSeparator()),
+                mm.deserialize(getPluginListSeparatorLast()));
 
         var componentList = new ArrayList<Component>();
         if (!groupList.isEmpty()) {
             var command = "/plugincontrol group delete %s";
             for (var groupName : groupList) {
-                componentList.add(MM.deserialize(groupName)
-                        .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickDelete())))
+                componentList.add(mm.deserialize(groupName)
+                        .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickDelete())))
                         .clickEvent(ClickEvent.runCommand(command.formatted(groupName))));
             }
         }
@@ -153,7 +164,7 @@ public class MessageManager {
     }
 
     public @NotNull Component getGroupListComponent(@NotNull Map<String, Set<String>> pluginGroups) {
-        if (pluginGroups.isEmpty()) return MM.deserialize(getGroupListEmpty());
+        if (pluginGroups.isEmpty()) return mm.deserialize(getGroupListEmpty());
 
         var componentList = new ArrayList<Component>();
         var groupCommand = "/plugincontrol group list %s";
@@ -164,10 +175,12 @@ public class MessageManager {
         for (var groupEntry : sortedGroups) {
             var groupName = groupEntry.getKey();
 
-            componentList.add(Component.newline().append(MM.deserialize(getGroupListName(),
-                            Placeholder.parsed("group", groupName))
-                    .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickInfo())))
-                    .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))));
+            componentList.add(Component.newline().append(mm.deserialize(getGroupListName(),
+                                    Placeholder.parsed("group", groupName))
+                            .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickInfo())))
+                            .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))
+                    )
+            );
 
             var plugins = groupEntry.getValue().stream()
                     .sorted(String.CASE_INSENSITIVE_ORDER)
@@ -176,23 +189,25 @@ public class MessageManager {
 
             if (!plugins.isEmpty()) {
                 var joinConfiguration = JoinConfiguration.builder()
-                        .separator(MM.deserialize(getPluginListSeparator()))
-                        .lastSeparator(MM.deserialize(getPluginListSeparatorLast()))
+                        .separator(mm.deserialize(getPluginListSeparator()))
+                        .lastSeparator(mm.deserialize(getPluginListSeparatorLast()))
                         .build();
 
                 var pluginCommand = "/plugincontrol group remove %s %s";
                 for (var pluginName : plugins) {
                     var color = plugin.isPluginEnabled(pluginName) ? getPluginEnabledColor() : getPluginDisabledColor();
                     pluginComponents.add(Component.text()
-                            .append(MM.deserialize(color + pluginName))
-                            .hoverEvent(HoverEvent.showText(MM.deserialize(getGroupClickRemovePlugin())))
+                            .append(mm.deserialize(color + pluginName))
+                            .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickRemovePlugin())))
                             .clickEvent(ClickEvent.runCommand(pluginCommand.formatted(groupName, pluginName)))
-                            .asComponent());
+                            .asComponent()
+                    );
                 }
 
                 componentList.add(Component.text(" [").color(NamedTextColor.GRAY)
                         .append(Component.join(joinConfiguration, pluginComponents))
-                        .append(Component.text("]").color(NamedTextColor.GRAY)));
+                        .append(Component.text("]").color(NamedTextColor.GRAY))
+                );
             } else {
                 componentList.add(Component.text(" [ ]").color(NamedTextColor.GRAY));
             }
@@ -202,14 +217,15 @@ public class MessageManager {
     }
 
     public Component deserialize(String string) {
-        return MM.deserialize(string);
+        return mm.deserialize(string);
     }
 
     public String serialize(String string) {
-        return LegacyComponentSerializer.builder().hexColors().build().serialize(MM.deserialize(string));
+        return LegacyComponentSerializer.builder().hexColors().build().serialize(mm.deserialize(string));
     }
 
-    public TagResolver.Single getPrefix() {
+    @Contract(" -> new")
+    public static TagResolver.@NotNull Single getPrefix() {
         return Placeholder.parsed("prefix", lang.getString("prefix", "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
