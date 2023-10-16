@@ -25,10 +25,11 @@ public class CheckSubCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
-        if (!config.isEnabled()) {
-            message.send(sender, message.getCheckingDisabled());
-        } else {
+        if (config.isEnabled()) {
+            message.send(sender, message.getCheckingPlugins());
             manager.checkPlugins();
+        } else {
+            message.send(sender, message.getCheckingDisabled());
         }
     }
 

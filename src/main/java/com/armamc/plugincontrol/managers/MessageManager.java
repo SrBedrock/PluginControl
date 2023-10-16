@@ -426,4 +426,8 @@ public class MessageManager {
     public String getGroupClickInfo() {
         return lang.getString("command.group-click-info");
     }
+
+    public String getCheckingPlugins() {
+        return lang.getString("command.checking-plugins");
+    }
 }
