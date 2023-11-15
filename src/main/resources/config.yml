@@ -1,8 +1,9 @@
+update-notifier: false
 enabled: false
 # Action to take if all listed plugins are not enabled.
 # log-to-console
 # disallow-player-login
 # shutdown-server
 action: log-to-console
-plugins: []
-groups: {}
+plugins: [ ]
+groups: { }

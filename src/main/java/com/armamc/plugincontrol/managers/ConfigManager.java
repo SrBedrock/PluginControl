@@ -46,6 +46,11 @@ public class ConfigManager {
         return Arrays.stream(Bukkit.getPluginManager().getPlugins()).toList().stream().map(Plugin::getName).toList();
     }
 
+    // update
+    public boolean isUpdateNotifierEnabled() {
+        return config.getBoolean("update-notifier", false);
+    }
+
     // enabled
     public boolean isEnabled() {
         if (config.getString(ENABLED) == null) {
