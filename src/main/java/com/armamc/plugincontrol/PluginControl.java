@@ -22,7 +22,7 @@ public final class PluginControl extends JavaPlugin {
         registerConfig();
         registerCommands();
         registerTask();
-        registerUpdateNotifier();
+        checkUpdate();
     }
 
     @Override
@@ -57,9 +57,9 @@ public final class PluginControl extends JavaPlugin {
         Bukkit.getScheduler().runTaskLater(this, pluginsManager::checkPlugins, 20L);
     }
 
-    private void registerUpdateNotifier() {
+    private void checkUpdate() {
         if (configManager.isUpdateNotifierEnabled()) {
-            UpdateChecker updateChecker = new UpdateChecker("SrBedrock", "PluginControl", "1.1.1");
+            UpdateChecker updateChecker = new UpdateChecker("SrBedrock", "PluginControl", "1.2.0");
             updateChecker.checkAsync();
             updateChecker.logUpdateMessage(getLogger());
         }

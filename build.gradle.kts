@@ -49,7 +49,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.20.2")
+        minecraftVersion("1.20.4")
         jvmArguments.add("-Dcom.mojang.eula.agree=true")
         jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
         jvmArguments.add("-Dfile.encoding=UTF8")
