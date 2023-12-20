@@ -83,6 +83,7 @@ command:
     - '<aqua>/<command> disable <yellow>- Disable the plugin'
     - '<aqua>/<command> toggle <yellow>- Enable or disable the plugin'
     - '<aqua>/<command> list <yellow>- List all required plugins'
+    - '<aqua>/<command> check <yellow>- Checks if required plugins are activated'
     - '<aqua>/<command> reload <yellow>- Reload the config and language'
     - '<aqua>/<command> help <yellow>- Show this help'
     - '<gradient:aqua:green>=========================</gradient>'
