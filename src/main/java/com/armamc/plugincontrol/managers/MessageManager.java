@@ -446,4 +446,20 @@ public class MessageManager {
     public String getCheckingPlugins() {
         return lang.getString("command.checking-plugins");
     }
+
+    public String getCheckDependError() {
+        return lang.getString("command.check-depend-error");
+    }
+
+    public String getCheckDependNotFound() {
+        return lang.getString("command.check-depend-not-found");
+    }
+
+    public String getCheckDependDepend() {
+        return lang.getString("command.check-depend-depend");
+    }
+
+    public String getCheckDependSoftDepend() {
+        return lang.getString("command.check-depend-softdepend");
+    }
 }
