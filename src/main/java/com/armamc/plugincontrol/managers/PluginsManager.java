@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.armamc.plugincontrol.Placeholders.GROUPS;
+import static com.armamc.plugincontrol.Placeholders.PLUGINS;
+
 public class PluginsManager {
     private final PluginControl plugin;
     private final ConfigManager config;
@@ -64,12 +67,12 @@ public class PluginsManager {
     private void registerAction(@NotNull Set<String> missingPlugins, @NotNull Set<String> missingGroups) {
         TagResolver.Single pluginTag = null;
         if (!missingPlugins.isEmpty()) {
-            pluginTag = Placeholder.component("plugins", message.getPluginListComponent(missingPlugins));
+            pluginTag = Placeholder.component(PLUGINS, message.getPluginListComponent(missingPlugins));
         }
 
         TagResolver.Single groupTag = null;
         if (!missingGroups.isEmpty()) {
-            groupTag = Placeholder.component("groups", message.getGroupListComponent(missingGroups));
+            groupTag = Placeholder.component(GROUPS, message.getGroupListComponent(missingGroups));
         }
 
         switch (ConfigManager.ActionType.from(config.getAction().toLowerCase())) {

@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.armamc.plugincontrol.Placeholders.COMMAND;
+
+
 public class HelpSubCommand implements SubCommand {
     private final MessageManager message;
 
@@ -20,7 +23,7 @@ public class HelpSubCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String[] args) {
-        message.send(sender, message.getHelpList(), Placeholder.parsed("command", label));
+        message.send(sender, message.getHelpList(), Placeholder.parsed(COMMAND, label));
     }
 
     @Override

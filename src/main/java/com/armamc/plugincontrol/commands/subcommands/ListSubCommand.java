@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.armamc.plugincontrol.Placeholders.GROUPS;
+import static com.armamc.plugincontrol.Placeholders.PLUGINS;
+
 public class ListSubCommand implements SubCommand {
     private final ConfigManager config;
     private final MessageManager message;
@@ -27,14 +30,14 @@ public class ListSubCommand implements SubCommand {
             message.send(sender, message.getPluginListEmpty());
         } else {
             message.send(sender, message.getPluginList(),
-                    Placeholder.component("plugins", message.getPluginListComponent(config.getPluginList())));
+                    Placeholder.component(PLUGINS, message.getPluginListComponent(config.getPluginList())));
         }
 
         if (config.getPluginGroups() == null || config.getPluginGroups().isEmpty()) {
             message.send(sender, message.getGroupListEmpty());
         } else {
             message.send(sender, message.getGroupList(),
-                    Placeholder.component("groups", message.getGroupListComponent(config.getPluginGroups())));
+                    Placeholder.component(GROUPS, message.getGroupListComponent(config.getPluginGroups())));
         }
     }
 

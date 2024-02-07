@@ -40,7 +40,7 @@ public final class PluginControl extends JavaPlugin {
         saveDefaultConfig();
         configManager = new ConfigManager(this);
         messageManager = new MessageManager(this);
-        adventure = BukkitAudiences.create(this);
+        this.adventure = BukkitAudiences.create(this);
         pluginsManager = new PluginsManager(this);
     }
 

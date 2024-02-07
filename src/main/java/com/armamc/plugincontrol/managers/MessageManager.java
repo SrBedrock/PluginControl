@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.armamc.plugincontrol.Placeholders.PREFIX;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.State.NOT_SET;
 
@@ -220,7 +221,7 @@ public class MessageManager {
 
     @Contract(" -> new")
     public TagResolver.@NotNull Single prefix() {
-        return Placeholder.parsed("prefix", lang.getString("prefix", "<dark_gray>[<red>PluginControl<dark_gray>]"));
+        return Placeholder.parsed(PREFIX, lang.getString(PREFIX, "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
     public String getKickMessage() {

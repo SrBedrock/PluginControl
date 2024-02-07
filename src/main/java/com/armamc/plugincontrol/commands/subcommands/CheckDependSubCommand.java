@@ -38,7 +38,6 @@ public class CheckDependSubCommand implements SubCommand {
 
         Map<String, List<String>> dependCheck = new HashMap<>();
         String targetPlugin = args[0];
-
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 
             String pluginName = plugin.getName();

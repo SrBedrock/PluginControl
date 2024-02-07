@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.armamc.plugincontrol.Placeholders.ACTION;
+import static com.armamc.plugincontrol.Placeholders.ACTIONS;
+
 public class ActionSubCommand implements SubCommand {
     private final ConfigManager config;
     private final MessageManager message;
@@ -29,20 +32,20 @@ public class ActionSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getActionType(), Placeholder.parsed("action", config.getAction().toLowerCase()));
+            message.send(sender, message.getActionType(), Placeholder.parsed(ACTION, config.getAction().toLowerCase()));
             return;
         }
 
         try {
             var actionType = ConfigManager.ActionType.from(args[0].toLowerCase());
             config.setAction(actionType);
-            message.send(sender, message.getActionSet(), Placeholder.parsed("action", actionType.getAction()));
+            message.send(sender, message.getActionSet(), Placeholder.parsed(ACTION, actionType.getAction()));
             if (actionType != ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN) {
                 manager.unregisterListener();
             }
             manager.checkPlugins();
         } catch (IllegalArgumentException e) {
-            message.send(sender, message.getActionTypeList(), Placeholder.parsed("actions", String.join(", ", actions)));
+            message.send(sender, message.getActionTypeList(), Placeholder.parsed(ACTIONS, String.join(", ", actions)));
         }
     }
 

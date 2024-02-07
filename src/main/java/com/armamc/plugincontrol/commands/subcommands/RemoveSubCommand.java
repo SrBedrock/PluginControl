@@ -11,11 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.armamc.plugincontrol.Placeholders.COMMAND;
+import static com.armamc.plugincontrol.Placeholders.PLUGIN;
+
 public class RemoveSubCommand implements SubCommand {
     private final ConfigManager config;
     private final MessageManager message;
-    private static final String PLUGIN_TAG = "plugin";
-    private static final String COMMAND_TAG = "command";
 
     @Contract(pure = true)
     public RemoveSubCommand(@NotNull PluginControl plugin) {
@@ -31,7 +32,7 @@ public class RemoveSubCommand implements SubCommand {
         }
 
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
+            message.send(sender, message.getPluginRemoveError(), Placeholder.parsed(COMMAND, label));
             return;
         }
 
@@ -43,9 +44,9 @@ public class RemoveSubCommand implements SubCommand {
         }
 
         if (config.removePlugin(target)) {
-            message.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN_TAG, target));
+            message.send(sender, message.getPluginRemoved(), Placeholder.parsed(PLUGIN, target));
         } else {
-            message.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN_TAG, target));
+            message.send(sender, message.getPluginNotFound(), Placeholder.parsed(PLUGIN, target));
         }
     }
 
