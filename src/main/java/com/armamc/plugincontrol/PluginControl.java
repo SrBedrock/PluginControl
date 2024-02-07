@@ -59,7 +59,7 @@ public final class PluginControl extends JavaPlugin {
 
     private void checkUpdate() {
         if (configManager.isUpdateNotifierEnabled()) {
-            UpdateChecker updateChecker = new UpdateChecker("SrBedrock", "PluginControl", "1.2.0");
+            UpdateChecker updateChecker = new UpdateChecker("SrBedrock", "PluginControl", "1.2.1");
             updateChecker.checkAsync();
             updateChecker.logUpdateMessage(getLogger());
         }
