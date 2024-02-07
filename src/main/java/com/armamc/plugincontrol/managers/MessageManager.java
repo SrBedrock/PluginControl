@@ -35,8 +35,8 @@ import static net.kyori.adventure.text.format.TextDecoration.State.NOT_SET;
 
 public class MessageManager {
     private final PluginControl plugin;
-    private static FileConfiguration lang;
-    private static MiniMessage mm;
+    private FileConfiguration lang;
+    private MiniMessage mm;
     private static final String LANG_FILE_NAME = "lang.yml";
 
     public MessageManager(PluginControl plugin) {
@@ -51,20 +51,18 @@ public class MessageManager {
             plugin.saveResource(LANG_FILE_NAME, false);
         }
 
-        lang = YamlConfiguration.loadConfiguration(langFile);
+        this.lang = YamlConfiguration.loadConfiguration(langFile);
         reloadLang();
     }
 
     public void reloadLang() {
         var langFile = new File(plugin.getDataFolder(), LANG_FILE_NAME);
-        lang = YamlConfiguration.loadConfiguration(langFile);
+        this.lang = YamlConfiguration.loadConfiguration(langFile);
 
         final InputStream defConfigStream = plugin.getResource(LANG_FILE_NAME);
         if (defConfigStream == null) return;
 
-        var defConfig = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)
-        );
+        var defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8));
 
         for (String key : defConfig.getKeys(true)) {
             if (!lang.contains(key)) {
@@ -74,10 +72,10 @@ public class MessageManager {
 
         saveLang();
 
-        mm = MiniMessage.builder()
+        this.mm = MiniMessage.builder()
                 .tags(TagResolver.builder()
                         .resolver(StandardTags.defaults())
-                        .resolver(getPrefix())
+                        .resolver(prefix())
                         .build())
                 .postProcessor(c -> c.decorationIfAbsent(ITALIC, NOT_SET))
                 .build();
@@ -133,12 +131,11 @@ public class MessageManager {
 
         var componentList = new ArrayList<Component>();
         if (!pluginList.isEmpty()) {
-            var command = "/plugincontrol remove %s";
             for (var pluginName : pluginList) {
                 var color = plugin.isPluginEnabled(pluginName) ? getPluginEnabledColor() : getPluginDisabledColor();
                 componentList.add(mm.deserialize(color + pluginName)
                         .hoverEvent(HoverEvent.showText(mm.deserialize(getPluginClickRemove())))
-                        .clickEvent(ClickEvent.runCommand(command.formatted(pluginName))));
+                        .clickEvent(ClickEvent.callback(c -> plugin.getConfigManager().removePlugin(pluginName))));
             }
         }
 
@@ -152,11 +149,10 @@ public class MessageManager {
 
         var componentList = new ArrayList<Component>();
         if (!groupList.isEmpty()) {
-            var command = "/plugincontrol group delete %s";
             for (var groupName : groupList) {
                 componentList.add(mm.deserialize(groupName)
                         .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickDelete())))
-                        .clickEvent(ClickEvent.runCommand(command.formatted(groupName))));
+                        .clickEvent(ClickEvent.callback(c -> plugin.getConfigManager().removeGroup(groupName))));
             }
         }
 
@@ -175,11 +171,9 @@ public class MessageManager {
         for (var groupEntry : sortedGroups) {
             var groupName = groupEntry.getKey();
 
-            componentList.add(Component.newline().append(mm.deserialize(getGroupListName(),
-                                    Placeholder.parsed("group", groupName))
-                            .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickInfo())))
-                            .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName)))
-                    )
+            componentList.add(Component.newline().append(mm.deserialize(getGroupListName(), Placeholder.parsed("group", groupName))
+                    .hoverEvent(HoverEvent.showText(mm.deserialize(getGroupClickInfo())))
+                    .clickEvent(ClickEvent.runCommand(groupCommand.formatted(groupName))))
             );
 
             var plugins = groupEntry.getValue().stream()
@@ -225,7 +219,7 @@ public class MessageManager {
     }
 
     @Contract(" -> new")
-    public static TagResolver.@NotNull Single getPrefix() {
+    public TagResolver.@NotNull Single prefix() {
         return Placeholder.parsed("prefix", lang.getString("prefix", "<dark_gray>[<red>PluginControl<dark_gray>]"));
     }
 
