@@ -12,6 +12,9 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://hangar.papermc.io/SrBedrock/PluginControl" target="_blank">
   <img alt="hangar" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_vector.svg" title="Available on Hangar">
 </a>
+<a href="https://www.spigotmc.org/resources/plugincontrol.110590/" target="_blank">
+  <img alt="hangar" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/spigot_vector.svg" title="Available on Spigot">
+</a>
 <a href="https://github.com/SrBedrock/PluginControl/actions" target="_blank">
   <img alt="github" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg" title="Available on Github">
 </a>
@@ -27,8 +30,15 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://purpurmc.org/" target="_blank">
   <img alt="purpur" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/purpur_vector.svg" title="Tested on Purpur">
 </a>
+
+## Tools Used
+
 <a href="https://openjdk.org/projects/jdk/17/" target="_blank">
   <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java17_vector.svg">
+</a>
+
+<a href="https://gradle.org/" target="_blank">
+  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/gradle_vector.svg">
 </a>
 
 ## Wiki
