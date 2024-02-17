@@ -3,6 +3,7 @@ package com.armamc.plugincontrol.commands;
 import com.armamc.plugincontrol.PluginControl;
 import com.armamc.plugincontrol.commands.subcommands.ActionSubCommand;
 import com.armamc.plugincontrol.commands.subcommands.AddSubCommand;
+import com.armamc.plugincontrol.commands.subcommands.CheckDependSubCommand;
 import com.armamc.plugincontrol.commands.subcommands.CheckSubCommand;
 import com.armamc.plugincontrol.commands.subcommands.DisableSubCommand;
 import com.armamc.plugincontrol.commands.subcommands.EnableSubCommand;
@@ -36,6 +37,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         subCommands.put("enable", new EnableSubCommand(plugin));
         subCommands.put("disable", new DisableSubCommand(plugin));
         subCommands.put("check", new CheckSubCommand(plugin));
+        subCommands.put("check-depend", new CheckDependSubCommand(plugin));
         subCommands.put("toggle", new ToggleSubCommand(plugin));
         subCommands.put("add", new AddSubCommand(plugin));
         subCommands.put("remove", new RemoveSubCommand(plugin));

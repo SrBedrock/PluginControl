@@ -17,13 +17,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static com.armamc.plugincontrol.Placeholders.ACTION;
+import static com.armamc.plugincontrol.Placeholders.ENABLED;
+import static com.armamc.plugincontrol.Placeholders.GROUPS;
+import static com.armamc.plugincontrol.Placeholders.PLUGINS;
+
 public class ConfigManager {
     private final PluginControl plugin;
     private final FileConfiguration config;
-    private static final String PLUGINS_PATH = "plugins";
-    private static final String GROUPS_PATH = "groups";
-    private static final String ENABLED = "enabled";
-    private static final String ACTION = "action";
     private Set<String> pluginList;
     private Map<String, Set<String>> pluginGroups;
 
@@ -53,8 +54,8 @@ public class ConfigManager {
 
     // enabled
     public boolean isEnabled() {
-        if (config.getString(ENABLED) == null) {
-            config.set(ENABLED, "false");
+        if (config.getBoolean(ENABLED)) {
+            config.set(ENABLED, false);
             saveConfig();
         }
         return config.getBoolean(ENABLED);
@@ -82,8 +83,8 @@ public class ConfigManager {
     // plugins
     private void loadPlugins() {
         pluginList = new HashSet<>();
-        if (config.contains(PLUGINS_PATH)) {
-            var plugins = config.getStringList(PLUGINS_PATH);
+        if (config.contains(PLUGINS)) {
+            var plugins = config.getStringList(PLUGINS);
             if (!plugins.isEmpty()) {
                 pluginList.addAll(plugins);
             }
@@ -97,7 +98,7 @@ public class ConfigManager {
     }
 
     private void savePluginList() {
-        config.set(PLUGINS_PATH, new ArrayList<>(pluginList));
+        config.set(PLUGINS, new ArrayList<>(pluginList));
         saveConfig();
     }
 
@@ -134,24 +135,24 @@ public class ConfigManager {
     // groups
     private void loadGroups() {
         pluginGroups = new HashMap<>();
-        if (config.contains(GROUPS_PATH)) {
-            var groupsSection = config.getConfigurationSection(GROUPS_PATH);
+        if (config.contains(GROUPS)) {
+            var groupsSection = config.getConfigurationSection(GROUPS);
             if (groupsSection != null) {
                 var groupNames = groupsSection.getKeys(false);
                 for (var groupName : groupNames) {
-                    var plugins = new HashSet<>(config.getStringList(GROUPS_PATH + "." + groupName));
+                    var plugins = new HashSet<>(config.getStringList(GROUPS + "." + groupName));
                     pluginGroups.put(groupName, plugins);
                 }
             }
         } else {
-            config.createSection(GROUPS_PATH);
+            config.createSection(GROUPS);
         }
         savePluginGroup();
     }
 
     private void savePluginGroup() {
         for (var entry : pluginGroups.entrySet()) {
-            config.set(GROUPS_PATH + "." + entry.getKey(), new ArrayList<>(entry.getValue()));
+            config.set(GROUPS + "." + entry.getKey(), new ArrayList<>(entry.getValue()));
         }
         saveConfig();
     }
@@ -200,7 +201,7 @@ public class ConfigManager {
             var pluginsInGroup = pluginGroups.get(groupName);
             var removed = pluginsInGroup.removeIf(p -> p.equalsIgnoreCase(pluginName));
             if (removed) {
-                config.set(GROUPS_PATH + "." + groupName, new ArrayList<>(pluginsInGroup));
+                config.set(GROUPS + "." + groupName, new ArrayList<>(pluginsInGroup));
                 saveConfig();
                 return true;
             }
@@ -211,7 +212,7 @@ public class ConfigManager {
     public boolean removeGroup(String groupName) {
         if (pluginGroups.containsKey(groupName)) {
             pluginGroups.remove(groupName);
-            config.set(GROUPS_PATH + "." + groupName, null);
+            config.set(GROUPS + "." + groupName, null);
             savePluginGroup();
             return true;
         } else {

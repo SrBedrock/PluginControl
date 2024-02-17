@@ -11,11 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.armamc.plugincontrol.Placeholders.COMMAND;
+import static com.armamc.plugincontrol.Placeholders.PLUGIN;
+
 public class AddSubCommand implements SubCommand {
     private final ConfigManager config;
     private final MessageManager message;
-    private static final String PLUGIN_TAG = "plugin";
-    private static final String COMMAND_TAG = "command";
 
     @Contract(pure = true)
     public AddSubCommand(@NotNull PluginControl plugin) {
@@ -26,22 +27,22 @@ public class AddSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND_TAG, label));
+            message.send(sender, message.getPluginAddError(), Placeholder.parsed(COMMAND, label));
             return;
         }
 
         var target = args[0];
         if (target.equals("all")) {
             config.addAllPlugins(config.getServerPlugins());
-            message.send(sender, message.getAllPluginsAdded(), Placeholder.component(PLUGIN_TAG,
-                    message.getPluginListComponent(config.getPluginList())));
+            message.send(sender, message.getAllPluginsAdded(),
+                    Placeholder.component(PLUGIN, message.getPluginListComponent(config.getPluginList())));
             return;
         }
 
         if (config.addPlugin(target)) {
-            message.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN_TAG, target));
+            message.send(sender, message.getPluginAdded(), Placeholder.parsed(PLUGIN, target));
         } else {
-            message.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN_TAG, target));
+            message.send(sender, message.getPluginAlreadyAdded(), Placeholder.parsed(PLUGIN, target));
         }
     }
 

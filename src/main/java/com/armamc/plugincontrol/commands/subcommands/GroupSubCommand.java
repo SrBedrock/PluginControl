@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.armamc.plugincontrol.Placeholders.COMMAND;
+import static com.armamc.plugincontrol.Placeholders.GROUP;
+import static com.armamc.plugincontrol.Placeholders.PLUGIN;
+
 public class GroupSubCommand implements SubCommand {
     private final ConfigManager config;
     private final MessageManager message;
-    private static final String GROUP_TAG = "group";
-    private static final String PLUGIN_TAG = "plugin";
-    private static final String COMMAND_TAG = "command";
     private final List<String> subcommands;
 
     @Contract(pure = true)
@@ -30,37 +31,37 @@ public class GroupSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, Command command, String label, String @NotNull [] args) {
         if (args.length == 0 || args[0].isBlank()) {
-            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
+            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND, label));
             return;
         }
 
         var target = args[0];
         if (target.equalsIgnoreCase("create")) {
             if (args.length == 1) {
-                message.send(sender, message.getGroupCreateError(), Placeholder.parsed(COMMAND_TAG, label));
+                message.send(sender, message.getGroupCreateError(), Placeholder.parsed(COMMAND, label));
                 return;
             }
 
             var targetGroup = args[1];
             if (config.addGroup(targetGroup)) {
-                message.send(sender, message.getGroupCreated(), Placeholder.parsed(GROUP_TAG, targetGroup));
+                message.send(sender, message.getGroupCreated(), Placeholder.parsed(GROUP, targetGroup));
             } else {
-                message.send(sender, message.getGroupAlreadyExist(), Placeholder.parsed(GROUP_TAG, targetGroup));
+                message.send(sender, message.getGroupAlreadyExist(), Placeholder.parsed(GROUP, targetGroup));
             }
             return;
         }
 
         if (target.equalsIgnoreCase("delete")) {
             if (args.length == 1) {
-                message.send(sender, message.getGroupRemoveError(), Placeholder.parsed(COMMAND_TAG, label));
+                message.send(sender, message.getGroupRemoveError(), Placeholder.parsed(COMMAND, label));
                 return;
             }
 
             var targetGroup = args[1];
             if (config.removeGroup(targetGroup)) {
-                message.send(sender, message.getGroupRemoved(), Placeholder.parsed(GROUP_TAG, targetGroup));
+                message.send(sender, message.getGroupRemoved(), Placeholder.parsed(GROUP, targetGroup));
             } else {
-                message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP_TAG, targetGroup));
+                message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP, targetGroup));
             }
             return;
         }
@@ -79,7 +80,7 @@ public class GroupSubCommand implements SubCommand {
             var targetGroup = args[1];
             if (isValidGroup(sender, targetGroup)) {
                 var plugins = config.getPluginsOfGroup(targetGroup);
-                message.send(sender, message.getGroupPluginList(), Placeholder.parsed(GROUP_TAG, targetGroup),
+                message.send(sender, message.getGroupPluginList(), Placeholder.parsed(GROUP, targetGroup),
                         Placeholder.component("plugins", message.getPluginListComponent(plugins)));
             }
             return;
@@ -87,30 +88,30 @@ public class GroupSubCommand implements SubCommand {
 
         if (target.equalsIgnoreCase("add")) {
             if (args.length <= 2) {
-                message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(COMMAND_TAG, label));
+                message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(COMMAND, label));
                 return;
             }
 
             var targetGroup = args[1];
             if (config.isGroupNonexistent(targetGroup)) {
-                message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP_TAG, targetGroup));
+                message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP, targetGroup));
                 return;
             }
 
             var targetPlugin = args[2];
             if (config.addPluginToGroup(targetGroup, targetPlugin)) {
-                message.send(sender, message.getPluginAddedToGroup(), Placeholder.parsed(GROUP_TAG, targetGroup),
-                        Placeholder.parsed(PLUGIN_TAG, targetPlugin));
+                message.send(sender, message.getPluginAddedToGroup(), Placeholder.parsed(GROUP, targetGroup),
+                        Placeholder.parsed(PLUGIN, targetPlugin));
             } else {
-                message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(GROUP_TAG, targetGroup),
-                        Placeholder.parsed(PLUGIN_TAG, targetPlugin));
+                message.send(sender, message.getPluginAddToGroupError(), Placeholder.parsed(GROUP, targetGroup),
+                        Placeholder.parsed(PLUGIN, targetPlugin));
             }
             return;
         }
 
         if (target.equalsIgnoreCase("remove")) {
             if (args.length == 1) {
-                message.send(sender, message.getPluginRemoveFromGroupError(), Placeholder.parsed(COMMAND_TAG, label));
+                message.send(sender, message.getPluginRemoveFromGroupError(), Placeholder.parsed(COMMAND, label));
                 return;
             }
 
@@ -118,18 +119,18 @@ public class GroupSubCommand implements SubCommand {
             if (isValidGroup(sender, targetGroup)) {
                 var targetPlugin = args[2];
                 if (config.removePluginFromGroup(targetGroup, targetPlugin)) {
-                    message.send(sender, message.getPluginRemovedFromGroup(), Placeholder.parsed(GROUP_TAG, targetGroup),
-                            Placeholder.parsed(PLUGIN_TAG, targetPlugin));
+                    message.send(sender, message.getPluginRemovedFromGroup(), Placeholder.parsed(GROUP, targetGroup),
+                            Placeholder.parsed(PLUGIN, targetPlugin));
                 } else {
-                    message.send(sender, message.getPluginNotInGroupError(), Placeholder.parsed(GROUP_TAG, targetGroup),
-                            Placeholder.parsed(PLUGIN_TAG, targetPlugin));
+                    message.send(sender, message.getPluginNotInGroupError(), Placeholder.parsed(GROUP, targetGroup),
+                            Placeholder.parsed(PLUGIN, targetPlugin));
                 }
             }
             return;
         }
 
         if (target.equalsIgnoreCase("help")) {
-            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND_TAG, label));
+            message.send(sender, message.getGroupHelp(), Placeholder.parsed(COMMAND, label));
         }
     }
 
@@ -176,12 +177,12 @@ public class GroupSubCommand implements SubCommand {
 
     private boolean isValidGroup(CommandSender sender, String groupName) {
         if (config.isGroupNonexistent(groupName)) {
-            message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP_TAG, groupName));
+            message.send(sender, message.getGroupNotFound(), Placeholder.parsed(GROUP, groupName));
             return false;
         }
 
         if (config.isGroupEmpty(groupName)) {
-            message.send(sender, message.getGroupHasNoPlugins(), Placeholder.parsed(GROUP_TAG, groupName));
+            message.send(sender, message.getGroupHasNoPlugins(), Placeholder.parsed(GROUP, groupName));
             return false;
         }
 
