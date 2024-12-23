@@ -20,7 +20,7 @@ dependencies {
     compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly(dependencyNotation = "net.kyori:adventure-api:4.18.0")
     compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.3.4")
-    compileOnly(dependencyNotation = "net.kyori:adventure-text-minimessage:4.17.0")
+    compileOnly(dependencyNotation = "net.kyori:adventure-text-minimessage:4.18.0")
     compileOnly(dependencyNotation = "net.kyori:adventure-text-serializer-legacy:4.18.0")
 }
 
