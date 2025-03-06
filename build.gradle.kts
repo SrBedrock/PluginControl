@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.TechnicJelle:UpdateCheckerJava:v2.5")
+    implementation("com.github.TechnicJelle:UpdateCheckerJava:v2.5.1")
     compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly(dependencyNotation = "net.kyori:adventure-api:4.19.0")
     compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.3.4")
