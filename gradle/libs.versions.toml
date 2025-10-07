@@ -1,0 +1,34 @@
+[versions]
+java = "17"
+
+# plugins
+shadow = "9.2.2"
+run-paper = "3.0.1"
+
+# libs
+updatechecker = "v2.5.1"
+spigot = "1.21.9-R0.1-SNAPSHOT"
+adventure-api = "4.25.0"
+adventure-platform-bukkit = "4.4.1"
+
+[libraries]
+updatecheckerjava = { module = "com.github.TechnicJelle:UpdateCheckerJava", version.ref = "updatechecker" }
+
+spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot" }
+
+adventure-api = { module = "net.kyori:adventure-api", version.ref = "adventure-api" }
+adventure-minimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure-api" }
+adventure-serializer-legacy = { module = "net.kyori:adventure-text-serializer-legacy", version.ref = "adventure-api" }
+adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventure-platform-bukkit" }
+
+[bundles]
+adventure = [
+    "adventure-api",
+    "adventure-minimessage",
+    "adventure-serializer-legacy",
+    "adventure-platform-bukkit"
+]
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }

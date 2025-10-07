@@ -6,10 +6,10 @@ authors: [ ThiagoROX ]
 description: This minecraft plugin allows you to define which plugin has to be successfully enabled after server startup.
 website: https://github.com/SrBedrock/PluginControl
 libraries:
-  - "net.kyori:adventure-api:4.16.0"
-  - "net.kyori:adventure-platform-bukkit:4.3.2"
-  - "net.kyori:adventure-text-minimessage:4.16.0"
-  - "net.kyori:adventure-text-serializer-legacy:4.16.0"
+  - "net.kyori:adventure-api:${adventure}"
+  - "net.kyori:adventure-text-minimessage:${adventure}"
+  - "net.kyori:adventure-text-serializer-legacy:${adventure}"
+  - "net.kyori:adventure-platform-bukkit:${platform}"
 
 commands:
   plugincontrol:

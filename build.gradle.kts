@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "9.2.2"
-    id("xyz.jpenilla.run-paper") version "3.0.1"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.run.paper)
 }
 
 group = "com.armamc"
@@ -16,16 +16,13 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.TechnicJelle:UpdateCheckerJava:v2.5.1")
-    compileOnly(dependencyNotation = "org.spigotmc:spigot-api:1.21.9-R0.1-SNAPSHOT")
-    compileOnly(dependencyNotation = "net.kyori:adventure-api:4.25.0")
-    compileOnly(dependencyNotation = "net.kyori:adventure-platform-bukkit:4.4.1")
-    compileOnly(dependencyNotation = "net.kyori:adventure-text-minimessage:4.25.0")
-    compileOnly(dependencyNotation = "net.kyori:adventure-text-serializer-legacy:4.25.0")
+    implementation(libs.updatecheckerjava)
+    compileOnly(libs.spigot.api)
+    compileOnly(libs.bundles.adventure)
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
 }
 
 tasks {
@@ -34,8 +31,13 @@ tasks {
     }
 
     withType<ProcessResources> {
+        val props = mapOf(
+            "version" to project.version,
+            "adventure" to libs.versions.adventure.api.get(),
+            "platform" to libs.versions.adventure.platform.bukkit.get()
+        )
         filesMatching("plugin.yml") {
-            expand("version" to project.version)
+            expand(props)
         }
     }
 
@@ -49,7 +51,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.20.4")
+        minecraftVersion("1.21.8")
         jvmArguments.add("-Dcom.mojang.eula.agree=true")
         jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
         jvmArguments.add("-Dfile.encoding=UTF8")
