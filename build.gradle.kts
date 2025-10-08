@@ -51,7 +51,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.8")
+        minecraftVersion("1.21.10")
         jvmArguments.add("-Dcom.mojang.eula.agree=true")
         jvmArguments.add("-Dnet.kyori.ansi.colorLevel=truecolor")
         jvmArguments.add("-Dfile.encoding=UTF8")

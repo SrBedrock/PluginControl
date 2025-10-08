@@ -7,7 +7,7 @@ run-paper = "3.0.1"
 
 # libs
 updatechecker = "v2.5.1"
-spigot = "1.21.9-R0.1-SNAPSHOT"
+spigot = "1.21.10-R0.1-SNAPSHOT"
 adventure-api = "4.25.0"
 adventure-platform-bukkit = "4.4.1"
 
