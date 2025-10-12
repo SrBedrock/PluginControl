@@ -15,7 +15,7 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://www.spigotmc.org/resources/plugincontrol.110590/" target="_blank">
   <img alt="hangar" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/spigot_vector.svg" title="Available on Spigot">
 </a>
-<a href="https://github.com/SrBedrock/PluginControl/actions" target="_blank">
+<a href="https://github.com/SrBedrock/PluginControl/releases" target="_blank">
   <img alt="github" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg" title="Available on Github">
 </a>
 
