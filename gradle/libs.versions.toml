@@ -3,7 +3,7 @@ java = "17"
 
 # plugins
 shadow = "9.2.2"
-run-paper = "3.0.1"
+run-paper = "3.0.2"
 
 # libs
 updatechecker = "v2.5.1"
