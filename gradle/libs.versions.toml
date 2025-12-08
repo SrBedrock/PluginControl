@@ -2,7 +2,7 @@
 java = "17"
 
 # plugins
-shadow = "9.2.2"
+shadow = "9.3.0"
 run-paper = "3.0.2"
 
 # libs
