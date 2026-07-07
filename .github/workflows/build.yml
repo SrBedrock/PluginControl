@@ -28,20 +28,20 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v7
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           check-latest: true
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3.5.0
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: build
       - name: Upload Plugin
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: PluginControl
           path: build/libs/*.jar
