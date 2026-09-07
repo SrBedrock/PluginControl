@@ -11,6 +11,9 @@ storage:
     name: plugincontrol
     username: root
     password: ""
+    use-ssl: true
+    require-ssl: true
+    verify-server-certificate: true
 # Action to take if all listed plugins are not enabled.
 # log-to-console
 # disallow-player-login

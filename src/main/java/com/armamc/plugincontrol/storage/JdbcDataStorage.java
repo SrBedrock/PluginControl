@@ -53,8 +53,11 @@ public final class JdbcDataStorage implements DataStorage {
                 var host = config.getString("storage.database.host", "localhost");
                 var port = config.getInt("storage.database.port", 3306);
                 var database = config.getString("storage.database.name", "plugincontrol");
-                yield "jdbc:mysql://%s:%d/%s?useSSL=false&characterEncoding=utf8"
-                        .formatted(host, port, database);
+                var useSsl = config.getBoolean("storage.database.use-ssl", true);
+                var requireSsl = config.getBoolean("storage.database.require-ssl", useSsl);
+                var verifyCertificate = config.getBoolean("storage.database.verify-server-certificate", useSsl);
+                yield "jdbc:mysql://%s:%d/%s?useSSL=%s&requireSSL=%s&verifyServerCertificate=%s&characterEncoding=utf8"
+                        .formatted(host, port, database, useSsl, requireSsl, verifyCertificate);
             }
             default -> throw new IllegalArgumentException("Unsupported data storage: " + type);
         };
@@ -65,6 +68,11 @@ public final class JdbcDataStorage implements DataStorage {
              var statement = connection.createStatement()) {
             statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS plugincontrol_plugins (
+                        name VARCHAR(255) PRIMARY KEY
+                    )
+                    """);
+            statement.executeUpdate("""
+                    CREATE TABLE IF NOT EXISTS plugincontrol_group_names (
                         name VARCHAR(255) PRIMARY KEY
                     )
                     """);
@@ -85,10 +93,15 @@ public final class JdbcDataStorage implements DataStorage {
         try (var connection = dataSource.getConnection();
              var pluginsStatement = connection.createStatement();
              var pluginsResult = pluginsStatement.executeQuery("SELECT name FROM plugincontrol_plugins");
+             var namesStatement = connection.createStatement();
+             var namesResult = namesStatement.executeQuery("SELECT name FROM plugincontrol_group_names");
              var groupsStatement = connection.createStatement();
              var groupsResult = groupsStatement.executeQuery("SELECT name, plugin FROM plugincontrol_groups")) {
             while (pluginsResult.next()) {
                 plugins.add(pluginsResult.getString("name"));
+            }
+            while (namesResult.next()) {
+                groups.put(namesResult.getString("name"), new HashSet<>());
             }
             while (groupsResult.next()) {
                 groups.computeIfAbsent(groupsResult.getString("name"), ignored -> new HashSet<>())
@@ -105,17 +118,22 @@ public final class JdbcDataStorage implements DataStorage {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try (var clearPlugins = connection.createStatement();
-                 var clearGroups = connection.createStatement()) {
+                 var clearGroups = connection.createStatement();
+                 var clearGroupNames = connection.createStatement()) {
                 clearPlugins.executeUpdate("DELETE FROM plugincontrol_plugins");
                 clearGroups.executeUpdate("DELETE FROM plugincontrol_groups");
+                clearGroupNames.executeUpdate("DELETE FROM plugincontrol_group_names");
             }
             try (var pluginStatement = connection.prepareStatement("INSERT INTO plugincontrol_plugins (name) VALUES (?)");
+                 var groupNameStatement = connection.prepareStatement("INSERT INTO plugincontrol_group_names (name) VALUES (?)");
                  var groupStatement = connection.prepareStatement("INSERT INTO plugincontrol_groups (name, plugin) VALUES (?, ?)")) {
                 for (var plugin : plugins) {
                     pluginStatement.setString(1, plugin);
                     pluginStatement.addBatch();
                 }
                 for (var group : groups.entrySet()) {
+                    groupNameStatement.setString(1, group.getKey());
+                    groupNameStatement.addBatch();
                     for (var plugin : group.getValue()) {
                         groupStatement.setString(1, group.getKey());
                         groupStatement.setString(2, plugin);
@@ -123,6 +141,7 @@ public final class JdbcDataStorage implements DataStorage {
                     }
                 }
                 pluginStatement.executeBatch();
+                groupNameStatement.executeBatch();
                 groupStatement.executeBatch();
             }
             connection.commit();

@@ -50,19 +50,25 @@ public class ConfigManager {
     private void loadData() {
         var data = dataStorage.load();
         if (data.plugins().isEmpty() && data.groups().isEmpty() && hasLegacyData()) {
-            data = migrateLegacyData();
+            data = readLegacyData();
+            var migratedData = data;
+            saveData(migratedData, () -> {
+                config.set(PLUGINS, null);
+                config.set(GROUPS, null);
+                plugin.saveConfig();
+                plugin.getLogger().info("Migrated plugin data from config.yml to the configured data storage.");
+            });
         }
         pluginList = new HashSet<>(data.plugins());
         pluginGroups = new HashMap<>();
         data.groups().forEach((name, plugins) -> pluginGroups.put(name, new HashSet<>(plugins)));
-        saveData();
     }
 
     private boolean hasLegacyData() {
         return config.contains(PLUGINS) || config.contains(GROUPS);
     }
 
-    private DataStorage.DataSnapshot migrateLegacyData() {
+    private DataStorage.DataSnapshot readLegacyData() {
         var plugins = new HashSet<>(config.getStringList(PLUGINS));
         var groups = new HashMap<String, Set<String>>();
         var section = config.getConfigurationSection(GROUPS);
@@ -71,20 +77,21 @@ public class ConfigManager {
                 groups.put(name, new HashSet<>(config.getStringList(GROUPS + "." + name)));
             }
         }
-        config.set(PLUGINS, null);
-        config.set(GROUPS, null);
-        plugin.saveConfig();
-        plugin.getLogger().info("Migrated plugin data from config.yml to the configured data storage.");
         return new DataStorage.DataSnapshot(plugins, groups);
     }
 
     private void saveData() {
-        var plugins = Set.copyOf(pluginList);
-        var groups = pluginGroups.entrySet().stream()
-                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> Set.copyOf(entry.getValue())));
+        saveData(new DataStorage.DataSnapshot(Set.copyOf(pluginList), pluginGroups.entrySet().stream()
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> Set.copyOf(entry.getValue())))), null);
+    }
+
+    private void saveData(DataStorage.DataSnapshot data, Runnable onSuccess) {
         storageExecutor.execute(() -> {
             try {
-                dataStorage.save(plugins, groups);
+                dataStorage.save(data.plugins(), data.groups());
+                if (onSuccess != null) {
+                    Bukkit.getScheduler().runTask(plugin, onSuccess);
+                }
             } catch (RuntimeException exception) {
                 plugin.getLogger().severe("Could not save plugin data asynchronously: " + exception.getMessage());
             }
