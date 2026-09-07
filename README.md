@@ -46,21 +46,3 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://github.com/SrBedrock/PluginControl/wiki" target="_blank">
 <img alt="ghpages" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/ghpages_vector.svg">
 </a>
-
-## Data storage
-
-Plugin lists and groups are stored independently from `config.yml`. The default
-backend is `yaml`, which writes to `plugins/PluginControl/data.yml`.
-
-The `storage.type` setting in `config.yml` also supports `h2`, `sqlite`, and
-`mysql`. H2 and SQLite use the configured `storage.database.file`; MySQL uses
-the host, port, database name, username, and password under
-`storage.database`. MySQL TLS is enabled by default and can be configured with
-`use-ssl`, `require-ssl`, and `verify-server-certificate`. JDBC backends use
-HikariCP for pooled connections; the pool size can be adjusted with
-`storage.database.pool-size`.
-
-On the first startup after upgrading, existing `plugins` and `groups` entries
-are automatically copied from `config.yml` to the selected backend and removed
-from `config.yml`. The database drivers are bundled with the plugin, so no
-additional server plugins are required.
