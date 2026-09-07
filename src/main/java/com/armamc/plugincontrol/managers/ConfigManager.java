@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.armamc.plugincontrol.Placeholders.ACTION;
@@ -28,6 +31,7 @@ public class ConfigManager {
     private final PluginControl plugin;
     private final FileConfiguration config;
     private final DataStorage dataStorage;
+    private final ExecutorService storageExecutor;
     private Set<String> pluginList;
     private Map<String, Set<String>> pluginGroups;
 
@@ -35,6 +39,11 @@ public class ConfigManager {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.dataStorage = DataStorageFactory.create(plugin);
+        this.storageExecutor = Executors.newSingleThreadExecutor(runnable -> {
+            var thread = new Thread(runnable, "PluginControl-storage");
+            thread.setDaemon(true);
+            return thread;
+        });
         loadData();
     }
 
@@ -46,7 +55,7 @@ public class ConfigManager {
         pluginList = new HashSet<>(data.plugins());
         pluginGroups = new HashMap<>();
         data.groups().forEach((name, plugins) -> pluginGroups.put(name, new HashSet<>(plugins)));
-        dataStorage.save(pluginList, pluginGroups);
+        saveData();
     }
 
     private boolean hasLegacyData() {
@@ -70,7 +79,16 @@ public class ConfigManager {
     }
 
     private void saveData() {
-        dataStorage.save(pluginList, pluginGroups);
+        var plugins = Set.copyOf(pluginList);
+        var groups = pluginGroups.entrySet().stream()
+                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> Set.copyOf(entry.getValue())));
+        storageExecutor.execute(() -> {
+            try {
+                dataStorage.save(plugins, groups);
+            } catch (RuntimeException exception) {
+                plugin.getLogger().severe("Could not save plugin data asynchronously: " + exception.getMessage());
+            }
+        });
     }
 
     public void saveConfig() {
@@ -188,6 +206,16 @@ public class ConfigManager {
     }
 
     public void close() {
+        storageExecutor.shutdown();
+        try {
+            if (!storageExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                plugin.getLogger().warning("Timed out waiting for asynchronous data saves.");
+                storageExecutor.shutdownNow();
+            }
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            plugin.getLogger().warning("Interrupted while waiting for asynchronous data saves.");
+        }
         dataStorage.close();
     }
 
