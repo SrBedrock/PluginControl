@@ -27,6 +27,9 @@ public final class PluginControl extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.configManager != null) {
+            this.configManager.close();
+        }
         if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;

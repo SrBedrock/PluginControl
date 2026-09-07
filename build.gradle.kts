@@ -17,6 +17,9 @@ repositories {
 
 dependencies {
     implementation(libs.updatecheckerjava)
+    implementation(libs.h2)
+    implementation(libs.mysql)
+    implementation(libs.sqlite)
     compileOnly(libs.spigot.api)
     compileOnly(libs.bundles.adventure)
 }
