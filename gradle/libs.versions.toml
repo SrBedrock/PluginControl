@@ -13,7 +13,7 @@ adventure-platform-bukkit = "4.4.1"
 h2 = "2.3.232"
 mysql = "9.4.0"
 sqlite = "3.50.3.0"
-hikari = "6.3.3"
+hikari = "7.1.0"
 
 [libraries]
 updatecheckerjava = { module = "com.github.TechnicJelle:UpdateCheckerJava", version.ref = "updatechecker" }
