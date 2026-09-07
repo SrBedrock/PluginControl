@@ -17,9 +17,9 @@ repositories {
 
 dependencies {
     implementation(libs.updatecheckerjava)
-    implementation(libs.h2)
-    implementation(libs.mysql)
-    implementation(libs.sqlite)
+    compileOnly(libs.h2)
+    compileOnly(libs.mysql)
+    compileOnly(libs.sqlite)
     compileOnly(libs.spigot.api)
     compileOnly(libs.bundles.adventure)
 }
@@ -37,7 +37,10 @@ tasks {
         val props = mapOf(
             "version" to project.version,
             "adventure" to libs.versions.adventure.api.get(),
-            "platform" to libs.versions.adventure.platform.bukkit.get()
+            "platform" to libs.versions.adventure.platform.bukkit.get(),
+            "h2" to libs.versions.h2.get(),
+            "mysql" to libs.versions.mysql.get(),
+            "sqlite" to libs.versions.sqlite.get()
         )
         filesMatching("plugin.yml") {
             expand(props)
