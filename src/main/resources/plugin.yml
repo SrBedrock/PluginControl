@@ -10,6 +10,10 @@ libraries:
   - "net.kyori:adventure-text-minimessage:${adventure}"
   - "net.kyori:adventure-text-serializer-legacy:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
+  - "com.h2database:h2:${h2}"
+  - "com.mysql:mysql-connector-j:${mysql}"
+  - "org.xerial:sqlite-jdbc:${sqlite}"
+  - "com.zaxxer:HikariCP:${hikari}"
 
 commands:
   plugincontrol:
