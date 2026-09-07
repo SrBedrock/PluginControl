@@ -55,7 +55,8 @@ backend is `yaml`, which writes to `plugins/PluginControl/data.yml`.
 The `storage.type` setting in `config.yml` also supports `h2`, `sqlite`, and
 `mysql`. H2 and SQLite use the configured `storage.database.file`; MySQL uses
 the host, port, database name, username, and password under
-`storage.database`.
+`storage.database`. JDBC backends use HikariCP for pooled connections; the
+pool size can be adjusted with `storage.database.pool-size`.
 
 On the first startup after upgrading, existing `plugins` and `groups` entries
 are automatically copied from `config.yml` to the selected backend and removed

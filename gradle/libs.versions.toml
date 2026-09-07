@@ -13,6 +13,7 @@ adventure-platform-bukkit = "4.4.1"
 h2 = "2.3.232"
 mysql = "9.4.0"
 sqlite = "3.50.3.0"
+hikari = "6.3.3"
 
 [libraries]
 updatecheckerjava = { module = "com.github.TechnicJelle:UpdateCheckerJava", version.ref = "updatechecker" }
@@ -26,6 +27,7 @@ adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", ve
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 mysql = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
 sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 
 [bundles]
 adventure = [

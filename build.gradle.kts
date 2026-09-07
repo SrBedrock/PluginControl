@@ -20,6 +20,7 @@ dependencies {
     compileOnly(libs.h2)
     compileOnly(libs.mysql)
     compileOnly(libs.sqlite)
+    compileOnly(libs.hikari)
     compileOnly(libs.spigot.api)
     compileOnly(libs.bundles.adventure)
 }
@@ -40,7 +41,8 @@ tasks {
             "platform" to libs.versions.adventure.platform.bukkit.get(),
             "h2" to libs.versions.h2.get(),
             "mysql" to libs.versions.mysql.get(),
-            "sqlite" to libs.versions.sqlite.get()
+            "sqlite" to libs.versions.sqlite.get(),
+            "hikari" to libs.versions.hikari.get()
         )
         filesMatching("plugin.yml") {
             expand(props)

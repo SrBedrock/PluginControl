@@ -13,6 +13,7 @@ libraries:
   - "com.h2database:h2:${h2}"
   - "com.mysql:mysql-connector-j:${mysql}"
   - "org.xerial:sqlite-jdbc:${sqlite}"
+  - "com.zaxxer:HikariCP:${hikari}"
 
 commands:
   plugincontrol:

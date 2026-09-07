@@ -5,6 +5,7 @@ storage:
   type: yaml
   database:
     file: data.db
+    pool-size: 5
     host: localhost
     port: 3306
     name: plugincontrol
