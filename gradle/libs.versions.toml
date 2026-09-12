@@ -12,10 +12,10 @@ updatechecker = "v2.5.1"
 spigot = "26.2-R0.1-SNAPSHOT"
 adventure-api = "5.2.0"
 adventure-platform-bukkit = "4.4.1"
-h2 = "2.3.232"
-mysql = "9.4.0"
-sqlite = "3.50.3.0"
-hikari = "6.3.3"
+h2 = "2.5.250"
+mysql = "26.7.0"
+sqlite = "3.53.4.0"
+hikari = "7.1.0"
 
 [libraries]
 updatecheckerjava = { module = "com.github.TechnicJelle:UpdateCheckerJava", version.ref = "updatechecker" }
