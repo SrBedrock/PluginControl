@@ -24,6 +24,18 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://www.spigotmc.org" target="_blank">
   <img alt="spigot" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg" title="Tested on Spigot">
 </a>
+
+The project is built as a Gradle multi-project. Platform artifacts are generated
+independently in the following modules:
+
+- `common`: shared Bukkit implementation and resources
+- `paper`: Paper distribution (also runs with modern Paper forks)
+- `spigot`: Spigot-compatible distribution
+- `velocity`: Velocity distribution
+- `bungecoord`: BungeeCord-compatible distribution
+
+Run `./gradlew build` to build all platform jars. The jars are written to each
+platform module's `build/libs` directory.
 <a href="https://papermc.io" target="_blank">
   <img alt="paper" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg" title="Tested on Paper">
 </a>

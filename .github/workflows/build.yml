@@ -5,7 +5,11 @@ on:
     branches: [ 'main', 'dev' ]
     paths:
       - 'gradle/**'
-      - 'src/**'
+      - 'common/**'
+      - 'paper/**'
+      - 'spigot/**'
+      - 'velocity/**'
+      - 'bungecoord/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradlew'
@@ -14,7 +18,11 @@ on:
     branches: [ 'main', 'dev' ]
     paths:
       - 'gradle/**'
-      - 'src/**'
+      - 'common/**'
+      - 'paper/**'
+      - 'spigot/**'
+      - 'velocity/**'
+      - 'bungecoord/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradlew'
@@ -44,4 +52,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: PluginControl
-          path: build/libs/*.jar
+          path: |
+            paper/build/libs/*.jar
+            spigot/build/libs/*.jar
+            velocity/build/libs/*.jar
+            bungecoord/build/libs/*.jar

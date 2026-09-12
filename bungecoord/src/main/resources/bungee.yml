@@ -1,0 +1,4 @@
+name: PluginControl
+main: com.armamc.plugincontrol.bungecoord.PluginControlBungeCoord
+version: ${version}
+author: ThiagoROX
