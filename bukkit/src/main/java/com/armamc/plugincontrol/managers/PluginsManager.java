@@ -28,6 +28,7 @@ public class PluginsManager {
 
     public void checkPlugins() {
         if (!config.isEnabled()) {
+            unregisterListener();
             message.send(message.getCheckingDisabled());
             return;
         }
@@ -42,6 +43,7 @@ public class PluginsManager {
         if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
             registerAction(missingPlugins, missingGroups);
         } else {
+            unregisterListener();
             message.send(message.getCheckFinished());
         }
     }
