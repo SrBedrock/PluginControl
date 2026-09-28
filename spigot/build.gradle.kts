@@ -6,16 +6,19 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":bukkit"))
     compileOnly(libs.spigot.api)
 }
 
 tasks {
     withType<ShadowJar> {
         archiveClassifier.set("")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
     withType<ProcessResources> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         from(project(":common").sourceSets.main.get().resources)
+        from(project(":bukkit").sourceSets.main.get().resources)
         val props = mapOf(
             "version" to project.version,
             "adventure" to libs.versions.adventure.api.get(),
