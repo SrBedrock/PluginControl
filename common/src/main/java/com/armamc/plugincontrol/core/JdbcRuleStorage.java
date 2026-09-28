@@ -23,13 +23,18 @@ public final class JdbcRuleStorage implements RuleStorage {
         pool.setMinimumIdle(1);
         switch (type) {
             case "sqlite" -> {
+                pool.setDriverClassName("org.sqlite.JDBC");
                 pool.setJdbcUrl("jdbc:sqlite:" + directory.resolve(
                         YamlFiles.text(database, "file", "data.db")).toAbsolutePath());
                 pool.setMaximumPoolSize(1);
             }
-            case "h2" -> pool.setJdbcUrl("jdbc:h2:file:" + directory.resolve(
-                    YamlFiles.text(database, "file", "data")).toAbsolutePath() + ";AUTO_SERVER=TRUE");
+            case "h2" -> {
+                pool.setDriverClassName("org.h2.Driver");
+                pool.setJdbcUrl("jdbc:h2:file:" + directory.resolve(
+                        YamlFiles.text(database, "file", "data")).toAbsolutePath() + ";AUTO_SERVER=TRUE");
+            }
             case "mysql" -> {
+                pool.setDriverClassName("com.mysql.cj.jdbc.Driver");
                 final boolean ssl = YamlFiles.flag(database, "use-ssl", true);
                 final boolean requireSsl = YamlFiles.flag(database, "require-ssl", ssl);
                 final boolean verify = YamlFiles.flag(database, "verify-server-certificate", ssl);
