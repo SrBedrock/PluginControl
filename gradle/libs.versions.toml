@@ -4,7 +4,7 @@ java = "25"
 # plugins
 shadow = "9.6.1"
 run-paper = "3.1.0"
-velocity = "3.4.0-SNAPSHOT"
+velocity = "4.2.0"
 bungeecord = "1.21-R0.4"
 
 # libs
