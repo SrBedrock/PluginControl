@@ -126,7 +126,7 @@ public final class PluginControlVelocity {
     @Subscribe
     public void onLogin(LoginEvent event) {
         final ProxyControlService current = control;
-        if (current != null && current.isLoginBlocked()
+        if (current != null && current.isLoginBlocked() && event.getResult().isAllowed()
                 && !event.getPlayer().hasPermission("plugincontrol.bypass")) {
             event.setResult(ResultedEvent.ComponentResult.denied(
                     miniMessage.deserialize(current.kickMessage())));
