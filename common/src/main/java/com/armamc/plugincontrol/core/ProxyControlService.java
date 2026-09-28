@@ -150,7 +150,8 @@ public final class ProxyControlService implements AutoCloseable {
         return kickMessage;
     }
 
-    public void check() {
+    public synchronized void check() {
+        if (closed) return;
         if (!enabled()) {
             clearBlock();
             platform.notifyStaff(message("console.plugin-disabled"));
@@ -246,7 +247,7 @@ public final class ProxyControlService implements AutoCloseable {
         }
     }
 
-    public List<String> suggestions(String[] args) {
+    public synchronized List<String> suggestions(String[] args) {
         if (args.length == 0) return List.of();
         final String first = args[0].toLowerCase(Locale.ROOT);
         if (args.length == 1) return starts(List.of("add", "remove", "list", "group", "action", "kick-message",
@@ -275,7 +276,8 @@ public final class ProxyControlService implements AutoCloseable {
                 .sorted(String.CASE_INSENSITIVE_ORDER).toList();
     }
 
-    public void execute(Actor actor, String label, String[] args) {
+    public synchronized void execute(Actor actor, String label, String[] args) {
+        if (closed) return;
         if (!actor.permitted()) {
             actor.send("<red>You do not have permission to use PluginControl.");
             return;
@@ -448,7 +450,7 @@ public final class ProxyControlService implements AutoCloseable {
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (closed) return;
         closed = true;
         clearBlock();
