@@ -6,6 +6,8 @@ on:
     paths:
       - 'gradle/**'
       - 'common/**'
+      - 'bukkit/**'
+      - 'bukkit/**'
       - 'paper/**'
       - 'spigot/**'
       - 'velocity/**'
