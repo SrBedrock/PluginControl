@@ -34,8 +34,8 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 
 ## Tools Used
 
-<a href="https://openjdk.org/projects/jdk/21/" target="_blank">
-  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java21_vector.svg">
+<a href="https://openjdk.org/projects/jdk/25/" target="_blank">
+  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java25_vector.svg">
 </a>
 
 <a href="https://gradle.org/" target="_blank">
