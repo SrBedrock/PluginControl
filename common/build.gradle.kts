@@ -10,7 +10,7 @@ dependencies {
     runtimeOnly(libs.mysql)
     runtimeOnly(libs.sqlite)
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
 }
 
 java {
