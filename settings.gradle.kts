@@ -1,3 +1,3 @@
 rootProject.name = "PluginControl"
 
-include("common", "paper", "spigot", "velocity", "bungecoord")
+include("common", "bukkit", "paper", "spigot", "velocity", "bungecoord")
