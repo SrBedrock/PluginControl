@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation("org.yaml:snakeyaml:2.4")
+    implementation("org.yaml:snakeyaml:2.7")
     implementation(libs.hikari)
     runtimeOnly(libs.h2)
     testRuntimeOnly(libs.h2)
