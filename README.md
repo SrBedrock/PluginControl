@@ -25,7 +25,31 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
   <img alt="spigot" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg" title="Tested on Spigot">
 </a>
 
-The project builds independent Java 21 distributions from a platform-neutral core:
+<a href="https://papermc.io" target="_blank">
+  <img alt="paper" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg" title="Tested on Paper">
+</a>
+<a href="https://purpurmc.org/" target="_blank">
+  <img alt="purpur" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/purpur_vector.svg" title="Tested on Purpur">
+</a>
+
+## Tools Used
+
+<a href="https://openjdk.org/projects/jdk/21/" target="_blank">
+  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java21_vector.svg">
+</a>
+
+<a href="https://gradle.org/" target="_blank">
+  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/gradle_vector.svg">
+</a>
+
+## Wiki
+
+<a href="https://github.com/SrBedrock/PluginControl/wiki" target="_blank">
+<img alt="ghpages" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/ghpages_vector.svg">
+</a>
+
+## Tecnical
+The project builds independent Java 25 distributions from a platform-neutral core:
 
 - `common`: rule evaluation, actions, YAML/JDBC storage and proxy command service (no Bukkit dependency).
 - `bukkit`: existing Bukkit commands, menus, listeners and platform adapter shared by Paper and Spigot.
@@ -52,26 +76,3 @@ dependency is checked after the proxy finishes initializing its plugins; use
 post-login event (the earliest reliable point for bypass permissions).
 
 Build and run the common tests with `./gradlew clean build`.
-
-<a href="https://papermc.io" target="_blank">
-  <img alt="paper" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg" title="Tested on Paper">
-</a>
-<a href="https://purpurmc.org/" target="_blank">
-  <img alt="purpur" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/purpur_vector.svg" title="Tested on Purpur">
-</a>
-
-## Tools Used
-
-<a href="https://openjdk.org/projects/jdk/21/" target="_blank">
-  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java21_vector.svg">
-</a>
-
-<a href="https://gradle.org/" target="_blank">
-  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/gradle_vector.svg">
-</a>
-
-## Wiki
-
-<a href="https://github.com/SrBedrock/PluginControl/wiki" target="_blank">
-<img alt="ghpages" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/ghpages_vector.svg">
-</a>
