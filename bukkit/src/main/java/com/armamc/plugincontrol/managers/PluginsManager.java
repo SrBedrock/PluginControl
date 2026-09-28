@@ -1,13 +1,14 @@
 package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
+import com.armamc.plugincontrol.core.ActionType;
+import com.armamc.plugincontrol.core.RuleEvaluator;
 import com.armamc.plugincontrol.listeners.PlayerListener;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.armamc.plugincontrol.Placeholders.GROUPS;
@@ -33,29 +34,10 @@ public class PluginsManager {
 
         message.send(message.getCheckingMessage());
 
-        var missingPlugins = new HashSet<String>();
-        for (var pluginName : config.getPluginList()) {
-            if (!plugin.isPluginEnabled(pluginName)) {
-                missingPlugins.add(pluginName);
-            }
-        }
-
-        var missingGroups = new HashSet<String>();
-        var pluginGroup = config.getPluginGroups();
-        for (var groups : pluginGroup.entrySet()) {
-            boolean groupHasEnabledPlugin = false;
-            if (groups.getValue().isEmpty()) continue;
-            for (var pluginName : groups.getValue()) {
-                if (plugin.isPluginEnabled(pluginName)) {
-                    groupHasEnabledPlugin = true;
-                    break;
-                }
-            }
-
-            if (!groupHasEnabledPlugin) {
-                missingGroups.add(groups.getKey());
-            }
-        }
+        final RuleEvaluator.Result result = RuleEvaluator.evaluate(
+                config.getPluginList(), config.getPluginGroups(), plugin::isPluginEnabled);
+        final Set<String> missingPlugins = result.missingPlugins();
+        final Set<String> missingGroups = result.missingGroups();
 
         if (!missingPlugins.isEmpty() || !missingGroups.isEmpty()) {
             registerAction(missingPlugins, missingGroups);
@@ -75,7 +57,7 @@ public class PluginsManager {
             groupTag = Placeholder.component(GROUPS, message.getGroupListComponent(missingGroups));
         }
 
-        switch (ConfigManager.ActionType.from(config.getAction().toLowerCase())) {
+        switch (ActionType.parse(config.getAction())) {
             case DISALLOW_PLAYER_LOGIN -> handleDisallowPlayerLogin(pluginTag, groupTag);
             case LOG_TO_CONSOLE -> logToConsole(pluginTag, groupTag);
             case SHUTDOWN_SERVER -> shutdownServer(pluginTag, groupTag);
