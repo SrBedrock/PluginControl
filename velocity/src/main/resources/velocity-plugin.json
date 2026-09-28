@@ -1,0 +1,7 @@
+{
+  "id": "plugincontrol",
+  "name": "PluginControl",
+  "version": "1.3.0",
+  "authors": ["ThiagoROX"],
+  "main": "com.armamc.plugincontrol.velocity.PluginControlVelocity"
+}

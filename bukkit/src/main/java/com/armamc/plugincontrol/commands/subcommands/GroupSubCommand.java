@@ -110,7 +110,7 @@ public class GroupSubCommand implements SubCommand {
         }
 
         if (target.equalsIgnoreCase("remove")) {
-            if (args.length == 1) {
+            if (args.length < 3) {
                 message.send(sender, message.getPluginRemoveFromGroupError(), Placeholder.parsed(COMMAND, label));
                 return;
             }

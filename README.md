@@ -24,6 +24,35 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 <a href="https://www.spigotmc.org" target="_blank">
   <img alt="spigot" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg" title="Tested on Spigot">
 </a>
+
+The project builds independent Java 21 distributions from a platform-neutral core:
+
+- `common`: rule evaluation, actions, YAML/JDBC storage and proxy command service (no Bukkit dependency).
+- `bukkit`: existing Bukkit commands, menus, listeners and platform adapter shared by Paper and Spigot.
+- `paper`: Paper/Purpur distribution with `plugin.yml`.
+- `spigot`: Spigot-compatible distribution with `plugin.yml`.
+- `velocity`: native Velocity plugin, login denial and command registration.
+- `bungecoord`: native BungeeCord plugin (historical Gradle path), login protection and command registration.
+
+Each distribution has its own JAR in `<platform>/build/libs`. Install **only one**
+distribution per server or proxy. Paper/Spigot and proxy instances each maintain
+their own `plugins/PluginControl/config.yml`, `lang.yml` and rule data.
+
+Proxy commands: `/plugincontrol` (aliases `/pc`, `/plcontrol`), with
+`help`, `check`, `enable`, `disable`, `toggle`, `add`, `remove`,
+`list`, `group`, `action`, `kick-message`, `check-depend` and `reload`.
+Use `plugincontrol.use` to manage, `plugincontrol.notify` to receive alerts,
+and `plugincontrol.bypass` to bypass login denial. Standalone plugins are
+required individually; each non-empty group passes if at least one member loads.
+Available actions: `log-to-console`, `disallow-player-login` and
+`shutdown-server`. Proxy data storage supports YAML, H2, SQLite and MySQL
+with the existing `config.yml` options and shared JDBC table layout. A missing
+dependency is checked after the proxy finishes initializing its plugins; use
+`/pc check` to reevaluate after changes. BungeeCord checks new players in its
+post-login event (the earliest reliable point for bypass permissions).
+
+Build and run the common tests with `./gradlew clean build`.
+
 <a href="https://papermc.io" target="_blank">
   <img alt="paper" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg" title="Tested on Paper">
 </a>
@@ -33,8 +62,8 @@ Inspired by [this comment](https://github.com/PaperMC/Paper/issues/8859#issuecom
 
 ## Tools Used
 
-<a href="https://openjdk.org/projects/jdk/17/" target="_blank">
-  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java17_vector.svg">
+<a href="https://openjdk.org/projects/jdk/21/" target="_blank">
+  <img alt="java17" height="64" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/built-with/java21_vector.svg">
 </a>
 
 <a href="https://gradle.org/" target="_blank">
