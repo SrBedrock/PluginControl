@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-    api(libs.updatecheckerjava)
-    compileOnly(libs.spigot.api)
-    compileOnly(libs.h2)
-    compileOnly(libs.mysql)
-    compileOnly(libs.sqlite)
-    compileOnly(libs.hikari)
-    compileOnly(libs.bundles.adventure)
+    implementation("org.yaml:snakeyaml:2.4")
+    implementation(libs.hikari)
+    runtimeOnly(libs.h2)
+    runtimeOnly(libs.mysql)
+    runtimeOnly(libs.sqlite)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
 }
 
 java {
@@ -18,5 +18,7 @@ java {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    options.compilerArgs.add("-parameters")
+}
+tasks.test {
+    useJUnitPlatform()
 }
