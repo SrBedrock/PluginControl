@@ -6,8 +6,11 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common"))
     compileOnly(libs.bungeecord.api)
-    implementation(libs.bundles.adventure)
+    implementation(libs.adventure.api)
+    implementation(libs.adventure.minimessage)
+    implementation(libs.adventure.serializer.legacy)
 }
 
 java {
@@ -17,6 +20,10 @@ java {
 tasks {
     withType<ShadowJar> {
         archiveClassifier.set("")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        relocate("org.yaml.snakeyaml", "com.armamc.plugincontrol.libs.snakeyaml")
+        relocate("com.zaxxer.hikari", "com.armamc.plugincontrol.libs.hikari")
+        relocate("net.kyori", "com.armamc.plugincontrol.libs.kyori")
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
