@@ -1,6 +1,7 @@
 package com.armamc.plugincontrol.commands.subcommands;
 
 import com.armamc.plugincontrol.PluginControl;
+import com.armamc.plugincontrol.core.ActionType;
 import com.armamc.plugincontrol.managers.ConfigManager;
 import com.armamc.plugincontrol.managers.MessageManager;
 import com.armamc.plugincontrol.managers.PluginsManager;
@@ -37,10 +38,10 @@ public class ActionSubCommand implements SubCommand {
         }
 
         try {
-            var actionType = ConfigManager.ActionType.from(args[0].toLowerCase());
+            var actionType = ActionType.parse(args[0]);
             config.setAction(actionType);
-            message.send(sender, message.getActionSet(), Placeholder.parsed(ACTION, actionType.getAction()));
-            if (actionType != ConfigManager.ActionType.DISALLOW_PLAYER_LOGIN) {
+            message.send(sender, message.getActionSet(), Placeholder.parsed(ACTION, actionType.key()));
+            if (actionType != ActionType.DISALLOW_PLAYER_LOGIN) {
                 manager.unregisterListener();
             }
             manager.checkPlugins();
