@@ -1,6 +1,7 @@
 package com.armamc.plugincontrol.managers;
 
 import com.armamc.plugincontrol.PluginControl;
+import com.armamc.plugincontrol.core.ActionType;
 import com.armamc.plugincontrol.storage.DataStorage;
 import com.armamc.plugincontrol.storage.DataStorageFactory;
 import org.bukkit.Bukkit;
@@ -111,10 +112,6 @@ public class ConfigManager {
     }
 
     public boolean isEnabled() {
-        if (config.getBoolean(ENABLED)) {
-            config.set(ENABLED, false);
-            saveConfig();
-        }
         return config.getBoolean(ENABLED);
     }
 
@@ -125,14 +122,14 @@ public class ConfigManager {
 
     public String getAction() {
         if (config.getString(ACTION) == null) {
-            config.set(ACTION, ActionType.LOG_TO_CONSOLE.getAction());
+            config.set(ACTION, ActionType.LOG_TO_CONSOLE.key());
             saveConfig();
         }
         return config.getString(ACTION);
     }
 
     public void setAction(@NotNull ActionType action) {
-        config.set(ACTION, action.getAction());
+        config.set(ACTION, action.key());
         saveConfig();
     }
 
@@ -226,32 +223,4 @@ public class ConfigManager {
         dataStorage.close();
     }
 
-    public enum ActionType {
-        LOG_TO_CONSOLE("log-to-console"),
-        DISALLOW_PLAYER_LOGIN("disallow-player-login"),
-        SHUTDOWN_SERVER("shutdown-server");
-
-        private final String action;
-        private static final Map<String, ActionType> lookup = new HashMap<>();
-
-        static {
-            for (var actionType : values()) lookup.put(actionType.getAction(), actionType);
-        }
-
-        @Contract(pure = true)
-        ActionType(String action) {
-            this.action = action;
-        }
-
-        public static @NotNull ActionType from(String action) {
-            var result = lookup.get(action);
-            if (result == null) throw new IllegalArgumentException("Unexpected value: " + action);
-            return result;
-        }
-
-        @Contract(pure = true)
-        public String getAction() {
-            return action;
-        }
-    }
 }
