@@ -6,8 +6,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common"))
     compileOnly(libs.velocity.api)
-    implementation(libs.bundles.adventure)
+    implementation(libs.adventure.minimessage)
 }
 
 java {
@@ -17,6 +18,9 @@ java {
 tasks {
     withType<ShadowJar> {
         archiveClassifier.set("")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        relocate("org.yaml.snakeyaml", "com.armamc.plugincontrol.libs.snakeyaml")
+        relocate("com.zaxxer.hikari", "com.armamc.plugincontrol.libs.hikari")
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
