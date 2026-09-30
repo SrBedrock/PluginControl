@@ -9,7 +9,7 @@ bungeecord = "1.21-R0.4"
 
 # libs
 updatechecker = "v2.5.1"
-spigot = "26.2-R0.1-SNAPSHOT"
+spigot = "26.3-R0.1-SNAPSHOT"
 adventure-api = "5.2.0"
 adventure-platform-bukkit = "4.4.1"
 h2 = "2.5.252"
