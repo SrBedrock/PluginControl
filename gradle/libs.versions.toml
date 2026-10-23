@@ -13,7 +13,7 @@ spigot = "26.3-R0.1-SNAPSHOT"
 adventure-api = "5.2.0"
 adventure-platform-bukkit = "4.4.1"
 h2 = "2.5.252"
-mysql = "26.7.0"
+mysql = "26.10.0"
 sqlite = "3.53.4.0"
 hikari = "7.1.0"
 
